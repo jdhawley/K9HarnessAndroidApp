@@ -17,10 +17,10 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
             <th jhiSortBy="id"><span>ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="name"><span>Name</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="coretemp"><span>Coretemp</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="respiratoryrate"><span>Respiratoryrate</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="abtemp"><span>Abtemp</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="name"><span>Name</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="heartrate"><span>Heartrate</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="maxcoretemp"><span>Maxcoretemp</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="maxrespiratoryrate"><span>Maxrespiratoryrate</span> <span class="fa fa-sort"></span></th>
@@ -33,10 +33,10 @@
             <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
             <tr *ngFor="let dog of dogs ;trackBy: trackId">
                 <td><a [routerLink]="['../dog', dog.id ]">{{dog.id}}</a></td>
+                <td>{{dog.name}}</td>
                 <td>{{dog.coretemp}}</td>
                 <td>{{dog.respiratoryrate}}</td>
                 <td>{{dog.abtemp}}</td>
-                <td>{{dog.name}}</td>
                 <td>{{dog.heartrate}}</td>
                 <td>{{dog.maxcoretemp}}</td>
                 <td>{{dog.maxrespiratoryrate}}</td>
