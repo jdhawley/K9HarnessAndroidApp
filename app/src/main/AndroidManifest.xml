@@ -29,7 +29,8 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
         <activity android:name=".DogList" />
-        <activity android:name=".MeasurementInDepth"></activity>
+        <activity android:name=".MeasurementInDepth" />
+        <activity android:name=".SettingsNotifications"></activity>
     </application>
 
 </manifest>
