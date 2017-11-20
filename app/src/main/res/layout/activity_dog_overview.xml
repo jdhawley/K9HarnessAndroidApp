@@ -40,7 +40,7 @@
         android:layout_marginLeft="8dp" />
 
     <com.jjoe64.graphview.GraphView
-        android:id="@+id/abTGraph"
+        android:id="@+id/abtGraph"
         android:layout_width="240dp"
         android:layout_height="114dp"
         android:layout_marginStart="8dp"
@@ -103,11 +103,11 @@
         android:padding="0dp"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
-        app:layout_constraintBottom_toBottomOf="@+id/abTGraph"
+        app:layout_constraintBottom_toBottomOf="@+id/abtGraph"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/abTGraph"
-        app:layout_constraintTop_toTopOf="@+id/abTGraph"
+        app:layout_constraintStart_toEndOf="@+id/abtGraph"
+        app:layout_constraintTop_toTopOf="@+id/abtGraph"
         app:srcCompat="@drawable/thermometer" />
 
     <ImageButton
