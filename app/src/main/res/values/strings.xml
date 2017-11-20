@@ -7,6 +7,13 @@
     <string name="Bluetooth_Settings">Bluetooth Setttings</string>
     <string name="title_activity_login">Sign in</string>
 
+    <!-- Strings related to Dog Settings -->
+    <string name="threshold_Settings">Threshold Settings</string>
+    <string name="heart_rate">Heart Rate</string>
+    <string name="respiratory_rate">Respiratory Rate</string>
+    <string name="abdominal_temp">Abdominal Temperature</string>
+    <string name="core_temp">Core Temperature</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
