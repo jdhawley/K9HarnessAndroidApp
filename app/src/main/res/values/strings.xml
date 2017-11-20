@@ -26,4 +26,12 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Strings in the dog overview activity -->
+    <string name="Dog_Overview">Dog Overview</string>
+    <string name="Dog_Name">Dog Name</string>
+    <string name="heart_image_description">Heart</string>
+    <string name="thermometer_image_description">Thermometer</string>
+    <string name="lungs_image_description">Lungs</string>
+    <string name="data_point_button_text">Data Point</string>
 </resources>
