@@ -33,4 +33,9 @@ public class SettingsTypeMenu extends AppCompatActivity {
         Intent goToSettingsNotificationIntent = new Intent(this, SettingsNotifications.class);
         startActivity(goToSettingsNotificationIntent);
     }
+
+    public void goToDogOverview(View view) {
+        Intent DogIntent = new Intent(this, DogOverview.class);
+        startActivity(DogIntent);
+    }
 }

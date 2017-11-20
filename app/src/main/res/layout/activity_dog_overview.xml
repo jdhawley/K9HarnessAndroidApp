@@ -1,8 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.android.k9harnessandroidapp.dog_overview">
+    tools:context="com.example.android.k9harnessandroidapp.DogOverview">
 
+    <TextView
+        android:id="@+id/tvDogName"
+        android:layout_width="70dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="44dp"
+        android:text="@string/Dog_Name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/ctGraph"
+        android:layout_width="240dp"
+        android:layout_height="114dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rrGraph"
+        android:layout_marginLeft="8dp" />
+
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/rrGraph"
+        android:layout_width="240dp"
+        android:layout_height="114dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/hrGraph"
+        android:layout_marginLeft="8dp" />
+
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/abTGraph"
+        android:layout_width="240dp"
+        android:layout_height="114dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ctGraph"
+        android:layout_marginLeft="8dp" />
+
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/hrGraph"
+        android:layout_width="240dp"
+        android:layout_height="114dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDogName"
+        android:layout_marginLeft="8dp" />
+
+    <ImageButton
+        android:contentDescription="@string/heart_image_description"
+        android:id="@+id/hrImage"
+        android:layout_width="100dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:adjustViewBounds="true"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/hrGraph"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/hrGraph"
+        app:layout_constraintTop_toTopOf="@+id/hrGraph"
+        app:srcCompat="@drawable/heart" />
+
+    <ImageButton
+        android:contentDescription="@string/thermometer_image_description"
+        android:id="@+id/ctImage"
+        android:layout_width="100dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/ctGraph"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/ctGraph"
+        app:layout_constraintTop_toTopOf="@+id/ctGraph"
+        app:srcCompat="@drawable/thermometer" />
+
+    <ImageButton
+        android:contentDescription="@string/thermometer_image_description"
+        android:id="@+id/abTImage"
+        android:layout_width="100dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="@+id/abTGraph"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/abTGraph"
+        app:layout_constraintTop_toTopOf="@+id/abTGraph"
+        app:srcCompat="@drawable/thermometer" />
+
+    <ImageButton
+        android:contentDescription="@string/lungs_image_description"
+        android:id="@+id/rrImage"
+        android:layout_width="100dp"
+        android:layout_height="75dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        android:padding="0dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/rrGraph"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/rrGraph"
+        app:layout_constraintTop_toTopOf="@+id/rrGraph"
+        app:srcCompat="@drawable/lungs" />
+
+    <Button
+        android:id="@+id/dpButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="addDataPoint"
+        android:text="@string/data_point_button_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/abTImage"
+        app:layout_constraintStart_toStartOf="@+id/abTImage"
+        app:layout_constraintTop_toBottomOf="@+id/abTImage" />
 </android.support.constraint.ConstraintLayout>
