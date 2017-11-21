@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
+    private SQLiteHelper myDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        myDB = new SQLiteHelper(this);
     }
 
     public void goToSettingsMenu(View view) {
