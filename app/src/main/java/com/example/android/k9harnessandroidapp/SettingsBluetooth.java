@@ -4,7 +4,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class SettingsBluetooth extends AppCompatActivity {
+    /*
+    TODO:
+    Add bluetooth device ID field!
 
+    search for devices???
+
+
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

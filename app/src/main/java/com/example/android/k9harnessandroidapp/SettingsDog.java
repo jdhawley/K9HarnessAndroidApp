@@ -31,7 +31,12 @@ public class SettingsDog extends AppCompatActivity {
      private static final int AB_TEMP_HIGH_LOC = 6;
      private static final int AB_TEMP_LOW_LOC = 7;
 
+    /* TODO
+    Add real time checking to integer value input to make sure input is valid.
 
+    Implement using text Watcher action.
+    
+     */
 
 
     @Override
@@ -77,7 +82,7 @@ public class SettingsDog extends AppCompatActivity {
 
     }
 
-    private void initializeDogSettings(Context context) {
+    public void initializeDogSettings(Context context) {
         int[] InitValArray = getDogSettings(context);
         EditText heartRateHighInput = (EditText) findViewById(R.id.setting_hr_high);
         heartRateHighInput.setText("" + InitValArray[HEART_RATE_HIGH_LOC]);
