@@ -9,10 +9,12 @@
 
     <!-- Strings related to Dog Settings -->
     <string name="threshold_Settings">Threshold Settings</string>
+    <string name="threshold_high">High</string>
+    <string name="threshold_low">Low</string>
     <string name="heart_rate">Heart Rate</string>
-    <string name="respiratory_rate">Respiratory Rate</string>
-    <string name="abdominal_temp">Abdominal Temperature</string>
-    <string name="core_temp">Core Temperature</string>
+    <string name="respiratory_rate">Resp. Rate</string>
+    <string name="abdominal_temp">Ab Temp.</string>
+    <string name="core_temp">Core Temp.</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
