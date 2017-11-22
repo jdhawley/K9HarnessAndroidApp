@@ -13,14 +13,14 @@ public class SettingsDog extends AppCompatActivity {
 
      private static final int DOG_SETTINGS_NUM = 8;
 
-     private static final String HEART_RATE_HIGH_KEY = "Heart Rate High";
-     private static final String HEART_RATE_LOW_KEY = "Heart Rate Low";
-     private static final String RESP_RATE_HIGH_KEY = "Resp Rate High";
-     private static final String RESP_RATE_LOW_KEY = "Resp Rate Low";
-     private static final String CORE_TEMP_HIGH_KEY = "Core Temp High";
-     private static final String CORE_TEMP_LOW_KEY = "Core Temp Low";
-     private static final String AB_TEMP_HIGH_KEY = "Ab Temp High";
-     private static final String AB_TEMP_LOW_KEY = "Ab Temp Low";
+     public static final String HEART_RATE_HIGH_KEY = "Heart Rate High";
+     public static final String HEART_RATE_LOW_KEY = "Heart Rate Low";
+     public static final String RESP_RATE_HIGH_KEY = "Resp Rate High";
+     public static final String RESP_RATE_LOW_KEY = "Resp Rate Low";
+     public static final String CORE_TEMP_HIGH_KEY = "Core Temp High";
+     public static final String CORE_TEMP_LOW_KEY = "Core Temp Low";
+     public static final String AB_TEMP_HIGH_KEY = "Ab Temp High";
+     public static final String AB_TEMP_LOW_KEY = "Ab Temp Low";
 
      private static final int HEART_RATE_HIGH_LOC = 0;
      private static final int HEART_RATE_LOW_LOC = 1;
