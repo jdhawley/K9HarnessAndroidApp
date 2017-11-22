@@ -2,22 +2,56 @@ package com.example.android.k9harnessandroidapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.renderscript.ScriptGroup;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.view.inputmethod.InputMethodManager;
 import java.util.Set;
-
+//TODO: SET PASSWORD REQS... find out what DB can support!!
 public class SettingsAccount extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings_account);
+
+        final EditText newPasswordFieldx = (EditText) findViewById(R.id.new_password_field);
+        final EditText verifyPasswordFieldx = (EditText) findViewById(R.id.verify_new_password_field);
+
+        verifyPasswordFieldx.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //TODO: ????
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                if (newPasswordFieldx.getText().toString().equals(verifyPasswordFieldx.getText().toString())) {
+                    verifyPasswordFieldx.setTextColor(Color.rgb(0,100,0));
+                }
+                else {
+                    verifyPasswordFieldx.setTextColor(Color.RED);
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            //TODO: ????
+            }
+        });
+
+
+
+
+
         Button saveChangesButton = (Button) findViewById(R.id.button_submit_account_settings_changes);
         saveChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
