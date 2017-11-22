@@ -65,7 +65,7 @@ public class DogOverview extends AppCompatActivity {
         ctHigh = prefs.getInt(SettingsDog.CORE_TEMP_HIGH_KEY,0);
         ctLow = prefs.getInt(SettingsDog.CORE_TEMP_LOW_KEY,0);
         abtHigh = prefs.getInt(SettingsDog.AB_TEMP_HIGH_KEY,-11);
-        Toast.makeText(DogOverview.this, ""+abtHigh, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(DogOverview.this, ""+abtHigh, Toast.LENGTH_SHORT).show();
         abtLow = prefs.getInt(SettingsDog.AB_TEMP_LOW_KEY,0);
         //Toast.makeText(DogOverview.this, ""+abtLow, Toast.LENGTH_SHORT).show();
     }
