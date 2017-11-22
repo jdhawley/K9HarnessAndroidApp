@@ -1,5 +1,6 @@
 package com.example.android.k9harnessandroidapp;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,23 +26,44 @@ public class DogOverview extends AppCompatActivity {
     private GraphView ctGraph;
     private GraphView abtGraph;
 
-    // TODO: Read high/low values from settings and set them here
     // TODO: Change series color based on value in respect to high/low values
-//    private int hrHigh;
-//    private int hrLow;
-//    private int rrHigh;
-//    private int rrLow;
-//    private int ctHigh;
-//    private int ctLow;
-//    private int abtHigh;
-//    private int abtLow;
+    private int hrHigh;
+    private int hrLow;
+    private int rrHigh;
+    private int rrLow;
+    private int ctHigh;
+    private int ctLow;
+    private int abtHigh;
+    private int abtLow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dog_overview);
 
+        initializeHighLowVals();
+
         initializeGraphs();
+    }
+
+    //TODO: NOT SURE IF THIS DOES ANYTHING YET, BUT WILL BE NEEDED IN FUTURE WHEN LAYOUT IS DIFFERENT
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initializeHighLowVals();
+    }
+
+    private void initializeHighLowVals() {
+        // TODO: SET UP DEFAULT VALUES OTHER THAN 0
+        SharedPreferences prefs = this.getSharedPreferences("DogSettings", MODE_PRIVATE);
+        hrHigh = prefs.getInt(SettingsDog.HEART_RATE_HIGH_KEY,0);
+        hrLow = prefs.getInt(SettingsDog.HEART_RATE_LOW_KEY,0);
+        rrHigh = prefs.getInt(SettingsDog.RESP_RATE_HIGH_KEY,0);
+        rrLow = prefs.getInt(SettingsDog.RESP_RATE_LOW_KEY,0);
+        ctHigh = prefs.getInt(SettingsDog.CORE_TEMP_HIGH_KEY,0);
+        ctLow = prefs.getInt(SettingsDog.CORE_TEMP_LOW_KEY,0);
+        abtHigh = prefs.getInt(SettingsDog.AB_TEMP_HIGH_KEY,0);
+        abtLow = prefs.getInt(SettingsDog.AB_TEMP_LOW_KEY,0);
     }
 
     private void initializeGraphs(){
