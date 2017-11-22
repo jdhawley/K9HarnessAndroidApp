@@ -50,6 +50,7 @@ public class SettingsDog extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Placing all of the fields in Dog Settings into an integer array to save.
                 int[] dogSettingsArray = new int[DOG_SETTINGS_NUM];
 
                 EditText heartRateHighInput = (EditText) findViewById(R.id.setting_hr_high);

@@ -16,6 +16,14 @@
     <string name="abdominal_temp">Ab Temp.</string>
     <string name="core_temp">Core Temp.</string>
 
+    <!-- Strings related to Account Settings -->
+    <string name="password_setting_title">Password</string>
+    <string name="password_setting_hint">Change your password</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="verify_password">Verify password</string>
+    <string name="save_account_changes">Save changes</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
