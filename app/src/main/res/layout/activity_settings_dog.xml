@@ -144,8 +144,8 @@
                 android:ems="3"
                 android:inputType="number"
                 app:layout_constraintBottom_toBottomOf="@+id/core_temp_setting"
-                app:layout_constraintEnd_toEndOf="@+id/setting_at_low"
-                app:layout_constraintStart_toStartOf="@+id/setting_at_low"
+                app:layout_constraintEnd_toEndOf="@+id/setting_at_high"
+                app:layout_constraintStart_toStartOf="@+id/setting_at_high"
                 app:layout_constraintTop_toTopOf="@+id/core_temp_setting" />
 
             <EditText
@@ -174,18 +174,18 @@
                 tools:layout_editor_absoluteY="472dp" />
 
             <EditText
-                android:id="@+id/setting_at_high"
+                android:id="@+id/setting_at_low"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="3"
                 android:inputType="number"
-                app:layout_constraintBottom_toBottomOf="@+id/setting_at_low"
+                app:layout_constraintBottom_toBottomOf="@+id/setting_at_high"
                 app:layout_constraintEnd_toEndOf="@+id/setting_ct_high"
                 app:layout_constraintStart_toStartOf="@+id/setting_ct_high"
-                app:layout_constraintTop_toTopOf="@+id/setting_at_low" />
+                app:layout_constraintTop_toTopOf="@+id/setting_at_high" />
 
             <EditText
-                android:id="@+id/setting_at_low"
+                android:id="@+id/setting_at_high"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="3"

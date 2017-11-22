@@ -1,9 +1,11 @@
 package com.example.android.k9harnessandroidapp;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -62,8 +64,10 @@ public class DogOverview extends AppCompatActivity {
         rrLow = prefs.getInt(SettingsDog.RESP_RATE_LOW_KEY,0);
         ctHigh = prefs.getInt(SettingsDog.CORE_TEMP_HIGH_KEY,0);
         ctLow = prefs.getInt(SettingsDog.CORE_TEMP_LOW_KEY,0);
-        abtHigh = prefs.getInt(SettingsDog.AB_TEMP_HIGH_KEY,0);
+        abtHigh = prefs.getInt(SettingsDog.AB_TEMP_HIGH_KEY,-11);
+        Toast.makeText(DogOverview.this, ""+abtHigh, Toast.LENGTH_SHORT).show();
         abtLow = prefs.getInt(SettingsDog.AB_TEMP_LOW_KEY,0);
+        //Toast.makeText(DogOverview.this, ""+abtLow, Toast.LENGTH_SHORT).show();
     }
 
     private void initializeGraphs(){
@@ -136,6 +140,52 @@ public class DogOverview extends AppCompatActivity {
         rrSeries.appendData(new DataPoint(seconds, rr), true, MAX_DATA_POINTS);
         ctSeries.appendData(new DataPoint(seconds, ct), true, MAX_DATA_POINTS);
         abTSeries.appendData(new DataPoint(seconds, abt), true, MAX_DATA_POINTS);
+
+        if (hr > hrHigh) {
+            hrSeries.setColor(Color.RED);
+        }
+        else if (hr < hrLow) {
+            hrSeries.setColor(Color.rgb(255,165,0)); //orange
+        }
+        else {
+            hrSeries.setColor(Color.rgb(0,100,0)); //dark green
+        }
+
+
+        if (rr > rrHigh) {
+            rrSeries.setColor(Color.RED);
+        }
+        else if (rr < rrLow) {
+            rrSeries.setColor(Color.rgb(255,165,0));
+        }
+        else {
+            rrSeries.setColor(Color.rgb(0,100,0));
+        }
+
+
+        if (ct > ctHigh) {
+            ctSeries.setColor(Color.RED);
+        }
+        else if (ct < ctLow) {
+            ctSeries.setColor(Color.rgb(255,165,0));
+        }
+        else {
+            ctSeries.setColor(Color.rgb(0,100,0));
+        }
+
+
+        if (abt > abtHigh) {
+            Toast.makeText(DogOverview.this, ""+abtHigh, Toast.LENGTH_SHORT).show();
+            abTSeries.setColor(Color.RED);
+        }
+        else if (abt < abtLow) {
+            abTSeries.setColor(Color.rgb(255,165,0));
+        }
+        else {
+            abTSeries.setColor(Color.rgb(0,100,0));
+        }
+
+
 
         hrGraph.addSeries(hrSeries);
         rrGraph.addSeries(rrSeries);
