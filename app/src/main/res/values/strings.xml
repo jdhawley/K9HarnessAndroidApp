@@ -27,4 +27,6 @@
     <string name="thermometer_image_description">Thermometer</string>
     <string name="lungs_image_description">Lungs</string>
     <string name="data_point_button_text">Data Point</string>
+    <string name="title_activity_rest_example">RestExampleActivity</string>
+    <string name="action_settings">Settings</string>
 </resources>
