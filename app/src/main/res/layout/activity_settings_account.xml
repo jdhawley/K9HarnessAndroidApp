@@ -6,4 +6,100 @@
     android:layout_height="match_parent"
     tools:context="com.example.android.k9harnessandroidapp.SettingsAccount">
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/Account_settings"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TableLayout
+        android:id="@+id/tableLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="185dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/text_current_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="24dp"
+                android:text="@string/current_password"
+                android:textAlignment="textEnd" />
+
+            <EditText
+                android:id="@+id/current_password_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPassword" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/text_new_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="24dp"
+                android:text="@string/new_password"
+                android:textAlignment="viewEnd" />
+
+            <EditText
+                android:id="@+id/new_password_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPassword" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/text_verify_new_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="24dp"
+                android:text="@string/verify_password"
+                android:textAlignment="viewEnd" />
+
+            <EditText
+                android:id="@+id/verify_new_password_field"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textPassword" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/button_submit_account_settings_changes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="1"
+                android:text="@string/save_account_changes" />
+        </TableRow>
+
+    </TableLayout>
+
 </android.support.constraint.ConstraintLayout>
