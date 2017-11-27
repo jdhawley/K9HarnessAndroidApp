@@ -7,6 +7,7 @@ import android.view.View;
 
 
 public class MainActivity extends AppCompatActivity {
+    private SQLiteHelper myDB;
 
 
 
@@ -14,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        myDB = new SQLiteHelper(this);
     }
 
     public void goToSettingsMenu(View view) {
