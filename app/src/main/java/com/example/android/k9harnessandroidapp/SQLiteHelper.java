@@ -277,4 +277,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         String query = "SELECT AmbientTemperature FROM SessionTick WHERE SessionID=?";
         return db.rawQuery(query, new String[]{ Integer.toString(sessionID) });
     }
+
+    public Cursor getAllSessionData(){
+        SQLiteDatabase db = getWritableDatabase();
+
+        return db.rawQuery("SELECT HeartRate, RespiratoryRate, CoreTemperature, AmbientTemperature, AbdominalTemperature " +
+                "FROM SessionTick " +
+                "WHERE SessionID=?", new String[]{ Integer.toString(sessionID) });
+    }
 }
