@@ -14,6 +14,8 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.util.Random;
 
 public class DogOverview extends AppCompatActivity {
+    private SQLiteHelper db;
+
     private int seconds = 0;
     private int secondsIncrementer = 1;
 
@@ -42,10 +44,10 @@ public class DogOverview extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dog_overview);
-
         initializeHighLowVals();
-
         initializeGraphs();
+
+        db = new SQLiteHelper(this);
     }
 
     //TODO: NOT SURE IF THIS DOES ANYTHING YET, BUT WILL BE NEEDED IN FUTURE WHEN LAYOUT IS DIFFERENT
@@ -133,8 +135,16 @@ public class DogOverview extends AppCompatActivity {
         int hr = data[0];
         int rr = data[1];
         int ct = data[2];
-        //int amt = data[3];  // this value is ignored because it is not used at this time
+        int amt = data[3];
         int abt = data[4];
+
+        if(db.duringSession()){
+            db.addDataTick(hr, rr, ct, amt, abt);
+        }
+        else{
+            //TODO: Find the id for the dog being displayed instead of having this hardcoded.
+            db.beginSession(1);
+        }
 
         hrSeries.appendData(new DataPoint(seconds, hr), true, MAX_DATA_POINTS);
         rrSeries.appendData(new DataPoint(seconds, rr), true, MAX_DATA_POINTS);
