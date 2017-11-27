@@ -116,7 +116,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         sessionTick = 1;
 
         if(TEST_DATABASE_MESSAGES){
-            Toast.makeText(context, "A session with dog " + Integer.toString(dogID) + " started.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Session " + sessionID + " has started with dog " + Integer.toString(dogID), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -258,7 +258,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         long success = db.insert("SessionTick", null, content);
 
         if (success == -1) {
-            Toast.makeText(context, "Error adding data point", Toast.LENGTH_SHORT).show();
+            String data = hr + ":" + rr + ":" + ct + ":" + amt + ":" + abt + "#";
+            Toast.makeText(context, "Error adding " + data, Toast.LENGTH_SHORT).show();
             return;
         }
 
