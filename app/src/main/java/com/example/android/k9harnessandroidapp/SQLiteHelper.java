@@ -14,6 +14,7 @@ import android.widget.Toast;
 public class SQLiteHelper extends SQLiteOpenHelper {
     private boolean TEST_DATABASE_MESSAGES = true;
 
+    private SQLiteDatabase db;
     private Context context;
     private int sessionID = -1;
     private int sessionTick;
@@ -24,6 +25,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public SQLiteHelper(Context ctx) {
         super(ctx, DATABASE_NAME, null, VERSION);
         context = ctx;
+
+        //TODO: Put this in it's own thread.
+        db = getWritableDatabase();
 
         // Uncomment the line below to update the database in the event of a schema change.
         // onUpgrade(getWritableDatabase(), 1, 1);
@@ -74,7 +78,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     private void insertTestValues() {
         addHandler("Test", "Handler");
 
-        SQLiteDatabase db = getReadableDatabase();
         Cursor result = db.rawQuery("SELECT HandlerID FROM Handler ORDER BY HandlerID ASC", null);
         result.moveToFirst();
 
@@ -97,8 +100,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             Toast.makeText(context, "Please close the current session before starting a new one.", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        SQLiteDatabase db = getWritableDatabase();
 
         String query = "SELECT HandlerID FROM Dog WHERE DogID=? ORDER BY DogID ASC";
         Cursor result = db.rawQuery(query, new String[]{Integer.toString(dogID)});
@@ -140,8 +141,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     private int getMostRecentSessionID() {
-        SQLiteDatabase db = getReadableDatabase();
-
         Cursor results = db.rawQuery("SELECT * FROM Session ORDER BY SessionID DESC LIMIT 1", null);
         results.moveToFirst();
         int mostRecentSessionID = results.getInt(0);
@@ -152,7 +151,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     //TODO: Check to make sure a session is open for the relevant functions
 
     public void addDog(String name, int handlerID) {
-        SQLiteDatabase db = getWritableDatabase();
         ContentValues content = new ContentValues();
 
         content.put("Name", name);
@@ -172,7 +170,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public void addHandler(String firstName, String lastName) {
-        SQLiteDatabase db = getWritableDatabase();
         ContentValues content = new ContentValues();
 
         content.put("FirstName", firstName);
@@ -192,20 +189,14 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getAllDogs(){
-        SQLiteDatabase db = getReadableDatabase();
-
         return db.rawQuery("SELECT * FROM Dog ORDER BY DogID ASC", null);
     }
 
     public Cursor getAllHandlers(){
-        SQLiteDatabase db = getReadableDatabase();
-
         return db.rawQuery("SELECT * FROM Handler ORDER BY HandlerID ASC", null);
     }
 
     public void removeDog(int dogID){
-        SQLiteDatabase db = getWritableDatabase();
-
         String table = "Dog";
         String whereClause = "DogID=?";
         String[] whereArgs = new String[] { Integer.toString(dogID) };
@@ -222,8 +213,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public void removeHandler(int handlerID){
-        SQLiteDatabase db = getWritableDatabase();
-
         String table = "Handler";
         String whereClause = "HandlerID=?";
         String[] whereArgs = new String[] { Integer.toString(handlerID) };
@@ -245,7 +234,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             return;
         }
 
-        SQLiteDatabase db = getWritableDatabase();
         ContentValues content = new ContentValues();
 
         content.put("SessionID", sessionID);
@@ -272,9 +260,20 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getAllAmbientTemps(){
-        SQLiteDatabase db = getWritableDatabase();
-
         String query = "SELECT AmbientTemperature FROM SessionTick WHERE SessionID=?";
         return db.rawQuery(query, new String[]{ Integer.toString(sessionID) });
+    }
+
+    public Cursor getAllSessionData(){
+        String query = "SELECT HeartRate, RespiratoryRate, CoreTemperature, AmbientTemperature, " +
+                "AbdominalTemperature FROM SessionTick WHERE SessionID=?";
+        return db.rawQuery(query, new String[]{ Integer.toString(sessionID) });
+    }
+
+    //TODO: Test this query
+    public Cursor getMostRecentDataTick(){
+        String query = "SELECT HeartRate, RespiratoryRate, CoreTemperature, AmbientTemperature, " +
+                "AbdominalTemperature FROM SessionTick ORDER BY SessionID DESC, SessionTick DESC LIMIT 1";
+        return db.rawQuery(query, null);
     }
 }
