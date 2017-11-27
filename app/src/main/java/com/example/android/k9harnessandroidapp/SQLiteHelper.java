@@ -271,5 +271,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         }
     }
 
-    //TODO: Add query for getting average ambient temperature
+    public Cursor getAllAmbientTemps(){
+        SQLiteDatabase db = getWritableDatabase();
+
+        String query = "SELECT AmbientTemperature FROM SessionTick WHERE SessionID=?";
+        return db.rawQuery(query, new String[]{ Integer.toString(sessionID) });
+    }
 }
