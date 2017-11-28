@@ -23,6 +23,14 @@ public class DogDTO implements Serializable {
 
     private Double heartrate;
 
+    private Double lowcoretemp;
+
+    private Double lowrespiratoryrate;
+
+    private Double lowabtemp;
+
+    private Double lowheartrate;
+
     private Double maxcoretemp;
 
     private Double maxrespiratoryrate;
@@ -113,6 +121,36 @@ public class DogDTO implements Serializable {
 
     public void setMaxheartrate(Double maxheartrate) {
         this.maxheartrate = maxheartrate;
+    }
+
+    public Double getLoworetemp() { return lowcoretemp; }
+
+    public void setLowcoretemp(Double lowcoretemp) {
+        this.lowcoretemp = lowcoretemp;
+    }
+
+    public Double getLowrespiratoryrate() {
+        return lowrespiratoryrate;
+    }
+
+    public void setLowrespiratoryrate(Double lowrespiratoryrate) {
+        this.lowrespiratoryrate = lowrespiratoryrate;
+    }
+
+    public Double getLowabtemp() {
+        return lowabtemp;
+    }
+
+    public void setLowabtemp(Double lowabtemp) {
+        this.maxabtemp = lowabtemp;
+    }
+
+    public Double getLowheartrate() {
+        return lowheartrate;
+    }
+
+    public void setLowheartrate(Double lowheartrate) {
+        this.lowheartrate = lowheartrate;
     }
 
     public Long getOwnsId() {

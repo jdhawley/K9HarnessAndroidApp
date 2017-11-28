@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- opening a subscreen of settings -->
+    <PreferenceScreen
+        android:key="button_account_settings_key"
+        android:title="@string/Account_settings"
+        android:persistent="false">
+        <EditTextPreference
+            android:defaultValue="edit_password"
+            android:key="edit_password"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Edit text preference" />
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:key="button_dog_settings_key"
+        android:title="@string/Dog_Settings"
+        android:persistent="false"></PreferenceScreen>
+
+    <PreferenceScreen
+        android:key="button_notification_settings_key"
+        android:title="@string/Notification_Settings"
+        android:persistent="false"></PreferenceScreen>
+
+    <PreferenceScreen
+        android:key="button_device_settings_key"
+        android:title="@string/Device_Settings"
+        android:persistent="false"></PreferenceScreen>
+
+</PreferenceScreen>

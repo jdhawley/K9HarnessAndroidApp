@@ -7,6 +7,35 @@
     <string name="Bluetooth_Settings">Bluetooth Setttings</string>
     <string name="title_activity_login">Sign in</string>
 
+    <!-- Strings related to Dog Settings -->
+    <string name="threshold_Settings">Threshold Settings</string>
+    <string name="threshold_high">High</string>
+    <string name="threshold_low">Low</string>
+    <string name="heart_rate">Heart Rate</string>
+    <string name="respiratory_rate">Resp. Rate</string>
+    <string name="abdominal_temp">Ab Temp.</string>
+    <string name="core_temp">Core Temp.</string>
+
+    <!-- Strings related to Account Settings -->
+    <string name="password_setting_title">Password</string>
+    <string name="password_setting_hint">Change your password</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="verify_password">Verify password</string>
+    <string name="save_account_changes">Save changes</string>
+
+    <!-- Strings related to Notification Settings -->
+    <string name="title_notification_settings">Notification Settings</string>
+    <string name="description_notification_settings">Notify me when:</string>
+    <string name="heart_rate_high_switch">Heart Rate high</string>
+    <string name="heart_rate_low_switch">Heart Rate low</string>
+    <string name="resp_rate_high_switch">Resp. Rate high</string>
+    <string name="resp_rate_low_switch">Resp. Rate low</string>
+    <string name="core_temp_high_switch">Core Temp. high</string>
+    <string name="core_temp_low_switch">Core Temp. low</string>
+    <string name="ab_temp_high_switch">Ab. Temp. high</string>
+    <string name="ab_temp_low_switch">Ab. Temp. low</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password (optional)</string>
