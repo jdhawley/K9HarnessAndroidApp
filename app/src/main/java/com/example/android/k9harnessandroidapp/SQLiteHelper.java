@@ -263,6 +263,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             return;
         }
 
+        sessionTick += 1;
+
         if(TEST_DATABASE_MESSAGES){
             String data = hr + ":" + rr + ":" + ct + ":" + amt + ":" + abt + "#";
             Toast.makeText(context, data + " inserted successfully", Toast.LENGTH_SHORT).show();
