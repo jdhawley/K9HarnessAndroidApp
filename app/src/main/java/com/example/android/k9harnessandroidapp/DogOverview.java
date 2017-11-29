@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -14,6 +13,8 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import java.util.Random;
 
 public class DogOverview extends AppCompatActivity {
+    private SQLiteHelper db;
+
     private int seconds = 0;
     private int secondsIncrementer = 1;
 
@@ -42,10 +43,10 @@ public class DogOverview extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dog_overview);
-
         initializeHighLowVals();
-
         initializeGraphs();
+
+        db = new SQLiteHelper(this);
     }
 
     //TODO: NOT SURE IF THIS DOES ANYTHING YET, BUT WILL BE NEEDED IN FUTURE WHEN LAYOUT IS DIFFERENT
@@ -65,9 +66,7 @@ public class DogOverview extends AppCompatActivity {
         ctHigh = prefs.getInt(SettingsDog.CORE_TEMP_HIGH_KEY,0);
         ctLow = prefs.getInt(SettingsDog.CORE_TEMP_LOW_KEY,0);
         abtHigh = prefs.getInt(SettingsDog.AB_TEMP_HIGH_KEY,-11);
-        //Toast.makeText(DogOverview.this, ""+abtHigh, Toast.LENGTH_SHORT).show();
         abtLow = prefs.getInt(SettingsDog.AB_TEMP_LOW_KEY,0);
-        //Toast.makeText(DogOverview.this, ""+abtLow, Toast.LENGTH_SHORT).show();
     }
 
     private void initializeGraphs(){
@@ -133,8 +132,14 @@ public class DogOverview extends AppCompatActivity {
         int hr = data[0];
         int rr = data[1];
         int ct = data[2];
-        //int amt = data[3];  // this value is ignored because it is not used at this time
+        int amt = data[3];
         int abt = data[4];
+
+        if(!db.duringSession()) {
+            //TODO: Find the id for the dog being displayed instead of having this hardcoded.
+            db.beginSession(1);
+        }
+        db.addDataTick(hr, rr, ct, amt, abt);
 
         hrSeries.appendData(new DataPoint(seconds, hr), true, MAX_DATA_POINTS);
         rrSeries.appendData(new DataPoint(seconds, rr), true, MAX_DATA_POINTS);
@@ -175,7 +180,6 @@ public class DogOverview extends AppCompatActivity {
 
 
         if (abt > abtHigh) {
-            Toast.makeText(DogOverview.this, ""+abtHigh, Toast.LENGTH_SHORT).show();
             abTSeries.setColor(Color.RED);
         }
         else if (abt < abtLow) {
