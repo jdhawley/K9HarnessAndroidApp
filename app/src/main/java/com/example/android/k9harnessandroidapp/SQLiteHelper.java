@@ -12,7 +12,7 @@ import android.widget.Toast;
  */
 
 public class SQLiteHelper extends SQLiteOpenHelper {
-    private boolean TEST_DATABASE_MESSAGES = true;
+    private boolean TEST_DATABASE_MESSAGES = false;
 
     private Context context;
     private int sessionID = -1;
