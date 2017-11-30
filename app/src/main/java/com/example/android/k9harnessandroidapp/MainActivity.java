@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public SQLiteHelper myDB;
     public int val = 0;
+    private boolean loggedIn = false;
 
     public Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -38,16 +39,23 @@ public class MainActivity extends AppCompatActivity {
         myDB = new SQLiteHelper(this);
         myDB.beginSession(1); //test dog and test handler input
         startReceivingData();
+        goToSettingsMenu();
+        finish();
     }
 
-    public void goToSettingsMenu(View view) {
+    public void goToSettingsMenu() {
         Intent goToSettingsMenuIntent = new Intent(this, SettingsTypeMenu.class);
         startActivity(goToSettingsMenuIntent);
     }
 
+    public void goToLoginPage() {
+        Intent goToLoginPageIntent = new Intent(this,LoginActivity.class);
+        startActivity(goToLoginPageIntent);
+    }
+
 
     public void startReceivingData() {
-        DataProcessingRunnable r = new DataProcessingRunnable();
+        DataProcessingRunnable r = new DataProcessingRunnable(this);
         r.initRunnable(myDB,handler);
         Thread inputDataThread = new Thread(r);
         inputDataThread.start();

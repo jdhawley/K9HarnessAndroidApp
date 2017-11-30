@@ -1,8 +1,13 @@
 package com.example.android.k9harnessandroidapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 
 import android.os.Handler;
+import android.util.Log;
+
+import java.util.Date;
 
 
 /**
@@ -10,9 +15,14 @@ import android.os.Handler;
  */
 
 public class DataProcessingRunnable implements Runnable {
+    private String TAG = "DataProcessRunnable";
     private Handler handler;
     private SQLiteHelper myDB;
+    private Context context;
 
+    public DataProcessingRunnable(Context ctx){
+        context = ctx;
+    }
     /* Convert ADC value to degrees Fahrenheit */
     public double convertTemp(double rawValue) {
         double temp = 1023.0 / rawValue - 1.0;
@@ -101,7 +111,16 @@ public class DataProcessingRunnable implements Runnable {
             at = (int) abdominalTemp;
             ct = calculateCoreTemp(abdominalTemp, ambientTemp, chestTemp, avgAmbient);
             myDB.addDataTick(hr,rr,ct,(int)ambientTemp,at);
+            SharedPreferences settings = context.getSharedPreferences("DatabaseSettings",Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            int val  = settings.getInt("SessionID", -1);
+            if (val != -1) {
+                val++;
+            }
+            editor.putInt("SessionID", val);
+            editor.commit();
             handler.sendEmptyMessage(0);
+            //Log.d(TAG, "STILL RUNNING!");
         }
     }
 }

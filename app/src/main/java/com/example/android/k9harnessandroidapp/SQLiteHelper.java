@@ -2,18 +2,21 @@ package com.example.android.k9harnessandroidapp;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
+import android.util.Log;
+import java.util.Date;
 
 /**
  * Created by Jon on 11/20/17 for the K9 Dog Collar Project.
  */
 
 public class SQLiteHelper extends SQLiteOpenHelper {
-    private boolean TEST_DATABASE_MESSAGES = false;
+    private boolean TEST_DATABASE_MESSAGES = true;
 
+    private SQLiteDatabase db;
     private Context context;
     private int sessionID = -1;
     private int sessionTick;
@@ -24,6 +27,11 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public SQLiteHelper(Context ctx) {
         super(ctx, DATABASE_NAME, null, VERSION);
         context = ctx;
+
+        setSessionID();
+
+        //TODO: Put this in it's own thread.
+        db = getWritableDatabase();
 
         // Uncomment the line below to update the database in the event of a schema change.
         // onUpgrade(getWritableDatabase(), 1, 1);
@@ -71,10 +79,25 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         insertTestValues();
     }
 
+    private void setSessionID(){
+        SharedPreferences settings = context.getSharedPreferences("DatabaseSettings", 0);
+        String timestamp = settings.getString("latest_timestamp", "01/01/2000");
+        Log.d("Timestamp", timestamp);
+        Date date = new Date(timestamp);
+
+        if(date.before(new Date())){
+            sessionID = -1;
+        }
+        else{
+            sessionID = settings.getInt("sessionID", -1);
+        }
+
+        Log.d("SQLiteHelper", "SessionID:" + Integer.toString(sessionID));
+    }
+
     private void insertTestValues() {
         addHandler("Test", "Handler");
 
-        SQLiteDatabase db = getReadableDatabase();
         Cursor result = db.rawQuery("SELECT HandlerID FROM Handler ORDER BY HandlerID ASC", null);
         result.moveToFirst();
 
@@ -94,11 +117,9 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     public void beginSession(int dogID) {
         if (duringSession()) {
-            Toast.makeText(context, "Please close the current session before starting a new one.", Toast.LENGTH_SHORT).show();
+            Log.d("Session", "Attempted to start a new session before closing the old one.");
             return;
         }
-
-        SQLiteDatabase db = getWritableDatabase();
 
         String query = "SELECT HandlerID FROM Dog WHERE DogID=? ORDER BY DogID ASC";
         Cursor result = db.rawQuery(query, new String[]{Integer.toString(dogID)});
@@ -115,23 +136,33 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         sessionID = getMostRecentSessionID();
         sessionTick = 1;
 
+        saveSessionIDToPreferences();
+
         if(TEST_DATABASE_MESSAGES){
-            Toast.makeText(context, "Session " + sessionID + " has started with dog " + Integer.toString(dogID), Toast.LENGTH_SHORT).show();
+            Log.d("Session", "Session " + sessionID + " has started with dog " + Integer.toString(dogID));
         }
+    }
+
+    private void saveSessionIDToPreferences(){
+        SharedPreferences settings = context.getSharedPreferences("DatabaseSettings", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("sessionID", sessionID);
+        editor.commit();
     }
 
     public void endSession() {
         if (!duringSession()) {
-            String string = "Please start a session before trying to close.";
-            Toast.makeText(context, string, Toast.LENGTH_SHORT).show();
+            Log.d("Session", "Attempted to close a session while no session was occurring.");
             return;
         }
 
         sessionID = -1;
         sessionTick = -1;
 
+        saveSessionIDToPreferences();
+
         if(TEST_DATABASE_MESSAGES){
-            Toast.makeText(context, "The current session has been closed.", Toast.LENGTH_SHORT).show();
+            Log.d("Session", "Session closed.");
         }
     }
 
@@ -140,8 +171,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     private int getMostRecentSessionID() {
-        SQLiteDatabase db = getReadableDatabase();
-
         Cursor results = db.rawQuery("SELECT * FROM Session ORDER BY SessionID DESC LIMIT 1", null);
         results.moveToFirst();
         int mostRecentSessionID = results.getInt(0);
@@ -152,14 +181,13 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     //TODO: Check to make sure a session is open for the relevant functions
 
     public void addDog(String name, int handlerID) {
-        SQLiteDatabase db = getWritableDatabase();
         ContentValues content = new ContentValues();
 
         content.put("Name", name);
         content.put("HandlerID", handlerID);
         long success = db.insert("Dog", null, content);
         if (success == -1) {
-            Toast.makeText(context, "Error adding dog", Toast.LENGTH_SHORT).show();
+            Log.e("Database", "Error adding dog");
             return;
         }
         if(TEST_DATABASE_MESSAGES){
@@ -167,19 +195,18 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             result.moveToFirst();
             int dogID = result.getInt(0);
             result.close();
-            Toast.makeText(context, "Dog " + Integer.toString(dogID) + " added successfully", Toast.LENGTH_SHORT).show();
+            Log.d("Database", "Dog " + Integer.toString(dogID) + " added successfully");
         }
     }
 
     public void addHandler(String firstName, String lastName) {
-        SQLiteDatabase db = getWritableDatabase();
         ContentValues content = new ContentValues();
 
         content.put("FirstName", firstName);
         content.put("LastName", lastName);
         long success = db.insert("Handler", null, content);
         if (success == -1) {
-            Toast.makeText(context, "Error adding handler", Toast.LENGTH_SHORT).show();
+            Log.e("Database", "Error adding handler");
             return;
         }
         if(TEST_DATABASE_MESSAGES){
@@ -187,65 +214,56 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             result.moveToFirst();
             int handlerID = result.getInt(0);
             result.close();
-            Toast.makeText(context, "Handler " + Integer.toString(handlerID) + " added successfully", Toast.LENGTH_SHORT).show();
+            Log.d("Database", "Handler " + Integer.toString(handlerID) + " added successfully");
         }
     }
 
-    public Cursor getAllDogs(){
-        SQLiteDatabase db = getReadableDatabase();
-
-        return db.rawQuery("SELECT * FROM Dog ORDER BY DogID ASC", null);
-    }
-
-    public Cursor getAllHandlers(){
-        SQLiteDatabase db = getReadableDatabase();
-
-        return db.rawQuery("SELECT * FROM Handler ORDER BY HandlerID ASC", null);
-    }
-
-    public void removeDog(int dogID){
-        SQLiteDatabase db = getWritableDatabase();
-
-        String table = "Dog";
-        String whereClause = "DogID=?";
-        String[] whereArgs = new String[] { Integer.toString(dogID) };
-        int rowsAffected = db.delete(table, whereClause, whereArgs);
-
-        if(TEST_DATABASE_MESSAGES){
-            if(rowsAffected == 1){
-                Toast.makeText(context, "Dog " + Integer.toString(dogID) + " removed from the database", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Toast.makeText(context, "A dog with ID: " + Integer.toString(dogID) + " was not found in the database.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    public void removeHandler(int handlerID){
-        SQLiteDatabase db = getWritableDatabase();
-
-        String table = "Handler";
-        String whereClause = "HandlerID=?";
-        String[] whereArgs = new String[] { Integer.toString(handlerID) };
-        int rowsAffected = db.delete(table, whereClause, whereArgs);
-
-        if(TEST_DATABASE_MESSAGES){
-            if(rowsAffected == 1){
-                Toast.makeText(context, "Handler " + Integer.toString(handlerID) + " removed from the database", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Toast.makeText(context, "A handler with ID: " + Integer.toString(handlerID) + " was not found in the database.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+//    public Cursor getAllDogs(){
+//        return db.rawQuery("SELECT * FROM Dog ORDER BY DogID ASC", null);
+//    }
+//
+//    public Cursor getAllHandlers(){
+//        return db.rawQuery("SELECT * FROM Handler ORDER BY HandlerID ASC", null);
+//    }
+//
+//    public void removeDog(int dogID){
+//        String table = "Dog";
+//        String whereClause = "DogID=?";
+//        String[] whereArgs = new String[] { Integer.toString(dogID) };
+//        int rowsAffected = db.delete(table, whereClause, whereArgs);
+//
+//        if(TEST_DATABASE_MESSAGES){
+//            if(rowsAffected == 1){
+//                Toast.makeText(context, "Dog " + Integer.toString(dogID) + " removed from the database", Toast.LENGTH_SHORT).show();
+//            }
+//            else{
+//                Toast.makeText(context, "A dog with ID: " + Integer.toString(dogID) + " was not found in the database.", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
+//
+//    public void removeHandler(int handlerID){
+//        String table = "Handler";
+//        String whereClause = "HandlerID=?";
+//        String[] whereArgs = new String[] { Integer.toString(handlerID) };
+//        int rowsAffected = db.delete(table, whereClause, whereArgs);
+//
+//        if(TEST_DATABASE_MESSAGES){
+//            if(rowsAffected == 1){
+//                Toast.makeText(context, "Handler " + Integer.toString(handlerID) + " removed from the database", Toast.LENGTH_SHORT).show();
+//            }
+//            else{
+//                Toast.makeText(context, "A handler with ID: " + Integer.toString(handlerID) + " was not found in the database.", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
 
     public void addDataTick(int hr, int rr, int ct, int amt, int abt) {
         if(sessionID == -1){
-            Toast.makeText(context, "Can't add a data tick without opening a session first.", Toast.LENGTH_SHORT).show();
+            Log.e("DogOverview", "Attempted to add data tick without open session");
             return;
         }
 
-        SQLiteDatabase db = getWritableDatabase();
         ContentValues content = new ContentValues();
 
         content.put("SessionID", sessionID);
@@ -259,7 +277,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         if (success == -1) {
             String data = hr + ":" + rr + ":" + ct + ":" + amt + ":" + abt + "#";
-            Toast.makeText(context, "Error adding " + data, Toast.LENGTH_SHORT).show();
+            Log.e("Database", "Error adding " + data);
             return;
         }
 
@@ -267,22 +285,25 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         if(TEST_DATABASE_MESSAGES){
             String data = hr + ":" + rr + ":" + ct + ":" + amt + ":" + abt + "#";
-            Toast.makeText(context, data + " inserted successfully", Toast.LENGTH_SHORT).show();
+            Log.d("Database", data + " inserted successfully");
         }
     }
 
     public Cursor getAllAmbientTemps(){
-        SQLiteDatabase db = getWritableDatabase();
-
         String query = "SELECT AmbientTemperature FROM SessionTick WHERE SessionID=?";
         return db.rawQuery(query, new String[]{ Integer.toString(sessionID) });
     }
 
     public Cursor getAllSessionData(){
-        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT HeartRate, RespiratoryRate, CoreTemperature, AmbientTemperature, " +
+                "AbdominalTemperature FROM SessionTick WHERE SessionID=? ORDER BY SessionTick ASC";
+        return db.rawQuery(query, new String[]{ Integer.toString(sessionID) });
+    }
 
-        return db.rawQuery("SELECT HeartRate, RespiratoryRate, CoreTemperature, AmbientTemperature, AbdominalTemperature " +
-                "FROM SessionTick " +
-                "WHERE SessionID=?", new String[]{ Integer.toString(sessionID) });
+    //TODO: Test this query
+    public Cursor getMostRecentDataTick(){
+        String query = "SELECT HeartRate, RespiratoryRate, CoreTemperature, AmbientTemperature, " +
+                "AbdominalTemperature FROM SessionTick ORDER BY SessionID DESC, SessionTick DESC LIMIT 1";
+        return db.rawQuery(query, null);
     }
 }
