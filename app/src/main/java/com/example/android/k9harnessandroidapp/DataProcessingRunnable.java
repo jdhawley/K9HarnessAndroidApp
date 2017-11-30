@@ -113,10 +113,14 @@ public class DataProcessingRunnable implements Runnable {
             myDB.addDataTick(hr,rr,ct,(int)ambientTemp,at);
             SharedPreferences settings = context.getSharedPreferences("DatabaseSettings",Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = settings.edit();
-            editor.putString("latest_timestamp",(new Date()).toString());
+            int val  = settings.getInt("SessionID", -1);
+            if (val != -1) {
+                val++;
+            }
+            editor.putInt("SessionID", val);
             editor.commit();
             handler.sendEmptyMessage(0);
-            Log.d(TAG, "STILL RUNNING!");
+            //Log.d(TAG, "STILL RUNNING!");
         }
     }
 }

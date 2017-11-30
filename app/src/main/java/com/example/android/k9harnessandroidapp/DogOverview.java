@@ -17,7 +17,7 @@ public class DogOverview extends AppCompatActivity {
     private SQLiteHelper db;
 
     private int seconds = 0;
-    private int secondsIncrementer = 10;
+    private int secondsIncrementer = 1;
 
     private LineGraphSeries<DataPoint> hrSeries = new LineGraphSeries<>();
     private LineGraphSeries<DataPoint> rrSeries = new LineGraphSeries<>();
