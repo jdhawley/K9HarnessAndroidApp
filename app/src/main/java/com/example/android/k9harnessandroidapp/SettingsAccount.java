@@ -17,6 +17,7 @@ import java.util.Set;
 //TODO: SET PASSWORD REQS... find out what DB can support!!
 public class SettingsAccount extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
