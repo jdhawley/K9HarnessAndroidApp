@@ -3,6 +3,7 @@ package com.example.android.k9harnessandroidapp;
 import android.database.Cursor;
 
 import android.os.Handler;
+import android.util.Log;
 
 
 /**
@@ -10,6 +11,7 @@ import android.os.Handler;
  */
 
 public class DataProcessingRunnable implements Runnable {
+    private String TAG = "DataProcessRunnable";
     private Handler handler;
     private SQLiteHelper myDB;
 
@@ -102,6 +104,7 @@ public class DataProcessingRunnable implements Runnable {
             ct = calculateCoreTemp(abdominalTemp, ambientTemp, chestTemp, avgAmbient);
             myDB.addDataTick(hr,rr,ct,(int)ambientTemp,at);
             handler.sendEmptyMessage(0);
+            Log.d(TAG, "STILL RUNNING!");
         }
     }
 }

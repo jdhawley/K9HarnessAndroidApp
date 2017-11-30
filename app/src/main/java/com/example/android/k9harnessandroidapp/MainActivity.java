@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public SQLiteHelper myDB;
     public int val = 0;
+    private boolean loggedIn = false;
 
     public Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -45,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
     public void goToSettingsMenu() {
         Intent goToSettingsMenuIntent = new Intent(this, SettingsTypeMenu.class);
         startActivity(goToSettingsMenuIntent);
+    }
+
+    public void goToLoginPage() {
+        Intent goToLoginPageIntent = new Intent(this,LoginActivity.class);
+        startActivity(goToLoginPageIntent);
     }
 
 
