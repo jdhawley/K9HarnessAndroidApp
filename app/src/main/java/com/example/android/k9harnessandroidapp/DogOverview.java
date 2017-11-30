@@ -124,22 +124,22 @@ public class DogOverview extends AppCompatActivity {
         return intData;
     }
 
-    public void addDataPoint(View view){
+    public void addDataPoint(int hr, int rr,int ct,int amt,int abt){
         // TODO: Implement functionality to read actual data instead of random generation.
-        String dp = generateDataPoint();
-        int[] data = processDataString(dp);
+        //String dp = generateDataPoint();
+        //int[] data = processDataString(dp);
 
-        int hr = data[0];
-        int rr = data[1];
-        int ct = data[2];
-        int amt = data[3];
-        int abt = data[4];
+        //hr = data[0];
+        //rr = data[1];
+        //ct = data[2];
+        //amt = data[3];
+        //abt = data[4];
 
-        if(!db.duringSession()) {
+        //if(!db.duringSession()) {
             //TODO: Find the id for the dog being displayed instead of having this hardcoded.
-            db.beginSession(1);
-        }
-        db.addDataTick(hr, rr, ct, amt, abt);
+          //  db.beginSession(1);
+        //}
+        //db.addDataTick(hr, rr, ct, amt, abt);
 
         hrSeries.appendData(new DataPoint(seconds, hr), true, MAX_DATA_POINTS);
         rrSeries.appendData(new DataPoint(seconds, rr), true, MAX_DATA_POINTS);

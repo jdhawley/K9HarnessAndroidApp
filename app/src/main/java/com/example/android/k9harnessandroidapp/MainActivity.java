@@ -1,5 +1,6 @@
 package com.example.android.k9harnessandroidapp;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Handler;
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -48,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
         r.initRunnable(myDB,handler);
         Thread inputDataThread = new Thread(r);
         inputDataThread.start();
+
+        ////Intent intent = new Intent(this, InputIntentService.class);
+        //intent.putExtra(myDB, handler);
+        //startService(intent);
     }
 
 
