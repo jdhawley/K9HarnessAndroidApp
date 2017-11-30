@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void startReceivingData() {
-        DataProcessingRunnable r = new DataProcessingRunnable();
+        DataProcessingRunnable r = new DataProcessingRunnable(this);
         r.initRunnable(myDB,handler);
         Thread inputDataThread = new Thread(r);
         inputDataThread.start();
