@@ -58,4 +58,8 @@
     <string name="data_point_button_text">Data Point</string>
     <string name="title_activity_rest_example">RestExampleActivity</string>
     <string name="action_settings">Settings</string>
+
+    <!-- Strings in the REST example -->
+    <string name="dog_value">[value]</string>
+    <string name="action_refresh">Refresh</string>
 </resources>

@@ -124,4 +124,12 @@ public class DogResource {
         dogService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+    @GetMapping("/dogs/name/{name}")
+    @Timed
+    public ResponseEntity<DogDTO> getDogByName(@PathVariable String name) {
+        log.debug("REST request to get Dog : {}", name);
+        DogDTO dogDTO = dogService.findOneByName(name);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(dogDTO));
+    }
 }

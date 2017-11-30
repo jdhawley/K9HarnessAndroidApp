@@ -39,7 +39,8 @@ package="com.example.android.k9harnessandroidapp">
     <activity
         android:name="com.example.android.k9harnessandroidapp.RestExampleActivity"
         android:label="@string/title_activity_rest_example"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:exported="true" >
     </activity>
 </application>
 </manifest>
