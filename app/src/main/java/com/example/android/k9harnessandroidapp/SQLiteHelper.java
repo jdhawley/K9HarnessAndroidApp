@@ -2,10 +2,15 @@ package com.example.android.k9harnessandroidapp;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
+import java.util.Date;
+
+import java.time.LocalDateTime;
+import java.time.Month;
 
 /**
  * Created by Jon on 11/20/17 for the K9 Dog Collar Project.
@@ -25,6 +30,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public SQLiteHelper(Context ctx) {
         super(ctx, DATABASE_NAME, null, VERSION);
         context = ctx;
+
+        setSessionID();
 
         //TODO: Put this in it's own thread.
         db = getWritableDatabase();
@@ -75,6 +82,16 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         insertTestValues();
     }
 
+    private void setSessionID(){
+        SharedPreferences settings = context.getSharedPreferences("DatabaseSettings", 0);
+        String timestamp = settings.getString("latest_timestamp", "0/0/0 0:0:0");
+        Date date = new Date(timestamp);
+
+        if(date.before(new Date())){
+            1
+        }
+    }
+
     private void insertTestValues() {
         addHandler("Test", "Handler");
 
@@ -116,9 +133,18 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         sessionID = getMostRecentSessionID();
         sessionTick = 1;
 
+        saveSessionIDToPreferences();
+
         if(TEST_DATABASE_MESSAGES){
             Toast.makeText(context, "Session " + sessionID + " has started with dog " + Integer.toString(dogID), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void saveSessionIDToPreferences(){
+        SharedPreferences settings = context.getSharedPreferences("DatabaseSettings", 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("sessionID", sessionID);
+        editor.commit();
     }
 
     public void endSession() {
@@ -130,6 +156,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         sessionID = -1;
         sessionTick = -1;
+
+        saveSessionIDToPreferences();
 
         if(TEST_DATABASE_MESSAGES){
             Toast.makeText(context, "The current session has been closed.", Toast.LENGTH_SHORT).show();
@@ -266,7 +294,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     public Cursor getAllSessionData(){
         String query = "SELECT HeartRate, RespiratoryRate, CoreTemperature, AmbientTemperature, " +
-                "AbdominalTemperature FROM SessionTick WHERE SessionID=?";
+                "AbdominalTemperature FROM SessionTick WHERE SessionID=? ORDER BY SessionTick ASC";
         return db.rawQuery(query, new String[]{ Integer.toString(sessionID) });
     }
 
