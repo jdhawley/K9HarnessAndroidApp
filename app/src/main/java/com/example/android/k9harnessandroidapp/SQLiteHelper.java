@@ -17,7 +17,7 @@ import java.time.Month;
  */
 
 public class SQLiteHelper extends SQLiteOpenHelper {
-    private boolean TEST_DATABASE_MESSAGES = true;
+    private boolean TEST_DATABASE_MESSAGES = false;
 
     private SQLiteDatabase db;
     private Context context;

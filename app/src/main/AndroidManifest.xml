@@ -28,11 +28,14 @@
         <activity android:name=".SettingsBluetooth" />
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login" />
+            android:label="@string/title_activity_login">
+
+        </activity>
         <activity android:name=".DogList" />
         <activity android:name=".MeasurementInDepth" />
         <activity android:name=".SettingsNotifications" />
         <activity android:name=".DogOverview"/>
+        <service android:name=".InputIntentService"/>
     </application>
 
 </manifest>
