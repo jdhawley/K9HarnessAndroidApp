@@ -39,13 +39,19 @@ public class MainActivity extends AppCompatActivity {
         myDB = new SQLiteHelper(this);
         myDB.beginSession(1); //test dog and test handler input
         startReceivingData();
-        goToSettingsMenu();
-        finish();
+        //goToSettingsMenu();
+        goToDogOverViewNoButton();
+        //finish();
     }
 
     public void goToSettingsMenu() {
         Intent goToSettingsMenuIntent = new Intent(this, SettingsTypeMenu.class);
         startActivity(goToSettingsMenuIntent);
+    }
+
+    public void goToDogOverViewNoButton() {
+        Intent goToDogOverViewNoButtonIntent = new Intent(this, DogOverview.class);
+        startActivity(goToDogOverViewNoButtonIntent);
     }
 
     public void goToLoginPage() {

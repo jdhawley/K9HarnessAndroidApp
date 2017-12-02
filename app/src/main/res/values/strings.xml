@@ -56,4 +56,8 @@
     <string name="thermometer_image_description">Thermometer</string>
     <string name="lungs_image_description">Lungs</string>
     <string name="data_point_button_text">Data Point</string>
+
+
+    <!--Strings in nav bar -->
+    <string name="Log_Out">Log Out</string>
 </resources>
