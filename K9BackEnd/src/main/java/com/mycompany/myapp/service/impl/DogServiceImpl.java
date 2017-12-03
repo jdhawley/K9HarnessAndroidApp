@@ -83,4 +83,18 @@ public class DogServiceImpl implements DogService{
         log.debug("Request to delete Dog : {}", id);
         dogRepository.delete(id);
     }
+
+
+    /**
+     *  Get one dog by name.
+     *
+     *  @param name the name of the entity
+     *  @return the entity
+     */
+    @Override
+    public DogDTO findOneByName(String name) {
+        log.debug("Request to get Dog : {}", name);
+        Dog dog = dogRepository.findOneByName(name);
+        return dogMapper.toDto(dog);
+    }
 }
