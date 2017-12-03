@@ -2,15 +2,13 @@ package com.example.android.k9harnessandroidapp;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-
-import java.util.Random;
 
 public class DogOverview extends AppCompatActivity {
     private SQLiteHelper db;
@@ -29,7 +27,8 @@ public class DogOverview extends AppCompatActivity {
     private GraphView ctGraph;
     private GraphView abtGraph;
 
-    // TODO: Change series color based on value in respect to high/low values
+    //TODO: Get this information from the page instead of hardcoding it.
+    private int dogID = 1;
     private int hrHigh;
     private int hrLow;
     private int rrHigh;
@@ -47,6 +46,7 @@ public class DogOverview extends AppCompatActivity {
         initializeGraphs();
 
         db = new SQLiteHelper(this);
+//        LoadOrStartSession();
     }
 
     //TODO: NOT SURE IF THIS DOES ANYTHING YET, BUT WILL BE NEEDED IN FUTURE WHEN LAYOUT IS DIFFERENT
@@ -112,40 +112,7 @@ public class DogOverview extends AppCompatActivity {
         }
     }
 
-    private int[] processDataString(String dataString){
-        // Clean the "#" off the end of the string and split the values into an array
-        String[] stringData = dataString.replace("#", "").split(":");
-
-        int[] intData = new int[5];
-        for(int i = 0; i < 5; i++){
-            intData[i] = Integer.parseInt(stringData[i]);
-        }
-
-        return intData;
-    }
-
-    public void addDataPoint(int hr, int rr,int ct,int amt,int abt){
-        // TODO: Implement functionality to read actual data instead of random generation.
-        //String dp = generateDataPoint();
-        //int[] data = processDataString(dp);
-
-        //hr = data[0];
-        //rr = data[1];
-        //ct = data[2];
-        //amt = data[3];
-        //abt = data[4];
-
-        //if(!db.duringSession()) {
-            //TODO: Find the id for the dog being displayed instead of having this hardcoded.
-          //  db.beginSession(1);
-        //}
-        //db.addDataTick(hr, rr, ct, amt, abt);
-
-        hrSeries.appendData(new DataPoint(seconds, hr), true, MAX_DATA_POINTS);
-        rrSeries.appendData(new DataPoint(seconds, rr), true, MAX_DATA_POINTS);
-        ctSeries.appendData(new DataPoint(seconds, ct), true, MAX_DATA_POINTS);
-        abTSeries.appendData(new DataPoint(seconds, abt), true, MAX_DATA_POINTS);
-
+    private void updateGraphColors(int hr, int rr, int ct, int abt){
         if (hr > hrHigh) {
             hrSeries.setColor(Color.RED);
         }
@@ -188,9 +155,17 @@ public class DogOverview extends AppCompatActivity {
         else {
             abTSeries.setColor(Color.rgb(0,100,0));
         }
+    }
 
+    public void addDataPoint(int hr, int rr, int ct, int abt){
+        hrSeries.appendData(new DataPoint(seconds, hr), true, MAX_DATA_POINTS);
+        rrSeries.appendData(new DataPoint(seconds, rr), true, MAX_DATA_POINTS);
+        ctSeries.appendData(new DataPoint(seconds, ct), true, MAX_DATA_POINTS);
+        abTSeries.appendData(new DataPoint(seconds, abt), true, MAX_DATA_POINTS);
 
+        updateGraphColors(hr, rr, ct, abt);
 
+        //TODO: Make sure this doesn't add an additional graph line overtop of the previous one each time
         hrGraph.addSeries(hrSeries);
         rrGraph.addSeries(rrSeries);
         ctGraph.addSeries(ctSeries);
@@ -201,13 +176,34 @@ public class DogOverview extends AppCompatActivity {
         seconds += secondsIncrementer;
     }
 
-    private String generateDataPoint(){
-        Random r = new Random();
-        int hr = r.nextInt(41) + 60;
-        int rr = r.nextInt(26) + 10;
-        int ct = r.nextInt(3) + 101;
-        int amt = r.nextInt(3) + 101;
-        int abt = r.nextInt(3) + 101;
-        return hr + ":" + rr + ":" + ct + ":" + amt + ":" + abt + "#";
+//    private void LoadOrStartSession(){
+//        if(!db.duringSession()){
+//            db.beginSession(dogID);
+//            return;
+//        }
+//
+//        Cursor data = db.getAllSessionData();
+//
+//        int hrCol = data.getColumnIndex("HeartRate");
+//        int rrCol = data.getColumnIndex("RespiratoryRate");
+//        int ctCol = data.getColumnIndex("CoreTemperature");
+//        int abtCol = data.getColumnIndex("AbdominalTemperature");
+//
+//        int hr, rr, ct, abt;
+//        while(data.moveToNext()){
+//            hr = data.getInt(hrCol);
+//            rr = data.getInt(rrCol);
+//            ct = data.getInt(ctCol);
+//            abt = data.getInt(abtCol);
+//            addDataPoint(hr, rr, ct, abt);
+//        }
+//    }
+
+    public void beginSession(View view){
+        db.beginSession(dogID);
+    }
+
+    public void endSession(View view){
+        db.endSession();
     }
 }

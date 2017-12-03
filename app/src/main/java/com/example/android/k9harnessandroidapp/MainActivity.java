@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         myDB = new SQLiteHelper(this);
-        myDB.beginSession(1); //test dog and test handler input
         startReceivingData();
         //goToSettingsMenu();
         goToDogOverViewNoButton();
@@ -66,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
         Thread inputDataThread = new Thread(r);
         inputDataThread.start();
 
-        ////Intent intent = new Intent(this, InputIntentService.class);
-        //intent.putExtra(myDB, handler);
-        //startService(intent);
+        //Intent intent = new Intent(this, InputIntentService.class);
+//        intent.putExtra(myDB, handler);
+//        startService(intent);
     }
 
 

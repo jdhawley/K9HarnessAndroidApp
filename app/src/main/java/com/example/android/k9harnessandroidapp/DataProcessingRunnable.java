@@ -111,12 +111,8 @@ public class DataProcessingRunnable implements Runnable {
             at = (int) abdominalTemp;
             ct = calculateCoreTemp(abdominalTemp, ambientTemp, chestTemp, avgAmbient);
             myDB.addDataTick(hr,rr,ct,(int)ambientTemp,at);
-            SharedPreferences settings = context.getSharedPreferences("DatabaseSettings",Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString("latest_timestamp",(new Date()).toString());
-            editor.commit();
             handler.sendEmptyMessage(0);
-            Log.d(TAG, "STILL RUNNING!");
+            //Log.d(TAG, "STILL RUNNING!");
         }
     }
 }
