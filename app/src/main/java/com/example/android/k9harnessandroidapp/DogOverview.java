@@ -1,17 +1,14 @@
 package com.example.android.k9harnessandroidapp;
 
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-
-import java.util.Random;
 
 public class DogOverview extends AppCompatActivity {
     private SQLiteHelper db;
@@ -115,37 +112,6 @@ public class DogOverview extends AppCompatActivity {
         }
     }
 
-    private int[] processDataString(String dataString){
-        // Clean the "#" off the end of the string and split the values into an array
-        String[] stringData = dataString.replace("#", "").split(":");
-
-        int[] intData = new int[5];
-        for(int i = 0; i < 5; i++){
-            intData[i] = Integer.parseInt(stringData[i]);
-        }
-
-        return intData;
-    }
-
-//    public void addTestDataPoint(View view){
-//        // TODO: Implement functionality to read actual data instead of random generation.
-//        String dp = generateDataPoint();
-//        int[] data = processDataString(dp);
-//
-//        int hr = data[0];
-//        int rr = data[1];
-//        int ct = data[2];
-//        int amt = data[3];
-//        int abt = data[4];
-//
-//        if(!db.duringSession()) {
-//            db.beginSession(dogID);
-//        }
-//        db.addDataTick(hr, rr, ct, amt, abt);
-//
-//        addDataPoint(hr, rr, ct, abt);
-//    }
-
     private void updateGraphColors(int hr, int rr, int ct, int abt){
         if (hr > hrHigh) {
             hrSeries.setColor(Color.RED);
@@ -208,16 +174,6 @@ public class DogOverview extends AppCompatActivity {
         updateGraphAxes();
 
         seconds += secondsIncrementer;
-    }
-
-    private String generateDataPoint(){
-        Random r = new Random();
-        int hr = r.nextInt(41) + 60;
-        int rr = r.nextInt(26) + 10;
-        int ct = r.nextInt(3) + 101;
-        int amt = r.nextInt(3) + 101;
-        int abt = r.nextInt(3) + 101;
-        return hr + ":" + rr + ":" + ct + ":" + amt + ":" + abt + "#";
     }
 
 //    private void LoadOrStartSession(){

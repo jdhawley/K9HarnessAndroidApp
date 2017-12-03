@@ -32,7 +32,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         db = getWritableDatabase();
 
         // Uncomment the line below to update the database in the event of a schema change.
-        // onUpgrade(getWritableDatabase(), 1, 1);
+//        onUpgrade(getWritableDatabase(), 1, 1);
     }
 
     @Override
@@ -238,12 +238,5 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         String query = "SELECT HeartRate, RespiratoryRate, CoreTemperature, AmbientTemperature, " +
                 "AbdominalTemperature FROM SessionTick WHERE SessionID=? ORDER BY SessionTick ASC";
         return db.rawQuery(query, new String[]{ Integer.toString(sessionID) });
-    }
-
-    //TODO: Test this query
-    public Cursor getMostRecentDataTick(){
-        String query = "SELECT HeartRate, RespiratoryRate, CoreTemperature, AmbientTemperature, " +
-                "AbdominalTemperature FROM SessionTick ORDER BY SessionID DESC, SessionTick DESC LIMIT 1";
-        return db.rawQuery(query, null);
     }
 }
