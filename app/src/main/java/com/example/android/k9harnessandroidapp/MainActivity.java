@@ -38,13 +38,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         myDB = new SQLiteHelper(this);
         startReceivingData();
-        goToSettingsMenu();
-        finish();
+        //goToSettingsMenu();
+        goToDogOverViewNoButton();
+        //finish();
     }
 
     public void goToSettingsMenu() {
         Intent goToSettingsMenuIntent = new Intent(this, SettingsTypeMenu.class);
         startActivity(goToSettingsMenuIntent);
+    }
+
+    public void goToDogOverViewNoButton() {
+        Intent goToDogOverViewNoButtonIntent = new Intent(this, DogOverview.class);
+        startActivity(goToDogOverViewNoButtonIntent);
     }
 
     public void goToLoginPage() {
