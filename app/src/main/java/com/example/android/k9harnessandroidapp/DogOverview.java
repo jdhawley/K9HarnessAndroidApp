@@ -49,7 +49,7 @@ public class DogOverview extends AppCompatActivity {
         initializeGraphs();
 
         db = new SQLiteHelper(this);
-        LoadOrStartSession();
+//        LoadOrStartSession();
     }
 
     //TODO: NOT SURE IF THIS DOES ANYTHING YET, BUT WILL BE NEEDED IN FUTURE WHEN LAYOUT IS DIFFERENT
@@ -127,24 +127,24 @@ public class DogOverview extends AppCompatActivity {
         return intData;
     }
 
-    public void addTestDataPoint(View view){
-        // TODO: Implement functionality to read actual data instead of random generation.
-        String dp = generateDataPoint();
-        int[] data = processDataString(dp);
-
-        int hr = data[0];
-        int rr = data[1];
-        int ct = data[2];
-        int amt = data[3];
-        int abt = data[4];
-
-        if(!db.duringSession()) {
-            db.beginSession(dogID);
-        }
-        db.addDataTick(hr, rr, ct, amt, abt);
-
-        addDataPoint(hr, rr, ct, abt);
-    }
+//    public void addTestDataPoint(View view){
+//        // TODO: Implement functionality to read actual data instead of random generation.
+//        String dp = generateDataPoint();
+//        int[] data = processDataString(dp);
+//
+//        int hr = data[0];
+//        int rr = data[1];
+//        int ct = data[2];
+//        int amt = data[3];
+//        int abt = data[4];
+//
+//        if(!db.duringSession()) {
+//            db.beginSession(dogID);
+//        }
+//        db.addDataTick(hr, rr, ct, amt, abt);
+//
+//        addDataPoint(hr, rr, ct, abt);
+//    }
 
     private void updateGraphColors(int hr, int rr, int ct, int abt){
         if (hr > hrHigh) {
@@ -220,28 +220,28 @@ public class DogOverview extends AppCompatActivity {
         return hr + ":" + rr + ":" + ct + ":" + amt + ":" + abt + "#";
     }
 
-    private void LoadOrStartSession(){
-        if(!db.duringSession()){
-            db.beginSession(dogID);
-            return;
-        }
-
-        Cursor data = db.getAllSessionData();
-
-        int hrCol = data.getColumnIndex("HeartRate");
-        int rrCol = data.getColumnIndex("RespiratoryRate");
-        int ctCol = data.getColumnIndex("CoreTemperature");
-        int abtCol = data.getColumnIndex("AbdominalTemperature");
-
-        int hr, rr, ct, abt;
-        while(data.moveToNext()){
-            hr = data.getInt(hrCol);
-            rr = data.getInt(rrCol);
-            ct = data.getInt(ctCol);
-            abt = data.getInt(abtCol);
-            addDataPoint(hr, rr, ct, abt);
-        }
-    }
+//    private void LoadOrStartSession(){
+//        if(!db.duringSession()){
+//            db.beginSession(dogID);
+//            return;
+//        }
+//
+//        Cursor data = db.getAllSessionData();
+//
+//        int hrCol = data.getColumnIndex("HeartRate");
+//        int rrCol = data.getColumnIndex("RespiratoryRate");
+//        int ctCol = data.getColumnIndex("CoreTemperature");
+//        int abtCol = data.getColumnIndex("AbdominalTemperature");
+//
+//        int hr, rr, ct, abt;
+//        while(data.moveToNext()){
+//            hr = data.getInt(hrCol);
+//            rr = data.getInt(rrCol);
+//            ct = data.getInt(ctCol);
+//            abt = data.getInt(abtCol);
+//            addDataPoint(hr, rr, ct, abt);
+//        }
+//    }
 
     public void beginSession(View view){
         db.beginSession(dogID);
