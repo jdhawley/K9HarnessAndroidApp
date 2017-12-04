@@ -1,4 +1,4 @@
-package com.example.android.k9harnessandroidapp;
+package com.example.android.k9harnessandroidapp.domain;
 
 /**
  * Created by grc on 11/29/17.

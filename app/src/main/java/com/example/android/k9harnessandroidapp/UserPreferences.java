@@ -21,4 +21,8 @@ public class UserPreferences {
     void setDog(String dog) {
         pref.edit().putString("dog", dog).commit();
     }
+
+    void storeToken(String JWTToken) {
+        pref.edit().putString("JWTToken", JWTToken).commit();
+    }
 }
