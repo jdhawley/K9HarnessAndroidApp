@@ -17,6 +17,9 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 public class SettingsNotifications extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+
+    public static boolean hasChanged = true;
+    public final static String NOTIFICATION_SETTINGS = "NotificationSettings";
     public final static String SWITCH_HEART_RATE_HIGH_KEY = "switch_heart_rate_high_key";
     public final static String SWITCH_HEART_RATE_LOW_KEY = "switch_heart_rate_low_key";
     public final static String SWITCH_RESP_RATE_HIGH_KEY = "switch_resp_rate_high_key";
@@ -119,7 +122,7 @@ public class SettingsNotifications extends AppCompatActivity implements Navigati
     }
 
     private void saveNotificationSetting(String key, boolean value) {
-        SharedPreferences prefs = this.getSharedPreferences("NotificationSettings", MODE_PRIVATE);
+        SharedPreferences prefs = this.getSharedPreferences(NOTIFICATION_SETTINGS, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(key, value);
         editor.apply();
@@ -127,7 +130,7 @@ public class SettingsNotifications extends AppCompatActivity implements Navigati
     }
 
     static public boolean getNotificationSetting(Context context, String key) {
-        SharedPreferences prefs = context.getSharedPreferences("NotificationSettings", MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences(NOTIFICATION_SETTINGS, MODE_PRIVATE);
         return prefs.getBoolean(key, true);
     }
 
