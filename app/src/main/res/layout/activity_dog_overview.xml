@@ -22,8 +22,10 @@
                 layout="@layout/app_bar_main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="131dp" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/hrImage"
@@ -100,7 +102,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvDogName" />
+                app:layout_constraintTop_toBottomOf="@+id/tvDogName"
+                android:layout_marginLeft="8dp" />
 
             <com.jjoe64.graphview.GraphView
                 android:id="@+id/abtGraph"
@@ -109,7 +112,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ctGraph" />
+                app:layout_constraintTop_toBottomOf="@+id/ctGraph"
+                android:layout_marginLeft="8dp" />
 
             <com.jjoe64.graphview.GraphView
                 android:id="@+id/rrGraph"
@@ -118,7 +122,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/hrGraph" />
+                app:layout_constraintTop_toBottomOf="@+id/hrGraph"
+                android:layout_marginLeft="8dp" />
 
             <com.jjoe64.graphview.GraphView
                 android:id="@+id/ctGraph"
@@ -127,7 +132,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rrGraph" />
+                app:layout_constraintTop_toBottomOf="@+id/rrGraph"
+                android:layout_marginLeft="8dp" />
 
             <TextView
                 android:id="@+id/tvDogName"
@@ -141,6 +147,30 @@
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/include" />
+
+            <Button
+                android:id="@+id/beginSessionButton"
+                android:layout_width="193dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="BEGIN SESSION"
+                android:onClick="beginSession"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/abtGraph"
+                android:layout_marginLeft="8dp" />
+
+            <Button
+                android:id="@+id/endSessionButton"
+                android:layout_width="194dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:text="END SESSION"
+                android:onClick="endSession"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/abtGraph"
+                android:layout_marginRight="8dp" />
         </android.support.constraint.ConstraintLayout>
 
     </FrameLayout>
