@@ -1,16 +1,31 @@
 package com.example.android.k9harnessandroidapp;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-public class DogOverview extends AppCompatActivity {
+import java.util.Random;
+
+public class DogOverview extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+    private static final String TAG = "DogOverview";
+
     private SQLiteHelper db;
 
     private int seconds = 0;
@@ -27,8 +42,7 @@ public class DogOverview extends AppCompatActivity {
     private GraphView ctGraph;
     private GraphView abtGraph;
 
-    //TODO: Get this information from the page instead of hardcoding it.
-    private int dogID = 1;
+    // TODO: Change series color based on value in respect to high/low values
     private int hrHigh;
     private int hrLow;
     private int rrHigh;
@@ -42,11 +56,27 @@ public class DogOverview extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dog_overview);
+        setTitle(R.string.Dog_Overview);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+
+
+
         initializeHighLowVals();
         initializeGraphs();
 
         db = new SQLiteHelper(this);
-//        LoadOrStartSession();
     }
 
     //TODO: NOT SURE IF THIS DOES ANYTHING YET, BUT WILL BE NEEDED IN FUTURE WHEN LAYOUT IS DIFFERENT
@@ -112,7 +142,40 @@ public class DogOverview extends AppCompatActivity {
         }
     }
 
-    private void updateGraphColors(int hr, int rr, int ct, int abt){
+    private int[] processDataString(String dataString){
+        // Clean the "#" off the end of the string and split the values into an array
+        String[] stringData = dataString.replace("#", "").split(":");
+
+        int[] intData = new int[5];
+        for(int i = 0; i < 5; i++){
+            intData[i] = Integer.parseInt(stringData[i]);
+        }
+
+        return intData;
+    }
+
+    public void addDataPoint(int hr, int rr,int ct,int amt,int abt){
+        // TODO: Implement functionality to read actual data instead of random generation.
+        //String dp = generateDataPoint();
+        //int[] data = processDataString(dp);
+
+        //hr = data[0];
+        //rr = data[1];
+        //ct = data[2];
+        //amt = data[3];
+        //abt = data[4];
+
+        //if(!db.duringSession()) {
+            //TODO: Find the id for the dog being displayed instead of having this hardcoded.
+          //  db.beginSession(1);
+        //}
+        //db.addDataTick(hr, rr, ct, amt, abt);
+
+        hrSeries.appendData(new DataPoint(seconds, hr), true, MAX_DATA_POINTS);
+        rrSeries.appendData(new DataPoint(seconds, rr), true, MAX_DATA_POINTS);
+        ctSeries.appendData(new DataPoint(seconds, ct), true, MAX_DATA_POINTS);
+        abTSeries.appendData(new DataPoint(seconds, abt), true, MAX_DATA_POINTS);
+
         if (hr > hrHigh) {
             hrSeries.setColor(Color.RED);
         }
@@ -155,17 +218,9 @@ public class DogOverview extends AppCompatActivity {
         else {
             abTSeries.setColor(Color.rgb(0,100,0));
         }
-    }
 
-    public void addDataPoint(int hr, int rr, int ct, int abt){
-        hrSeries.appendData(new DataPoint(seconds, hr), true, MAX_DATA_POINTS);
-        rrSeries.appendData(new DataPoint(seconds, rr), true, MAX_DATA_POINTS);
-        ctSeries.appendData(new DataPoint(seconds, ct), true, MAX_DATA_POINTS);
-        abTSeries.appendData(new DataPoint(seconds, abt), true, MAX_DATA_POINTS);
 
-        updateGraphColors(hr, rr, ct, abt);
 
-        //TODO: Make sure this doesn't add an additional graph line overtop of the previous one each time
         hrGraph.addSeries(hrSeries);
         rrGraph.addSeries(rrSeries);
         ctGraph.addSeries(ctSeries);
@@ -176,34 +231,116 @@ public class DogOverview extends AppCompatActivity {
         seconds += secondsIncrementer;
     }
 
-//    private void LoadOrStartSession(){
-//        if(!db.duringSession()){
-//            db.beginSession(dogID);
-//            return;
-//        }
-//
-//        Cursor data = db.getAllSessionData();
-//
-//        int hrCol = data.getColumnIndex("HeartRate");
-//        int rrCol = data.getColumnIndex("RespiratoryRate");
-//        int ctCol = data.getColumnIndex("CoreTemperature");
-//        int abtCol = data.getColumnIndex("AbdominalTemperature");
-//
-//        int hr, rr, ct, abt;
-//        while(data.moveToNext()){
-//            hr = data.getInt(hrCol);
-//            rr = data.getInt(rrCol);
-//            ct = data.getInt(ctCol);
-//            abt = data.getInt(abtCol);
-//            addDataPoint(hr, rr, ct, abt);
-//        }
-//    }
-
-    public void beginSession(View view){
-        db.beginSession(dogID);
+    private String generateDataPoint(){
+        Random r = new Random();
+        int hr = r.nextInt(41) + 60;
+        int rr = r.nextInt(26) + 10;
+        int ct = r.nextInt(3) + 101;
+        int amt = r.nextInt(3) + 101;
+        int abt = r.nextInt(3) + 101;
+        return hr + ":" + rr + ":" + ct + ":" + amt + ":" + abt + "#";
     }
 
-    public void endSession(View view){
-        db.endSession();
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        Log.e(TAG,"madeittoslectedpg");
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.nav_dog) {
+            Log.e(TAG,"madeITtoDOG");
+            goToSettingsDog();
+            return true;
+            // Handle the camera action
+        } else if (id == R.id.nav_account) {
+            goToSettingsAccount();
+            return true;
+
+        } else if (id == R.id.nav_bluetooth) {
+            goToSettingsBluetooth();
+            return true;
+
+        } else if (id == R.id.nav_notification) {
+            goToSettingsNotification();
+            return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_dog_overview){
+            //goToDogOverview();
+            //DO NOTHING HERE CAUSE ITS THIS ACTIVITY
+            //TODO: CONSIDER SEPERATING XML FILES FOR EACH ACTIVITY
+        }
+        else if (id == R.id.nav_heart_rate){
+            //TODO: nav to heart rate specific page
+        }
+        else if (id == R.id.nav_resp_rate){
+            //TODO: nav to resp rate specific page
+        }
+        else if (id == R.id.nav_core_temp){
+            //TODO: nav to core temp specific page
+        }
+        else if (id == R.id.nav_ab_temp){
+            //TODO: nav to ab temp specific page
+        }
+        else if (id == R.id.nav_logOut) {
+            //TODO: logout function!
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    public void goToSettingsDog() {
+        Intent goToSettingsDogIntent = new Intent(this, SettingsDog.class);
+        startActivity(goToSettingsDogIntent);
+    }
+
+    public void goToSettingsAccount() {
+        Intent goToSettingsAccountIntent = new Intent(this, SettingsAccount.class);
+        startActivity(goToSettingsAccountIntent);
+    }
+
+    public void goToSettingsBluetooth() {
+        Intent goToSettingsBluetoothIntent = new Intent(this, SettingsBluetooth.class);
+        startActivity(goToSettingsBluetoothIntent);
+    }
+
+    public void goToSettingsNotification() {
+        Intent goToSettingsNotificationIntent = new Intent(this, SettingsNotifications.class);
+        startActivity(goToSettingsNotificationIntent);
+    }
+
+
 }
