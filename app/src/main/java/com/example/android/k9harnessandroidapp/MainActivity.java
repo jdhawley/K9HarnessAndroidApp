@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         myDB = new SQLiteHelper(this);
         startReceivingData();
+        //Notifications notify = new Notifications(this);
+        //notify.createNotification("??");
         //goToSettingsMenu();
         goToDogOverViewNoButton();
         finish();
