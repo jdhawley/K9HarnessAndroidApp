@@ -202,7 +202,7 @@ public class SettingsAccount extends AppCompatActivity implements NavigationView
         int id = item.getItemId();
 
         if (id == R.id.nav_dog_overview){
-            goToDogOverview();
+            //goToDogOverview();
             finish();
             //TODO: CONSIDER SEPERATING XML FILES FOR EACH ACTIVITY
         }

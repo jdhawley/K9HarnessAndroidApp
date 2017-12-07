@@ -20,6 +20,7 @@ public class DataProcessingRunnable implements Runnable {
     private Handler handler;
     private SQLiteHelper myDB;
     private Context context;
+    public static boolean isRunning = false;
 
     public DataProcessingRunnable(Context ctx){
         context = ctx;
@@ -54,6 +55,8 @@ public class DataProcessingRunnable implements Runnable {
 
     @Override
     public void run() {
+        isRunning = true;
+
         int hr;
         int rr;
         int at;
