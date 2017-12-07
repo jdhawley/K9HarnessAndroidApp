@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         myDB = new SQLiteHelper(this);
-        myDB.beginSession(1); //test dog and test handler input
         startReceivingData();
         //goToSettingsMenu();
         goToDogOverViewNoButton();
@@ -194,9 +193,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Thread inputDataThread = new Thread(r);
         inputDataThread.start();
 
-        ////Intent intent = new Intent(this, InputIntentService.class);
-        //intent.putExtra(myDB, handler);
-        //startService(intent);
+        //Intent intent = new Intent(this, InputIntentService.class);
+//        intent.putExtra(myDB, handler);
+//        startService(intent);
     }
 
 

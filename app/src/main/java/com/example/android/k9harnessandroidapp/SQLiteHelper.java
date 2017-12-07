@@ -5,32 +5,34 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
+import android.util.Log;
 
 /**
  * Created by Jon on 11/20/17 for the K9 Dog Collar Project.
  */
 
 public class SQLiteHelper extends SQLiteOpenHelper {
-    private boolean TEST_DATABASE_MESSAGES = false;
+    private static boolean TEST_DATABASE_MESSAGES = true;
+    private static boolean isAcceptingData = false;
 
     private SQLiteDatabase db;
-    private Context context;
+    //private Context context;
+    private static int sessionDogID = -1;
     private int sessionID = -1;
-    private int sessionTick;
+    private int sessionTick = -1;
 
     private static final String DATABASE_NAME = "DogHarness.db";
     private static final int VERSION = 1;
 
     public SQLiteHelper(Context ctx) {
         super(ctx, DATABASE_NAME, null, VERSION);
-        context = ctx;
+        //context = ctx;
 
         //TODO: Put this in it's own thread.
         db = getWritableDatabase();
 
         // Uncomment the line below to update the database in the event of a schema change.
-        // onUpgrade(getWritableDatabase(), 1, 1);
+//        onUpgrade(getWritableDatabase(), 1, 1);
     }
 
     @Override
@@ -81,7 +83,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         Cursor result = db.rawQuery("SELECT HandlerID FROM Handler ORDER BY HandlerID ASC", null);
         result.moveToFirst();
 
-        addDog("TestDog", result.getInt(0));
+        addDog("TestDog", result.getInt(result.getColumnIndex("HandlerID")));
         result.close();
 
         beginSession(1);
@@ -95,49 +97,54 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         endSession();
     }
 
-    public void beginSession(int dogID) {
-        if (duringSession()) {
-            Toast.makeText(context, "Please close the current session before starting a new one.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+    private int getHandlerIDByDogID(int dogID){
         String query = "SELECT HandlerID FROM Dog WHERE DogID=? ORDER BY DogID ASC";
         Cursor result = db.rawQuery(query, new String[]{Integer.toString(dogID)});
 
         result.moveToFirst();
-        int handlerID = result.getInt(0);
-        result.close();
+        return result.getInt(result.getColumnIndex("HandlerID"));
+    }
+
+    public static void beginSession(int dogID) {
+        if (isAcceptingData) {
+            Log.e("Session", "Attempted to start a new session before closing the old one.");
+            return;
+        }
+
+        isAcceptingData = true;
+        sessionDogID = dogID;
+    }
+
+    private void createNewSession(int dogID){
+        int handlerID = getHandlerIDByDogID(dogID);
 
         ContentValues content = new ContentValues();
         content.put("DogID", dogID);
         content.put("HandlerID", handlerID);
         db.insert("Session", null, content);
 
+        isAcceptingData = true;
         sessionID = getMostRecentSessionID();
         sessionTick = 1;
 
         if(TEST_DATABASE_MESSAGES){
-            Toast.makeText(context, "Session " + sessionID + " has started with dog " + Integer.toString(dogID), Toast.LENGTH_SHORT).show();
+            Log.d("Session", "Session " + sessionID + " has started with dog " + Integer.toString(dogID));
         }
     }
 
     public void endSession() {
-        if (!duringSession()) {
-            String string = "Please start a session before trying to close.";
-            Toast.makeText(context, string, Toast.LENGTH_SHORT).show();
+        if (!isAcceptingData) {
+            Log.e("Session", "Attempted to close a session while no session was occurring.");
             return;
         }
 
+        isAcceptingData = false;
         sessionID = -1;
         sessionTick = -1;
 
         if(TEST_DATABASE_MESSAGES){
-            Toast.makeText(context, "The current session has been closed.", Toast.LENGTH_SHORT).show();
+            Log.d("Session", "Session closed.");
         }
-    }
-
-    public boolean duringSession() {
-        return sessionID != -1;
     }
 
     private int getMostRecentSessionID() {
@@ -148,8 +155,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return mostRecentSessionID;
     }
 
-    //TODO: Check to make sure a session is open for the relevant functions
-
     public void addDog(String name, int handlerID) {
         ContentValues content = new ContentValues();
 
@@ -157,7 +162,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         content.put("HandlerID", handlerID);
         long success = db.insert("Dog", null, content);
         if (success == -1) {
-            Toast.makeText(context, "Error adding dog", Toast.LENGTH_SHORT).show();
+            Log.e("Database", "Error adding dog");
             return;
         }
         if(TEST_DATABASE_MESSAGES){
@@ -165,7 +170,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             result.moveToFirst();
             int dogID = result.getInt(0);
             result.close();
-            Toast.makeText(context, "Dog " + Integer.toString(dogID) + " added successfully", Toast.LENGTH_SHORT).show();
+            Log.d("Database", "Dog " + Integer.toString(dogID) + " added successfully");
         }
     }
 
@@ -176,7 +181,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         content.put("LastName", lastName);
         long success = db.insert("Handler", null, content);
         if (success == -1) {
-            Toast.makeText(context, "Error adding handler", Toast.LENGTH_SHORT).show();
+            Log.e("Database", "Error adding handler");
             return;
         }
         if(TEST_DATABASE_MESSAGES){
@@ -184,54 +189,19 @@ public class SQLiteHelper extends SQLiteOpenHelper {
             result.moveToFirst();
             int handlerID = result.getInt(0);
             result.close();
-            Toast.makeText(context, "Handler " + Integer.toString(handlerID) + " added successfully", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public Cursor getAllDogs(){
-        return db.rawQuery("SELECT * FROM Dog ORDER BY DogID ASC", null);
-    }
-
-    public Cursor getAllHandlers(){
-        return db.rawQuery("SELECT * FROM Handler ORDER BY HandlerID ASC", null);
-    }
-
-    public void removeDog(int dogID){
-        String table = "Dog";
-        String whereClause = "DogID=?";
-        String[] whereArgs = new String[] { Integer.toString(dogID) };
-        int rowsAffected = db.delete(table, whereClause, whereArgs);
-
-        if(TEST_DATABASE_MESSAGES){
-            if(rowsAffected == 1){
-                Toast.makeText(context, "Dog " + Integer.toString(dogID) + " removed from the database", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Toast.makeText(context, "A dog with ID: " + Integer.toString(dogID) + " was not found in the database.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    public void removeHandler(int handlerID){
-        String table = "Handler";
-        String whereClause = "HandlerID=?";
-        String[] whereArgs = new String[] { Integer.toString(handlerID) };
-        int rowsAffected = db.delete(table, whereClause, whereArgs);
-
-        if(TEST_DATABASE_MESSAGES){
-            if(rowsAffected == 1){
-                Toast.makeText(context, "Handler " + Integer.toString(handlerID) + " removed from the database", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                Toast.makeText(context, "A handler with ID: " + Integer.toString(handlerID) + " was not found in the database.", Toast.LENGTH_SHORT).show();
-            }
+            Log.d("Database", "Handler " + Integer.toString(handlerID) + " added successfully");
         }
     }
 
     public void addDataTick(int hr, int rr, int ct, int amt, int abt) {
-        if(sessionID == -1){
-            Toast.makeText(context, "Can't add a data tick without opening a session first.", Toast.LENGTH_SHORT).show();
+        if(!isAcceptingData){
+            Log.d("DogOverview", "Attempted to add data tick without open session");
             return;
+        }
+
+        if(sessionID == -1){
+            //TODO: Update this so it receives a
+            createNewSession(sessionDogID);
         }
 
         ContentValues content = new ContentValues();
@@ -247,7 +217,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         if (success == -1) {
             String data = hr + ":" + rr + ":" + ct + ":" + amt + ":" + abt + "#";
-            Toast.makeText(context, "Error adding " + data, Toast.LENGTH_SHORT).show();
+            Log.e("Database", "Error adding " + data);
             return;
         }
 
@@ -255,7 +225,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         if(TEST_DATABASE_MESSAGES){
             String data = hr + ":" + rr + ":" + ct + ":" + amt + ":" + abt + "#";
-            Toast.makeText(context, data + " inserted successfully", Toast.LENGTH_SHORT).show();
+            Log.d("Database", data + " inserted successfully");
         }
     }
 
@@ -266,14 +236,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     public Cursor getAllSessionData(){
         String query = "SELECT HeartRate, RespiratoryRate, CoreTemperature, AmbientTemperature, " +
-                "AbdominalTemperature FROM SessionTick WHERE SessionID=?";
+                "AbdominalTemperature FROM SessionTick WHERE SessionID=? ORDER BY SessionTick ASC";
         return db.rawQuery(query, new String[]{ Integer.toString(sessionID) });
-    }
-
-    //TODO: Test this query
-    public Cursor getMostRecentDataTick(){
-        String query = "SELECT HeartRate, RespiratoryRate, CoreTemperature, AmbientTemperature, " +
-                "AbdominalTemperature FROM SessionTick ORDER BY SessionID DESC, SessionTick DESC LIMIT 1";
-        return db.rawQuery(query, null);
     }
 }
