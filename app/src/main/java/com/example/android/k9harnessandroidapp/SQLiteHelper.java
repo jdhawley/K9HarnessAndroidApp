@@ -12,14 +12,14 @@ import android.util.Log;
  */
 
 public class SQLiteHelper extends SQLiteOpenHelper {
-    private static boolean TEST_DATABASE_MESSAGES = true;
+    private static boolean TEST_DATABASE_MESSAGES = false;
     private static boolean isAcceptingData = false;
 
-    private SQLiteDatabase db;
+    private static SQLiteDatabase db;
     //private Context context;
     private static int sessionDogID = -1;
-    private int sessionID = -1;
-    private int sessionTick = -1;
+    private static int sessionID = -1;
+    private static int sessionTick = -1;
 
     private static final String DATABASE_NAME = "DogHarness.db";
     private static final int VERSION = 1;
@@ -125,7 +125,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         isAcceptingData = true;
         sessionID = getMostRecentSessionID();
-        sessionTick = 1;
+        sessionTick = 0;
 
         if(TEST_DATABASE_MESSAGES){
             Log.d("Session", "Session " + sessionID + " has started with dog " + Integer.toString(dogID));
@@ -235,8 +235,17 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getAllSessionData(){
-        String query = "SELECT HeartRate, RespiratoryRate, CoreTemperature, AmbientTemperature, " +
+        if (!isAcceptingData) {
+            Log.e("Database", "Attempted getAllSessionData with closed session");
+            return null;
+        }
+
+        String query = "SELECT SessionTick, HeartRate, RespiratoryRate, CoreTemperature, " +
                 "AbdominalTemperature FROM SessionTick WHERE SessionID=? ORDER BY SessionTick ASC";
         return db.rawQuery(query, new String[]{ Integer.toString(sessionID) });
+    }
+
+    public boolean duringSession() {
+        return isAcceptingData;
     }
 }

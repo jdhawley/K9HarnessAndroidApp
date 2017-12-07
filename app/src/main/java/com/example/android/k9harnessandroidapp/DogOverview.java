@@ -1,9 +1,11 @@
 package com.example.android.k9harnessandroidapp;
 
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.jjoe64.graphview.GraphView;
@@ -12,14 +14,17 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 public class DogOverview extends AppCompatActivity {
     private SQLiteHelper db;
+    private Thread t;
+    private boolean isThreadEnding;
 
-    private int seconds = 0;
+    private int currentTick = -1;
+    //TODO: Implement the secondsIncrementer somewhere
     private int secondsIncrementer = 1;
 
     private LineGraphSeries<DataPoint> hrSeries = new LineGraphSeries<>();
     private LineGraphSeries<DataPoint> rrSeries = new LineGraphSeries<>();
     private LineGraphSeries<DataPoint> ctSeries = new LineGraphSeries<>();
-    private LineGraphSeries<DataPoint> abTSeries = new LineGraphSeries<>();
+    private LineGraphSeries<DataPoint> abtSeries = new LineGraphSeries<>();
 
     private int MAX_DATA_POINTS = 30;
     private GraphView hrGraph;
@@ -27,7 +32,7 @@ public class DogOverview extends AppCompatActivity {
     private GraphView ctGraph;
     private GraphView abtGraph;
 
-    //TODO: Get this information from the page instead of hardcoding it.
+    //TODO: Get the dogID from the page instead of hardcoding it.
     private int dogID = 1;
     private int hrHigh;
     private int hrLow;
@@ -38,6 +43,15 @@ public class DogOverview extends AppCompatActivity {
     private int abtHigh;
     private int abtLow;
 
+    private int hrSessionHigh = -1;
+    private int hrSessionLow = -1;
+    private int rrSessionHigh = -1;
+    private int rrSessionLow = -1;
+    private int ctSessionHigh = -1;
+    private int ctSessionLow = -1;
+    private int abtSessionHigh = -1;
+    private int abtSessionLow = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +60,6 @@ public class DogOverview extends AppCompatActivity {
         initializeGraphs();
 
         db = new SQLiteHelper(this);
-//        LoadOrStartSession();
     }
 
     //TODO: NOT SURE IF THIS DOES ANYTHING YET, BUT WILL BE NEEDED IN FUTURE WHEN LAYOUT IS DIFFERENT
@@ -70,39 +83,53 @@ public class DogOverview extends AppCompatActivity {
     }
 
     private void initializeGraphs(){
-        hrGraph = (GraphView) findViewById(R.id.hrGraph);
-        rrGraph = (GraphView) findViewById(R.id.rrGraph);
-        ctGraph = (GraphView) findViewById(R.id.ctGraph);
-        abtGraph = (GraphView) findViewById(R.id.abtGraph);
-
+        hrGraph = findViewById(R.id.hrGraph);
+        rrGraph = findViewById(R.id.rrGraph);
+        ctGraph = findViewById(R.id.ctGraph);
+        abtGraph = findViewById(R.id.abtGraph);
 
         hrGraph.getViewport().setXAxisBoundsManual(true);
         rrGraph.getViewport().setXAxisBoundsManual(true);
         ctGraph.getViewport().setXAxisBoundsManual(true);
         abtGraph.getViewport().setXAxisBoundsManual(true);
 
+        hrGraph.getViewport().setYAxisBoundsManual(true);
+        rrGraph.getViewport().setYAxisBoundsManual(true);
+        ctGraph.getViewport().setYAxisBoundsManual(true);
+        abtGraph.getViewport().setYAxisBoundsManual(true);
+
+        hrGraph.addSeries(hrSeries);
+        rrGraph.addSeries(rrSeries);
+        ctGraph.addSeries(ctSeries);
+        abtGraph.addSeries(abtSeries);
+
+        hrGraph.getViewport().setScrollable(true);
+        rrGraph.getViewport().setScrollable(true);
+        ctGraph.getViewport().setScrollable(true);
+        abtGraph.getViewport().setScrollable(true);
+
         updateGraphAxes();
     }
 
     private void updateGraphAxes(){
-        if(seconds < 6){
+        if (currentTick < 6) {
             hrGraph.getViewport().setMaxX(6);
             rrGraph.getViewport().setMaxX(6);
             ctGraph.getViewport().setMaxX(6);
             abtGraph.getViewport().setMaxX(6);
         }
         else {
-            hrGraph.getViewport().setMaxX(seconds);
-            rrGraph.getViewport().setMaxX(seconds);
-            ctGraph.getViewport().setMaxX(seconds);
-            abtGraph.getViewport().setMaxX(seconds);
+            hrGraph.getViewport().setMaxX(currentTick);
+            rrGraph.getViewport().setMaxX(currentTick);
+            ctGraph.getViewport().setMaxX(currentTick);
+            abtGraph.getViewport().setMaxX(currentTick);
         }
 
-        if(seconds - MAX_DATA_POINTS >= 0) {
-            hrGraph.getViewport().setMinX((seconds - MAX_DATA_POINTS) + 1);
-            rrGraph.getViewport().setMinX((seconds - MAX_DATA_POINTS) + 1);
-            ctGraph.getViewport().setMinX((seconds - MAX_DATA_POINTS) + 1);
-            abtGraph.getViewport().setMinX((seconds - MAX_DATA_POINTS) + 1);
+        if (currentTick - MAX_DATA_POINTS >= 0) {
+            hrGraph.getViewport().setMinX((currentTick - MAX_DATA_POINTS) + 1);
+            rrGraph.getViewport().setMinX((currentTick - MAX_DATA_POINTS) + 1);
+            ctGraph.getViewport().setMinX((currentTick - MAX_DATA_POINTS) + 1);
+            abtGraph.getViewport().setMinX((currentTick - MAX_DATA_POINTS) + 1);
         }
         else{
             hrGraph.getViewport().setMinX(0);
@@ -110,6 +137,15 @@ public class DogOverview extends AppCompatActivity {
             ctGraph.getViewport().setMinX(0);
             abtGraph.getViewport().setMinX(0);
         }
+
+        hrGraph.getViewport().setMinY(hrSessionLow);
+        hrGraph.getViewport().setMaxY(hrSessionHigh);
+        rrGraph.getViewport().setMinY(rrSessionLow);
+        rrGraph.getViewport().setMaxY(rrSessionHigh);
+        ctGraph.getViewport().setMinY(ctSessionLow);
+        ctGraph.getViewport().setMaxY(ctSessionHigh);
+        abtGraph.getViewport().setMinY(abtSessionLow);
+        abtGraph.getViewport().setMaxY(abtSessionHigh);
     }
 
     private void updateGraphColors(int hr, int rr, int ct, int abt){
@@ -147,63 +183,154 @@ public class DogOverview extends AppCompatActivity {
 
 
         if (abt > abtHigh) {
-            abTSeries.setColor(Color.RED);
+            abtSeries.setColor(Color.RED);
         }
         else if (abt < abtLow) {
-            abTSeries.setColor(Color.rgb(255,165,0));
+            abtSeries.setColor(Color.rgb(255, 165, 0));
         }
         else {
-            abTSeries.setColor(Color.rgb(0,100,0));
+            abtSeries.setColor(Color.rgb(0, 100, 0));
         }
     }
 
-    public void addDataPoint(int hr, int rr, int ct, int abt){
-        hrSeries.appendData(new DataPoint(seconds, hr), true, MAX_DATA_POINTS);
-        rrSeries.appendData(new DataPoint(seconds, rr), true, MAX_DATA_POINTS);
-        ctSeries.appendData(new DataPoint(seconds, ct), true, MAX_DATA_POINTS);
-        abTSeries.appendData(new DataPoint(seconds, abt), true, MAX_DATA_POINTS);
+    private void loadSession() {
+        if (!db.duringSession()) {
+            Log.d("Session", "No current session to load.");
+            return;
+        }
 
-        updateGraphColors(hr, rr, ct, abt);
+        Log.d("DogOverview", "Attempting to load session data");
 
-        //TODO: Make sure this doesn't add an additional graph line overtop of the previous one each time
+        Cursor data = db.getAllSessionData();
+        addDataToGraphs(data);
+    }
+
+    private void updateSessionHighsAndLows(int hr, int rr, int ct, int abt) {
+        if (hrSessionLow == -1) {
+            hrSessionLow = hr;
+            hrSessionHigh = hr + 1;
+        } else {
+            if (hr < hrSessionLow) hrSessionLow = hr;
+            if (hr > hrSessionHigh) hrSessionHigh = hr;
+        }
+
+        if (rrSessionLow == -1) {
+            rrSessionLow = rr;
+            rrSessionHigh = rr + 1;
+        } else {
+            if (rr < rrSessionLow) rrSessionLow = rr;
+            if (rr > rrSessionHigh) rrSessionHigh = rr;
+        }
+
+        if (ctSessionLow == -1) {
+            ctSessionLow = ct;
+            ctSessionHigh = ct + 1;
+        } else {
+            if (ct < ctSessionLow) ctSessionLow = ct;
+            if (ct > ctSessionHigh) ctSessionHigh = ct;
+        }
+
+        if (abtSessionLow == -1) {
+            abtSessionLow = abt;
+            abtSessionHigh = abt + 1;
+        } else {
+            if (abt < abtSessionLow) abtSessionLow = abt;
+            if (abt > abtSessionHigh) abtSessionHigh = abt;
+        }
+
+
+    }
+
+    private void addDataToGraphs(Cursor data) {
+        //TODO: Remove the skipped and added variables
+        int skipped = 0, added = 0;
+        int hr, rr, ct, abt;
+
+        hrGraph.removeAllSeries();
+        rrGraph.removeAllSeries();
+        ctGraph.removeAllSeries();
+        abtGraph.removeAllSeries();
+
+        while (data.moveToNext()) {
+            if (data.getInt(data.getColumnIndex("SessionTick")) < currentTick) {
+                skipped++;
+                continue; //Data point has already been added.
+            }
+
+            hr = data.getInt(data.getColumnIndex("HeartRate"));
+            rr = data.getInt(data.getColumnIndex("RespiratoryRate"));
+            ct = data.getInt(data.getColumnIndex("CoreTemperature"));
+            abt = data.getInt(data.getColumnIndex("AbdominalTemperature"));
+
+            hrSeries.appendData(new DataPoint(currentTick, hr), false, MAX_DATA_POINTS);
+            rrSeries.appendData(new DataPoint(currentTick, rr), false, MAX_DATA_POINTS);
+            ctSeries.appendData(new DataPoint(currentTick, ct), false, MAX_DATA_POINTS);
+            abtSeries.appendData(new DataPoint(currentTick, abt), false, MAX_DATA_POINTS);
+
+            currentTick++;
+            updateGraphColors(hr, rr, ct, abt);
+            updateSessionHighsAndLows(hr, rr, ct, abt);
+            added++;
+        }
+
+        // DO NOT REMOVE THIS SLEEP
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         hrGraph.addSeries(hrSeries);
         rrGraph.addSeries(rrSeries);
         ctGraph.addSeries(ctSeries);
-        abtGraph.addSeries(abTSeries);
+        abtGraph.addSeries(abtSeries);
 
         updateGraphAxes();
 
-        seconds += secondsIncrementer;
+        Log.d("DogOverview", Integer.toString(skipped) + " skipped and " + Integer.toString(added) + " added.");
     }
-
-//    private void LoadOrStartSession(){
-//        if(!db.duringSession()){
-//            db.beginSession(dogID);
-//            return;
-//        }
-//
-//        Cursor data = db.getAllSessionData();
-//
-//        int hrCol = data.getColumnIndex("HeartRate");
-//        int rrCol = data.getColumnIndex("RespiratoryRate");
-//        int ctCol = data.getColumnIndex("CoreTemperature");
-//        int abtCol = data.getColumnIndex("AbdominalTemperature");
-//
-//        int hr, rr, ct, abt;
-//        while(data.moveToNext()){
-//            hr = data.getInt(hrCol);
-//            rr = data.getInt(rrCol);
-//            ct = data.getInt(ctCol);
-//            abt = data.getInt(abtCol);
-//            addDataPoint(hr, rr, ct, abt);
-//        }
-//    }
 
     public void beginSession(View view){
         db.beginSession(dogID);
+        currentTick = 0;
+
+        isThreadEnding = false;
+        t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (!isThreadEnding) {
+                    loadSession();
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        t.start();
     }
 
     public void endSession(View view){
         db.endSession();
+        currentTick = -1;
+
+        hrGraph.removeAllSeries();
+        rrGraph.removeAllSeries();
+        ctGraph.removeAllSeries();
+        abtGraph.removeAllSeries();
+
+        hrSeries = new LineGraphSeries<>();
+        rrSeries = new LineGraphSeries<>();
+        ctSeries = new LineGraphSeries<>();
+        abtSeries = new LineGraphSeries<>();
+
+        hrGraph.addSeries(hrSeries);
+        rrGraph.addSeries(rrSeries);
+        ctGraph.addSeries(ctSeries);
+        abtGraph.addSeries(abtSeries);
+
+        isThreadEnding = true;
     }
 }
