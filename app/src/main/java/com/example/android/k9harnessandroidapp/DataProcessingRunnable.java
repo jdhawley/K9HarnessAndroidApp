@@ -1,5 +1,6 @@
 package com.example.android.k9harnessandroidapp;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -19,6 +20,7 @@ public class DataProcessingRunnable implements Runnable {
     private Handler handler;
     private SQLiteHelper myDB;
     private Context context;
+    public static boolean isRunning = false;
 
     public DataProcessingRunnable(Context ctx){
         context = ctx;
@@ -53,6 +55,8 @@ public class DataProcessingRunnable implements Runnable {
 
     @Override
     public void run() {
+        isRunning = true;
+
         int hr;
         int rr;
         int at;
@@ -61,11 +65,15 @@ public class DataProcessingRunnable implements Runnable {
         double ambientTemp;
         double chestTemp;
 
+        Notifications notify = new Notifications(context);
+        notify.setNotificationsSettings();
+
+
         DataMockup testData = new DataMockup();
         while (true) {
             //wait 10 seconds
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -100,17 +108,19 @@ public class DataProcessingRunnable implements Runnable {
             //int sizeAmbient = listAmbient.size();
 
             Cursor ambientTemps = myDB.getAllAmbientTemps();
-            int numTemps = ambientTemps.getCount();
+            int numTemps = ambientTemps.getCount() + 1; //for current read in val
 
-            int total = 0;
+            double total = ambientTemp;
             while(ambientTemps.moveToNext()){
                 total += ambientTemps.getInt(0);
             }
             //TODO: TEST avgAMBINET VALUES
+
             double avgAmbient = total/(double)numTemps;
             at = (int) abdominalTemp;
             ct = calculateCoreTemp(abdominalTemp, ambientTemp, chestTemp, avgAmbient);
             myDB.addDataTick(hr,rr,ct,(int)ambientTemp,at);
+            notify.createAllNotifications(hr,rr,ct,at);
             handler.sendEmptyMessage(0);
             //Log.d(TAG, "STILL RUNNING!");
         }

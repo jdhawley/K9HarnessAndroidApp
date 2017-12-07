@@ -1,10 +1,20 @@
 package com.example.android.k9harnessandroidapp;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.util.Log;
 import android.view.View;
 
@@ -12,7 +22,9 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-public class DogOverview extends AppCompatActivity {
+public class DogOverview extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+    private static final String TAG = "DogOverview";
+
     private SQLiteHelper db;
     private Thread t;
     private boolean isThreadEnding;
@@ -56,6 +68,20 @@ public class DogOverview extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dog_overview);
+        setTitle(R.string.Dog_Overview);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         initializeHighLowVals();
         initializeGraphs();
 
@@ -148,47 +174,39 @@ public class DogOverview extends AppCompatActivity {
         abtGraph.getViewport().setMaxY(abtSessionHigh);
     }
 
-    private void updateGraphColors(int hr, int rr, int ct, int abt){
+    private void updateGraphColors(int hr, int rr, int ct, int abt) {
         if (hr > hrHigh) {
             hrSeries.setColor(Color.RED);
-        }
-        else if (hr < hrLow) {
-            hrSeries.setColor(Color.rgb(255,165,0)); //orange
-        }
-        else {
-            hrSeries.setColor(Color.rgb(0,100,0)); //dark green
+        } else if (hr < hrLow) {
+            hrSeries.setColor(Color.rgb(255, 165, 0)); //orange
+        } else {
+            hrSeries.setColor(Color.rgb(0, 100, 0)); //dark green
         }
 
 
         if (rr > rrHigh) {
             rrSeries.setColor(Color.RED);
-        }
-        else if (rr < rrLow) {
-            rrSeries.setColor(Color.rgb(255,165,0));
-        }
-        else {
-            rrSeries.setColor(Color.rgb(0,100,0));
+        } else if (rr < rrLow) {
+            rrSeries.setColor(Color.rgb(255, 165, 0));
+        } else {
+            rrSeries.setColor(Color.rgb(0, 100, 0));
         }
 
 
         if (ct > ctHigh) {
             ctSeries.setColor(Color.RED);
-        }
-        else if (ct < ctLow) {
-            ctSeries.setColor(Color.rgb(255,165,0));
-        }
-        else {
-            ctSeries.setColor(Color.rgb(0,100,0));
+        } else if (ct < ctLow) {
+            ctSeries.setColor(Color.rgb(255, 165, 0));
+        } else {
+            ctSeries.setColor(Color.rgb(0, 100, 0));
         }
 
 
         if (abt > abtHigh) {
             abtSeries.setColor(Color.RED);
-        }
-        else if (abt < abtLow) {
+        } else if (abt < abtLow) {
             abtSeries.setColor(Color.rgb(255, 165, 0));
-        }
-        else {
+        } else {
             abtSeries.setColor(Color.rgb(0, 100, 0));
         }
     }
@@ -290,7 +308,7 @@ public class DogOverview extends AppCompatActivity {
         Log.d("DogOverview", Integer.toString(skipped) + " skipped and " + Integer.toString(added) + " added.");
     }
 
-    public void beginSession(View view){
+    public void beginSession(View view) {
         db.beginSession(dogID);
         currentTick = 0;
 
@@ -312,7 +330,17 @@ public class DogOverview extends AppCompatActivity {
         t.start();
     }
 
-    public void endSession(View view){
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    public void endSession(View view) {
         db.endSession();
         currentTick = -1;
 
@@ -333,4 +361,97 @@ public class DogOverview extends AppCompatActivity {
 
         isThreadEnding = true;
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        Log.e(TAG,"madeittoslectedpg");
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.nav_dog) {
+            Log.e(TAG,"madeITtoDOG");
+            goToSettingsDog();
+            return true;
+            // Handle the camera action
+        } else if (id == R.id.nav_account) {
+            goToSettingsAccount();
+            return true;
+
+        } else if (id == R.id.nav_bluetooth) {
+            goToSettingsBluetooth();
+            return true;
+
+        } else if (id == R.id.nav_notification) {
+            goToSettingsNotification();
+            return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_dog_overview){
+            //goToDogOverview();
+            //DO NOTHING HERE CAUSE ITS THIS ACTIVITY
+            //TODO: CONSIDER SEPERATING XML FILES FOR EACH ACTIVITY
+        }
+        else if (id == R.id.nav_heart_rate){
+            //TODO: nav to heart rate specific page
+        }
+        else if (id == R.id.nav_resp_rate){
+            //TODO: nav to resp rate specific page
+        }
+        else if (id == R.id.nav_core_temp){
+            //TODO: nav to core temp specific page
+        }
+        else if (id == R.id.nav_ab_temp){
+            //TODO: nav to ab temp specific page
+        }
+        else if (id == R.id.nav_logOut) {
+            //TODO: logout function!
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    public void goToSettingsDog() {
+        Intent goToSettingsDogIntent = new Intent(this, SettingsDog.class);
+        startActivity(goToSettingsDogIntent);
+    }
+
+    public void goToSettingsAccount() {
+        Intent goToSettingsAccountIntent = new Intent(this, SettingsAccount.class);
+        startActivity(goToSettingsAccountIntent);
+    }
+
+    public void goToSettingsBluetooth() {
+        Intent goToSettingsBluetoothIntent = new Intent(this, SettingsBluetooth.class);
+        startActivity(goToSettingsBluetoothIntent);
+    }
+
+    public void goToSettingsNotification() {
+        Intent goToSettingsNotificationIntent = new Intent(this, SettingsNotifications.class);
+        startActivity(goToSettingsNotificationIntent);
+    }
+
+
 }

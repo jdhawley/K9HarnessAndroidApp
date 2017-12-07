@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/nav_account"
-        android:title="@string/Account_settings"/>
-
-    <item android:id="@+id/nav_dog"
-        android:title="@string/Dog_Settings"/>
-
-    <item android:id="@+id/nav_bluetooth"
-        android:title="@string/Bluetooth_Settings"/>
-
-    <item android:id="@+id/nav_notification"
-        android:title="@string/Notification_Settings"/>
+    <group android:id="@+id/nav_measurement_options">
+        <item
+            android:id="@+id/nav_dog_overview"
+            android:title="@string/Dog_Overview" />
+        <item
+            android:id="@+id/nav_heart_rate"
+            android:title="@string/heart_rate" />
+        <item
+            android:id="@+id/nav_resp_rate"
+            android:title="@string/respiratory_rate_full" />
+        <item
+            android:id="@+id/nav_core_temp"
+            android:title="@string/core_temp_full" />
+        <item
+            android:id="@+id/nav_ab_temp"
+            android:title="@string/abdominal_temp_full" />
+    </group>
 
     <item android:id="@+id/nav_logOut"
         android:title="@string/Log_Out"/>
+
 
 
 </menu>
