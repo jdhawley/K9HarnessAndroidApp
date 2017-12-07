@@ -82,36 +82,37 @@ public class Notifications {
         }
 
         /* HEART RATE NOTIFICATIONS */
-        if (hr > heartRateHighVal){
+        if (hr > heartRateHighVal && notifyHRHigh){
            notificationMessage = notificationMessage + "HR HIGH: "+hr+"\n";
         }
-        else if (hr < heartRateLowVal) {
+        else if (hr < heartRateLowVal && notifyHRLow) {
             notificationMessage = notificationMessage + "HR LOW: "+hr+"\n";
         }
 
         /*RESP RATE NOTIFCATIONS */
-        if (rr > respRateHighVal){
+        if (rr > respRateHighVal && notifyRRHigh){
             notificationMessage = notificationMessage + "RR HIGH: "+rr+"\n";
         }
-        else if (rr < respRateLowVal) {
+        else if (rr < respRateLowVal && notifyHRLow) {
             notificationMessage = notificationMessage + "RR LOW: "+rr+"\n";
         }
 
         /*CORE TEMP NOTIFICATIONS */
-        if (ct > coreTempHighVal){
+        if (ct > coreTempHighVal && notifyCTHigh){
             notificationMessage = notificationMessage + "CT HIGH: "+ct+"\n";
         }
-        else if (ct < coreTempLowVal) {
+        else if (ct < coreTempLowVal && notifyCTLow) {
             notificationMessage = notificationMessage + "CT LOW: "+ct+"\n";
         }
 
         /*AB TEMP NOTIFICATIONS */
-        if (at > abTempHighVal){
+        if (at > abTempHighVal && notifyATHigh){
             notificationMessage = notificationMessage + "AbT HIGH: "+at+"\n";
         }
-        else if (at < coreTempLowVal) {
+        else if (at < abTempLowVal &&  notifyATLow) {
             notificationMessage = notificationMessage + "AbT LOW: "+at+"\n";
         }
+        //TODO: MAKE BETTER NOTIFICATION
         if (!notificationMessage.equals("")){
             createNotification(notificationMessage);
         }
