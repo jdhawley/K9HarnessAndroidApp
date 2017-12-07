@@ -221,7 +221,7 @@ public class SettingsDog extends AppCompatActivity implements NavigationView.OnN
         int id = item.getItemId();
 
         if (id == R.id.nav_dog_overview){
-            goToDogOverview();
+            //goToDogOverview();
             finish();
             //TODO: CONSIDER SEPERATING XML FILES FOR EACH ACTIVITY
         }

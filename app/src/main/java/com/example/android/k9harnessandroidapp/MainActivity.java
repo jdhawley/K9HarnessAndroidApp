@@ -64,7 +64,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         myDB = new SQLiteHelper(this);
-        startReceivingData();
+        if(!DataProcessingRunnable.isRunning){
+            startReceivingData();
+        }
         //Notifications notify = new Notifications(this);
         //notify.createNotification("??");
         //goToSettingsMenu();
