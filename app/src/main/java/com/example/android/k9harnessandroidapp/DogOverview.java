@@ -178,7 +178,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         } else if (hr < hrLow) {
             hrSeries.setColor(Color.rgb(255, 165, 0)); //orange
         } else {
-            hrSeries.setColor(Color.rgb(0, 100, 0)); //dark green
+            hrSeries.setColor(Color.rgb(102, 255, 0)); //dark green
         }
 
 
@@ -187,7 +187,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         } else if (rr < rrLow) {
             rrSeries.setColor(Color.rgb(255, 165, 0));
         } else {
-            rrSeries.setColor(Color.rgb(0, 100, 0));
+            rrSeries.setColor(Color.rgb(102, 255, 0));
         }
 
 
@@ -196,7 +196,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         } else if (ct < ctLow) {
             ctSeries.setColor(Color.rgb(255, 165, 0));
         } else {
-            ctSeries.setColor(Color.rgb(0, 100, 0));
+            ctSeries.setColor(Color.rgb(102, 255, 0));
         }
 
 
@@ -205,7 +205,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         } else if (abt < abtLow) {
             abtSeries.setColor(Color.rgb(255, 165, 0));
         } else {
-            abtSeries.setColor(Color.rgb(0, 100, 0));
+            abtSeries.setColor(Color.rgb(102, 255, 0));
         }
     }
 

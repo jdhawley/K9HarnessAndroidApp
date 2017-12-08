@@ -119,6 +119,8 @@ public class DataProcessingRunnable implements Runnable {
             double avgAmbient = total/(double)numTemps;
             at = (int) abdominalTemp;
             ct = calculateCoreTemp(abdominalTemp, ambientTemp, chestTemp, avgAmbient);
+
+            //DO NOT TOUCH ECE
             myDB.addDataTick(hr,rr,ct,(int)ambientTemp,at);
             notify.createAllNotifications(hr,rr,ct,at);
             handler.sendEmptyMessage(0);
