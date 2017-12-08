@@ -39,4 +39,12 @@ public interface DogService {
      *  @param id the id of the entity
      */
     void delete(Long id);
+
+    /**
+     *  Get the "name" dog.
+     *
+     *  @param name the name of the entity
+     *  @return the entity
+     */
+    DogDTO findOneByName(String name);
 }

@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,7 +31,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.android.k9harnessandroidapp.vm.LoginVM;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.json.JSONObject;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -299,30 +313,51 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private final boolean rememberMe;
+//        private final String targetUrl = "https://10.0.2.2:8080/api/authenticate";
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
+            rememberMe = true;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
 
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+            MultiValueMap<String, List<String>> login = new LinkedMultiValueMap<String, List<String>>();
+            List<String> user = new LinkedList<String>();
+            user.add("admin");
+            List<String> perm = new LinkedList<String>();
+            perm.add("true");
+            login.add("username", user);
+            login.add("password", user);
+            login.add("rememberMe", perm);
+            URI targetUrl = UriComponentsBuilder.fromUriString("https://192.168.1.5:8080/api/authenticate").build().encode().toUri();
+
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
+                Log.d("SENTAUTH", targetUrl.toString());
+                SSLCertificateHandler.nuke();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                final ResponseEntity<LoginVM> authResponse = restTemplate.postForEntity(targetUrl,login, LoginVM.class);
+//                JWTToken response = restTemplate.postForEntity(targetUrl, login, JWTToken.class);
+
+//                JSONObject jsonObject = new JSONObject(authResponse.getBody());
+
+//                JSONObject attributes = jsonObject.getJSONObject("@attributes");
+//                String status = attributes.getString("stat");
+
+                Log.d("LOGINATTEMPT", authResponse.toString());
+
+            } catch (Exception e) {
+                Log.d("SENTAUTHEXCEPTION", e.toString());
                 return false;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
+
 
             // TODO: register the new account here.
             return true;
@@ -345,6 +380,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+
+    }
+    static class JWTToken {
+
+        private String idToken;
+
+        JWTToken(String idToken) {
+            this.idToken = idToken;
+        }
+
+        @JsonProperty("id_token")
+        String getIdToken() {
+            return idToken;
+        }
+
+        void setIdToken(String idToken) {
+            this.idToken = idToken;
         }
     }
 

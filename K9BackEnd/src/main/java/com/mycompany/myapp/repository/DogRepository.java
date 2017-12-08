@@ -16,4 +16,6 @@ public interface DogRepository extends JpaRepository<Dog, Long> {
     @Query("select dog from Dog dog where dog.owns.login = ?#{principal.username}")
     List<Dog> findByOwnsIsCurrentUser();
 
+    Dog findOneByName(String name);
+
 }
