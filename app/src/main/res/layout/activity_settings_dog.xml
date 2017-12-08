@@ -1,211 +1,227 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/dog_settings"
+    android:label="@string/Dog_Settings"
     tools:context="com.example.android.k9harnessandroidapp.SettingsDog">
 
-    <TextView
-        android:id="@+id/dog_settings_title"
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/app_bar_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="131dp" />
+
+        <Button
+            android:id="@+id/button_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="submit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="299dp"
+            android:layout_height="204dp"
+            android:layout_marginTop="128dp"
+            android:stretchColumns="0,1,2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/include">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/threshold_low"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="1"
+                    android:text="@string/threshold_low"
+                    android:textAlignment="center"
+                    app:layout_constraintEnd_toEndOf="@+id/setting_hr_low"
+                    app:layout_constraintStart_toStartOf="@+id/setting_hr_low"
+                    tools:layout_editor_absoluteY="79dp" />
+
+                <TextView
+                    android:id="@+id/threshold_high"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="2"
+                    android:text="@string/threshold_high"
+                    android:textAlignment="center"
+                    tools:layout_editor_absoluteX="291dp"
+                    tools:layout_editor_absoluteY="79dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/heart_rate_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/heart_rate"
+                    app:layout_constraintStart_toStartOf="@+id/resp_rate_setting"
+                    tools:layout_editor_absoluteY="149dp" />
+
+                <EditText
+                    android:id="@+id/setting_hr_low"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="3"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="@+id/heart_rate_setting"
+                    app:layout_constraintEnd_toEndOf="@+id/setting_rr_low"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="@+id/setting_rr_low"
+                    app:layout_constraintTop_toTopOf="@+id/heart_rate_setting" />
+
+                <EditText
+                    android:id="@+id/setting_hr_high"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="3"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="@+id/setting_hr_low"
+                    app:layout_constraintEnd_toEndOf="@+id/threshold_high"
+                    app:layout_constraintStart_toStartOf="@+id/threshold_high"
+                    app:layout_constraintTop_toTopOf="@+id/setting_hr_low" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/resp_rate_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/respiratory_rate"
+                    app:layout_constraintStart_toStartOf="@+id/core_temp_setting"
+                    tools:layout_editor_absoluteY="243dp" />
+
+                <EditText
+                    android:id="@+id/setting_rr_low"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="3"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="@+id/resp_rate_setting"
+                    app:layout_constraintEnd_toEndOf="@+id/setting_ct_low"
+                    app:layout_constraintStart_toStartOf="@+id/setting_ct_low"
+                    app:layout_constraintTop_toTopOf="@+id/resp_rate_setting" />
+
+                <EditText
+                    android:id="@+id/setting_rr_high"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="3"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="@+id/setting_rr_low"
+                    app:layout_constraintEnd_toEndOf="@+id/setting_hr_high"
+                    app:layout_constraintStart_toStartOf="@+id/setting_hr_high"
+                    app:layout_constraintTop_toTopOf="@+id/setting_rr_low" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/core_temp_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/core_temp"
+                    app:layout_constraintStart_toStartOf="@+id/ab_temp_setting"
+                    tools:layout_editor_absoluteY="363dp" />
+
+                <EditText
+                    android:id="@+id/setting_ct_low"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="3"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="@+id/core_temp_setting"
+                    app:layout_constraintEnd_toEndOf="@+id/setting_at_high"
+                    app:layout_constraintStart_toStartOf="@+id/setting_at_high"
+                    app:layout_constraintTop_toTopOf="@+id/core_temp_setting" />
+
+                <EditText
+                    android:id="@+id/setting_ct_high"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="3"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="@+id/setting_ct_low"
+                    app:layout_constraintEnd_toEndOf="@+id/setting_rr_high"
+                    app:layout_constraintStart_toStartOf="@+id/setting_rr_high"
+                    app:layout_constraintTop_toTopOf="@+id/setting_ct_low" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/ab_temp_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/abdominal_temp"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_editor_absoluteY="472dp" />
+
+                <EditText
+                    android:id="@+id/setting_at_low"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="3"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="@+id/setting_at_high"
+                    app:layout_constraintEnd_toEndOf="@+id/setting_ct_high"
+                    app:layout_constraintStart_toStartOf="@+id/setting_ct_high"
+                    app:layout_constraintTop_toTopOf="@+id/setting_at_high" />
+
+                <EditText
+                    android:id="@+id/setting_at_high"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="3"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="@+id/ab_temp_setting"
+                    app:layout_constraintEnd_toStartOf="@+id/setting_at_high"
+                    app:layout_constraintTop_toTopOf="@+id/ab_temp_setting" />
+
+            </TableRow>
+        </TableLayout>
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/Dog_Settings"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        app:menu="@menu/navigation_menu"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        android:layout_gravity="start">
+    </android.support.design.widget.NavigationView>
 
-    <TableLayout
-        android:id="@+id/tableLayout"
-        android:layout_width="299dp"
-        android:layout_height="204dp"
-        android:stretchColumns="0,1,2"
-        tools:layout_editor_absoluteX="44dp"
-        tools:layout_editor_absoluteY="81dp">
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/threshold_low"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="1"
-                android:text="@string/threshold_low"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="@+id/setting_hr_low"
-                app:layout_constraintStart_toStartOf="@+id/setting_hr_low"
-                tools:layout_editor_absoluteY="79dp" />
-
-            <TextView
-                android:id="@+id/threshold_high"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:text="@string/threshold_high"
-                android:textAlignment="center"
-                tools:layout_editor_absoluteX="291dp"
-                tools:layout_editor_absoluteY="79dp" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/heart_rate_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/heart_rate"
-                app:layout_constraintStart_toStartOf="@+id/resp_rate_setting"
-                tools:layout_editor_absoluteY="149dp" />
-
-            <EditText
-                android:id="@+id/setting_hr_low"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="3"
-                android:inputType="number"
-                app:layout_constraintBottom_toBottomOf="@+id/heart_rate_setting"
-                app:layout_constraintEnd_toEndOf="@+id/setting_rr_low"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="@+id/setting_rr_low"
-                app:layout_constraintTop_toTopOf="@+id/heart_rate_setting" />
-
-            <EditText
-                android:id="@+id/setting_hr_high"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="3"
-                android:inputType="number"
-                app:layout_constraintBottom_toBottomOf="@+id/setting_hr_low"
-                app:layout_constraintEnd_toEndOf="@+id/threshold_high"
-                app:layout_constraintStart_toStartOf="@+id/threshold_high"
-                app:layout_constraintTop_toTopOf="@+id/setting_hr_low" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/resp_rate_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/respiratory_rate"
-                app:layout_constraintStart_toStartOf="@+id/core_temp_setting"
-                tools:layout_editor_absoluteY="243dp" />
-
-            <EditText
-                android:id="@+id/setting_rr_low"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="3"
-                android:inputType="number"
-                app:layout_constraintBottom_toBottomOf="@+id/resp_rate_setting"
-                app:layout_constraintEnd_toEndOf="@+id/setting_ct_low"
-                app:layout_constraintStart_toStartOf="@+id/setting_ct_low"
-                app:layout_constraintTop_toTopOf="@+id/resp_rate_setting" />
-
-            <EditText
-                android:id="@+id/setting_rr_high"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="3"
-                android:inputType="number"
-                app:layout_constraintBottom_toBottomOf="@+id/setting_rr_low"
-                app:layout_constraintEnd_toEndOf="@+id/setting_hr_high"
-                app:layout_constraintStart_toStartOf="@+id/setting_hr_high"
-                app:layout_constraintTop_toTopOf="@+id/setting_rr_low" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/core_temp_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/core_temp"
-                app:layout_constraintStart_toStartOf="@+id/ab_temp_setting"
-                tools:layout_editor_absoluteY="363dp" />
-
-            <EditText
-                android:id="@+id/setting_ct_low"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="3"
-                android:inputType="number"
-                app:layout_constraintBottom_toBottomOf="@+id/core_temp_setting"
-                app:layout_constraintEnd_toEndOf="@+id/setting_at_high"
-                app:layout_constraintStart_toStartOf="@+id/setting_at_high"
-                app:layout_constraintTop_toTopOf="@+id/core_temp_setting" />
-
-            <EditText
-                android:id="@+id/setting_ct_high"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="3"
-                android:inputType="number"
-                app:layout_constraintBottom_toBottomOf="@+id/setting_ct_low"
-                app:layout_constraintEnd_toEndOf="@+id/setting_rr_high"
-                app:layout_constraintStart_toStartOf="@+id/setting_rr_high"
-                app:layout_constraintTop_toTopOf="@+id/setting_ct_low" />
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/ab_temp_setting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/abdominal_temp"
-                tools:layout_editor_absoluteX="0dp"
-                tools:layout_editor_absoluteY="472dp" />
-
-            <EditText
-                android:id="@+id/setting_at_low"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="3"
-                android:inputType="number"
-                app:layout_constraintBottom_toBottomOf="@+id/setting_at_high"
-                app:layout_constraintEnd_toEndOf="@+id/setting_ct_high"
-                app:layout_constraintStart_toStartOf="@+id/setting_ct_high"
-                app:layout_constraintTop_toTopOf="@+id/setting_at_high" />
-
-            <EditText
-                android:id="@+id/setting_at_high"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="3"
-                android:inputType="number"
-                app:layout_constraintBottom_toBottomOf="@+id/ab_temp_setting"
-                app:layout_constraintEnd_toStartOf="@+id/setting_at_high"
-                app:layout_constraintTop_toTopOf="@+id/ab_temp_setting" />
-
-        </TableRow>
-    </TableLayout>
-
-    <Button
-        android:id="@+id/button_submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="submit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
-
-</android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.DrawerLayout>

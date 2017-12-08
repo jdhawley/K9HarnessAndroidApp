@@ -16,6 +16,10 @@
     <string name="abdominal_temp">Ab Temp.</string>
     <string name="core_temp">Core Temp.</string>
 
+    <string name="respiratory_rate_full">Respiratory Rate</string>
+    <string name="abdominal_temp_full">Abdominal Temperature</string>
+    <string name="core_temp_full">Core Temperature</string>
+
     <!-- Strings related to Account Settings -->
     <string name="password_setting_title">Password</string>
     <string name="password_setting_hint">Change your password</string>
@@ -56,6 +60,14 @@
     <string name="thermometer_image_description">Thermometer</string>
     <string name="lungs_image_description">Lungs</string>
     <string name="data_point_button_text">Data Point</string>
+    <!--Strings in nav bar -->
+    <string name="Log_Out">Log Out</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
     <string name="title_activity_rest_example">RestExampleActivity</string>
     <string name="action_settings">Settings</string>
 
