@@ -1,5 +1,8 @@
 package com.example.android.k9harnessandroidapp.domain;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -19,6 +22,7 @@ public class Dog {
     private double highAT;
     private double highHR;
     private double highRR;
+    private List<Session> sessionList;
 
     public Dog(String name,
                double lowCT, double lowAT, double lowHR, double lowRR,
@@ -35,6 +39,15 @@ public class Dog {
         this.highAT = highAT;
         this.highHR = highHR;
         this.highRR = highRR;
+        this.sessionList = new ArrayList<Session>();
+    }
+
+    public void addSession(Session s) {
+        this.sessionList.add(s);
+    }
+
+    public List<Session> getSessionList(){
+        return this.sessionList;
     }
 
     public String getName() {
