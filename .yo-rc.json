@@ -1,0 +1,47 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.ua.k9backend"
+    },
+    "jhipsterVersion": "4.11.1",
+    "baseName": "k9backend",
+    "packageName": "com.ua.k9backend",
+    "packageFolder": "com/ua/k9backend",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "hibernateCache": "ehcache",
+    "clusteredHttpSession": false,
+    "websocket": "spring-websocket",
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": "eureka",
+    "buildTool": "gradle",
+    "enableSocialSignIn": false,
+    "enableSwaggerCodegen": true,
+    "jwtSecretKey": "ca05a8bfe9047351c4331c85179fe0249d5ac10e",
+    "clientFramework": "angularX",
+    "useSass": true,
+    "clientPackageManager": "yarn",
+    "applicationType": "monolith",
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "otherModules": [
+      {
+        "name": "generator-jhipster-bootstrap-material-design",
+        "version": "3.5.1"
+      },
+      {
+        "name": "generator-jhipster-swagger-api-first",
+        "version": "1.0.1"
+      },
+      {
+        "name": "generator-jhipster-postgresuuid-converter",
+        "version": "0.2.2"
+      }
+    ],
+    "enableTranslation": false
+  }
+}
