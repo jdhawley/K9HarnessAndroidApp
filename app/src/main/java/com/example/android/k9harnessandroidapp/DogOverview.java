@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -28,8 +29,6 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
     private boolean isThreadEnding;
 
     private int currentTick = -1;
-    //TODO: Implement the secondsIncrementer somewhere
-    private int secondsIncrementer = 1;
 
     private LineGraphSeries<DataPoint> hrSeries = new LineGraphSeries<>();
     private LineGraphSeries<DataPoint> rrSeries = new LineGraphSeries<>();
@@ -178,7 +177,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         } else if (hr < hrLow) {
             hrSeries.setColor(Color.rgb(255, 165, 0)); //orange
         } else {
-            hrSeries.setColor(Color.rgb(0, 100, 0)); //dark green
+            hrSeries.setColor(Color.rgb(102, 255, 0)); //dark green
         }
 
 
@@ -187,7 +186,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         } else if (rr < rrLow) {
             rrSeries.setColor(Color.rgb(255, 165, 0));
         } else {
-            rrSeries.setColor(Color.rgb(0, 100, 0));
+            rrSeries.setColor(Color.rgb(102, 255, 0));
         }
 
 
@@ -196,7 +195,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         } else if (ct < ctLow) {
             ctSeries.setColor(Color.rgb(255, 165, 0));
         } else {
-            ctSeries.setColor(Color.rgb(0, 100, 0));
+            ctSeries.setColor(Color.rgb(102, 255, 0));
         }
 
 
@@ -205,7 +204,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         } else if (abt < abtLow) {
             abtSeries.setColor(Color.rgb(255, 165, 0));
         } else {
-            abtSeries.setColor(Color.rgb(0, 100, 0));
+            abtSeries.setColor(Color.rgb(102, 255, 0));
         }
     }
 
@@ -306,7 +305,18 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         Log.d("DogOverview", Integer.toString(skipped) + " skipped and " + Integer.toString(added) + " added.");
     }
 
-    public void beginSession(View view) {
+    public void changeSessionStatus(View view) {
+        Button btn = findViewById(R.id.sessionChangeButton);
+        if (db.duringSession()) {
+            endSession();
+            btn.setText("BEGIN SESSION");
+        } else {
+            beginSession();
+            btn.setText("END SESSION");
+        }
+    }
+
+    public void beginSession() {
         db.beginSession(dogID);
         currentTick = 0;
 
@@ -338,7 +348,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         }
     }
 
-    public void endSession(View view) {
+    public void endSession() {
         db.endSession();
         currentTick = -1;
 
@@ -451,5 +461,10 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         startActivity(goToSettingsNotificationIntent);
     }
 
-
+    //TODO: Fix labels on the bottom of the graphs
+    //TODO: Add numbers by the symbols
+    //TODO: Give George a list of the data sync stuff I need
+    //TODO: Load session at the beginning when reopening the activity.
+    //TODO: Grey out start/stop session buttons when not being used.
+    //TODO: Specific measurement pages
 }
