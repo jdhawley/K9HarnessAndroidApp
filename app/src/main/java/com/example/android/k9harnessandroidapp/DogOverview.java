@@ -83,6 +83,10 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         initializeGraphs();
 
         db = new SQLiteHelper(this);
+
+        if (db.duringSession()) {
+            beginSession();
+        }
     }
 
     //TODO: NOT SURE IF THIS DOES ANYTHING YET, BUT WILL BE NEEDED IN FUTURE WHEN LAYOUT IS DIFFERENT
@@ -214,7 +218,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
             return;
         }
 
-        Log.d("DogOverview", "Attempting to load session data");
+        Log.d("DogOverview", "Attempting to load session data.");
 
         Cursor data = db.getAllSessionData();
         addDataToGraphs(data);
@@ -257,8 +261,10 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
     }
 
     private void addDataToGraphs(Cursor data) {
-        //TODO: Remove the skipped and added variables
-        int skipped = 0, added = 0;
+        if (data.getCount() == 0) {
+            return;     // Prevents the graphs from disappearing when there is no session data
+        }
+
         int hr, rr, ct, abt;
 
         hrGraph.removeAllSeries();
@@ -268,7 +274,6 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
 
         while (data.moveToNext()) {
             if (data.getInt(data.getColumnIndex("SessionTick")) < currentTick) {
-                skipped++;
                 continue; //Data point has already been added.
             }
 
@@ -285,7 +290,6 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
             currentTick++;
             updateGraphColors(hr, rr, ct, abt);
             updateSessionHighsAndLows(hr, rr, ct, abt);
-            added++;
         }
 
         // DO NOT REMOVE THIS SLEEP
@@ -301,8 +305,6 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         abtGraph.addSeries(abtSeries);
 
         updateGraphAxes();
-
-        Log.d("DogOverview", Integer.toString(skipped) + " skipped and " + Integer.toString(added) + " added.");
     }
 
     public void changeSessionStatus(View view) {
@@ -461,10 +463,9 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         startActivity(goToSettingsNotificationIntent);
     }
 
+    //TODO: Load session at the beginning when reopening the activity.
     //TODO: Fix labels on the bottom of the graphs
     //TODO: Add numbers by the symbols
-    //TODO: Give George a list of the data sync stuff I need
-    //TODO: Load session at the beginning when reopening the activity.
-    //TODO: Grey out start/stop session buttons when not being used.
     //TODO: Specific measurement pages
+    //TODO: Give George a list of the data sync stuff I need
 }
