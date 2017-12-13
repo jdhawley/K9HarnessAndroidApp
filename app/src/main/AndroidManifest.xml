@@ -33,8 +33,6 @@
         <activity android:name=".SettingsNotifications" />
         <activity android:name=".DogOverview" />
 
-        <service android:name=".InputIntentService" />
-
     </application>
 
 </manifest>

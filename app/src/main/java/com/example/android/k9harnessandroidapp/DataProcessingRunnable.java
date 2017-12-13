@@ -124,7 +124,7 @@ public class DataProcessingRunnable implements Runnable {
             myDB.addDataTick(hr,rr,ct,(int)ambientTemp,at);
             notify.createAllNotifications(hr,rr,ct,at);
             handler.sendEmptyMessage(0);
-            //Log.d(TAG, "STILL RUNNING!");
+            Log.d(TAG, "STILL RUNNING!");
         }
     }
 }

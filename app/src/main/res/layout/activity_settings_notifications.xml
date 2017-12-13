@@ -21,7 +21,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.454"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            >
 
             <TableRow
                 android:id="@+id/row_notification_settings_instruction"
@@ -38,7 +39,8 @@
             <TableRow
                 android:id="@+id/row_notification_settings_column_names"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/activity_vertical_margin">
 
                 <Space
                     android:layout_width="wrap_content"
@@ -70,7 +72,8 @@
             <TableRow
                 android:id="@+id/row_notificaiton_settings_heart_rate"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin">
 
                 <TextView
                     android:id="@+id/textView2"
@@ -100,7 +103,8 @@
             <TableRow
                 android:id="@+id/row_notification_settings_resp_rate"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/activity_vertical_margin">
 
                 <TextView
                     android:id="@+id/textView3"
@@ -127,7 +131,8 @@
             <TableRow
                 android:id="@+id/row_notification_settings_core_temp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/activity_vertical_margin">
 
                 <TextView
                     android:id="@+id/textView4"
@@ -183,6 +188,7 @@
             layout="@layout/app_bar_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginVertical="@dimen/activity_vertical_margin"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="0dp" />
     </android.support.constraint.ConstraintLayout>
