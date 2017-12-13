@@ -35,7 +35,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
     private LineGraphSeries<DataPoint> ctSeries = new LineGraphSeries<>();
     private LineGraphSeries<DataPoint> abtSeries = new LineGraphSeries<>();
 
-    private int MAX_DATA_POINTS = 30;
+    private int MAX_DATA_POINTS = 6;
     private GraphView hrGraph;
     private GraphView rrGraph;
     private GraphView ctGraph;
@@ -115,41 +115,47 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         ctGraph = findViewById(R.id.ctGraph);
         abtGraph = findViewById(R.id.abtGraph);
 
-        hrGraph.getViewport().setXAxisBoundsManual(true);
-        rrGraph.getViewport().setXAxisBoundsManual(true);
-        ctGraph.getViewport().setXAxisBoundsManual(true);
-        abtGraph.getViewport().setXAxisBoundsManual(true);
-
         hrGraph.getViewport().setYAxisBoundsManual(true);
         rrGraph.getViewport().setYAxisBoundsManual(true);
         ctGraph.getViewport().setYAxisBoundsManual(true);
         abtGraph.getViewport().setYAxisBoundsManual(true);
+
+        //TODO: Adjust the axes so these values look acceptable
+        hrGraph.getViewport().setMaxY(110);
+        rrGraph.getViewport().setMaxY(35);
+        ctGraph.getViewport().setMaxY(170);
+        abtGraph.getViewport().setMaxY(185);
+
+        hrGraph.getViewport().setMinY(60);
+        rrGraph.getViewport().setMinY(10);
+        ctGraph.getViewport().setMinY(140);
+        abtGraph.getViewport().setMinY(182);
+
+        hrGraph.getViewport().setXAxisBoundsManual(true);
+        rrGraph.getViewport().setXAxisBoundsManual(true);
+        ctGraph.getViewport().setXAxisBoundsManual(true);
+        abtGraph.getViewport().setXAxisBoundsManual(true);
 
         hrGraph.addSeries(hrSeries);
         rrGraph.addSeries(rrSeries);
         ctGraph.addSeries(ctSeries);
         abtGraph.addSeries(abtSeries);
 
-        hrGraph.getViewport().setScrollable(true);
-        rrGraph.getViewport().setScrollable(true);
-        ctGraph.getViewport().setScrollable(true);
-        abtGraph.getViewport().setScrollable(true);
-
         updateGraphAxes();
     }
 
     private void updateGraphAxes(){
         if (currentTick < 6) {
-            hrGraph.getViewport().setMaxX(6);
-            rrGraph.getViewport().setMaxX(6);
-            ctGraph.getViewport().setMaxX(6);
-            abtGraph.getViewport().setMaxX(6);
+            hrGraph.getViewport().setMaxX(5);
+            rrGraph.getViewport().setMaxX(5);
+            ctGraph.getViewport().setMaxX(5);
+            abtGraph.getViewport().setMaxX(5);
         }
         else {
-            hrGraph.getViewport().setMaxX(currentTick);
-            rrGraph.getViewport().setMaxX(currentTick);
-            ctGraph.getViewport().setMaxX(currentTick);
-            abtGraph.getViewport().setMaxX(currentTick);
+            hrGraph.getViewport().setMaxX(currentTick - 1);
+            rrGraph.getViewport().setMaxX(currentTick - 1);
+            ctGraph.getViewport().setMaxX(currentTick - 1);
+            abtGraph.getViewport().setMaxX(currentTick - 1);
         }
 
         if (currentTick - MAX_DATA_POINTS >= 0) {
@@ -165,14 +171,14 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
             abtGraph.getViewport().setMinX(0);
         }
 
-        hrGraph.getViewport().setMinY(hrSessionLow);
-        hrGraph.getViewport().setMaxY(hrSessionHigh);
-        rrGraph.getViewport().setMinY(rrSessionLow);
-        rrGraph.getViewport().setMaxY(rrSessionHigh);
-        ctGraph.getViewport().setMinY(ctSessionLow);
-        ctGraph.getViewport().setMaxY(ctSessionHigh);
-        abtGraph.getViewport().setMinY(abtSessionLow);
-        abtGraph.getViewport().setMaxY(abtSessionHigh);
+//        hrGraph.getViewport().setMinY(hrSessionLow);
+//        hrGraph.getViewport().setMaxY(hrSessionHigh);
+//        rrGraph.getViewport().setMinY(rrSessionLow);
+//        rrGraph.getViewport().setMaxY(rrSessionHigh);
+//        ctGraph.getViewport().setMinY(ctSessionLow);
+//        ctGraph.getViewport().setMaxY(ctSessionHigh);
+//        abtGraph.getViewport().setMinY(abtSessionLow);
+//        abtGraph.getViewport().setMaxY(abtSessionHigh);
     }
 
     private void updateGraphColors(int hr, int rr, int ct, int abt) {
