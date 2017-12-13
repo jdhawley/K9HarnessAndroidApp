@@ -200,6 +200,14 @@ public class Notifications {
         Log.e("Notifications", "!!!!!!!!!!!!!!!!!!!!!!!!");*/
     }
 
+    /* Method that actually creates and sends notification through the notification channel
+
+
+       @params:
+       aMessage: The message that is to be sent via the notification. A combination of measurement
+       names, measurement values, and the High or Low classifier, depending on the user's settings.
+     */
+
     public void createNotification(String aMessage) {
         final int NOTIFY_ID = 1002;
         

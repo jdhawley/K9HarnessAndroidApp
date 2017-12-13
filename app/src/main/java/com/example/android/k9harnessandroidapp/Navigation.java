@@ -10,6 +10,11 @@ import android.content.Intent;
 public class Navigation {
 
 
+    /* Navigation methods used throughout the application.
+     * Method names explain the location that the function sends the user to
+     *
+     * @params: context is passed in through the parameter, usually just as 'this'.
+     */
     public void goToSettingsDog(Context ctx) {
         Intent goToSettingsDogIntent = new Intent(ctx, SettingsDog.class);
         ctx.startActivity(goToSettingsDogIntent);
