@@ -30,6 +30,9 @@
 
     <!-- Strings related to Notification Settings -->
     <string name="title_notification_settings">Notification Settings</string>
+    <string name="notify_one">Notify on</string>
+    <string name="high">High</string>
+    <string name="low">Low</string>
     <string name="description_notification_settings">Notify me when:</string>
     <string name="heart_rate_high_switch">Heart Rate high</string>
     <string name="heart_rate_low_switch">Heart Rate low</string>
