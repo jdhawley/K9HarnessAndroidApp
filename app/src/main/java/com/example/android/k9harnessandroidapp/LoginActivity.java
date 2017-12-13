@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +32,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.android.k9harnessandroidapp.Service.DogService;
+import com.example.android.k9harnessandroidapp.domain.LoginVM;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,8 +101,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
-        DogService serv = new DogService();
-        serv.run();
     }
 
     private void populateAutoComplete() {
@@ -176,11 +180,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
         }
+//          else if (!isEmailValid(email)) {
+//            mEmailView.setError(getString(R.string.error_invalid_email));
+//            focusView = mEmailView;
+//            cancel = true;
+//        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -299,7 +304,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, String> {
 
         private final String mEmail;
         private final String mPassword;
@@ -310,39 +315,39 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected String doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
+            JWTToken token;
 
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+                final String url = "http://192.168.1.5:9000/api/authenticate";
+                RestTemplate restTemplate = new RestTemplate();
+                LoginVM account = new LoginVM();
+                account.setUsername(mEmail);
+                account.setPassword(mPassword);
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
+                token = restTemplate.postForObject(url, account, JWTToken.class);
+            } catch (Exception e) {
+                mPasswordView.setError(getString(R.string.error_wrong_password));
+                Log.e("EXCEPTION", e.getLocalizedMessage());
+                return null;
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
+            return token.getIdToken();
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+        public void onPostExecute(String token) {
+            if(token == null) {
+                mAuthTask = null;
+                showProgress(false);
+                mPasswordView.setError(getString(R.string.error_invalid_password));
+                return;
             }
+            setAccountJWT(token);
+            showProgress(false);
+            setContentView(R.layout.activity_main);
         }
 
         @Override
@@ -350,12 +355,42 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
+
+
     }
 
     void saveAccountName(String username){
         SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("currentUsername", username);
+    }
+
+    void setAccountJWT(String token){
+        SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("id_token", token);
+    }
+
+
+    static class JWTToken {
+        private String idToken;
+
+        JWTToken(String idToken) {
+            this.idToken = idToken;
+        }
+
+        @JsonProperty("id_token")
+        String getIdToken() {
+            return idToken;
+        }
+
+        void setIdToken(String idToken) {
+            this.idToken = idToken;
+        }
+
+        public JWTToken() {
+
+        }
     }
 }
 
