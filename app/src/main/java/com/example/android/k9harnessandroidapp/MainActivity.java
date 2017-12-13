@@ -48,11 +48,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        setTitle(R.string.Harness_Connection);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -64,17 +65,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View header=navigationView.getHeaderView(0);
+/*View view=navigationView.inflateHeaderView(R.layout.nav_header_main);*/
+        TextView user_name = (TextView)header.findViewById(R.id.text_userName);
+        SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
+        String name = prefs.getString("currentUsername", "example@gmail.com");
+        user_name.setText(name);
+
         Navigation nav = new Navigation();
         myDB = new SQLiteHelper(this);
         buttonFuncs();
-       if(!DataProcessingRunnable.isRunning){
-           startReceivingData();
-       }
+       //if(!DataProcessingRunnable.isRunning){
+       //    startReceivingData();
+       //}
         //Notifications notify = new Notifications(this);
         //notify.createNotification("??");
         //goToSettingsMenu();
-       nav.goToDogOverview(this);
-        finish();
+       //nav.goToDogOverview(this);
+       // finish();
     }
 
     @Override
@@ -86,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void buttonFuncs() {
         SharedPreferences prefs = this.getSharedPreferences("runnable_thread", MODE_PRIVATE);
         boolean isRun = prefs.getBoolean("connected",true);
-        if (isRun) {
+        if (DataProcessingRunnable.isRunning) {
             Button btn = (Button) findViewById(R.id.but_connect);
             btn.setEnabled(false);
             Button btn1 = (Button) findViewById(R.id.but_disconnect);
@@ -100,6 +109,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void disconnectButton() {
+        Button btn = (Button) findViewById(R.id.but_connect);
+        btn.setEnabled(true);
+        Button btn1 = (Button) findViewById(R.id.but_disconnect);
+        btn1.setEnabled(false);
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_layout);
@@ -122,6 +137,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //finish();
             buttonFuncs();
         }
+        else {
+            Toast.makeText(this, "Shutting down previous connection... try again in a moment", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void disconnectFromBluetooth(View view) {
@@ -129,7 +147,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("connected", false);
         editor.apply();
-        buttonFuncs();
+        //DataProcessingRunnable.isRunning = false;
+        //buttonFuncs();
+        disconnectButton();
         //display connect button or something
         //must make sure to properly end thread
     }
@@ -180,8 +200,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_dog_overview) {
-            //goToDogOverview();
-            //DO NOTHING HERE CAUSE ITS THIS ACTIVITY
+            nav.goToDogOverview(this);
             //TODO: CONSIDER SEPERATING XML FILES FOR EACH ACTIVITY
         } else if (id == R.id.nav_heart_rate) {
             nav.goToHeartRateActivity(this);

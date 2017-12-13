@@ -78,8 +78,7 @@ public class DataProcessingRunnable implements Runnable {
 
         DataMockup testData = new DataMockup();
         SharedPreferences prefs = context.getSharedPreferences("runnable_thread", context.MODE_PRIVATE);
-        boolean keepRunning = prefs.getBoolean("", true);
-
+        boolean keepRunning = prefs.getBoolean("connected", true);
         while (keepRunning) {
 
             //wait 10 seconds
@@ -88,7 +87,7 @@ public class DataProcessingRunnable implements Runnable {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            keepRunning = prefs.getBoolean("", true);
+            keepRunning = prefs.getBoolean("connected", true);
             //New data input
             String[] parsedMessage = testData.getDataPoint().split(":");
             parsedMessage[0] = parsedMessage[0].trim();
@@ -138,6 +137,7 @@ public class DataProcessingRunnable implements Runnable {
             handler.sendEmptyMessage(0);
            // Log.d(TAG, "STILL RUNNING!");
         }
+        isRunning = false;
     }
 }
 

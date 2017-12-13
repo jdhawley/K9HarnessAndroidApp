@@ -210,7 +210,7 @@ public class Notifications {
 
     public void createNotification(String aMessage) {
         final int NOTIFY_ID = 1002;
-        
+
         Intent intent;
         PendingIntent pendingIntent;
         NotificationCompat.Builder builder;
@@ -252,7 +252,7 @@ public class Notifications {
             pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
             builder.setContentTitle(aMessage)                           // required
-                    .setSmallIcon(android.R.drawable.ic_popup_reminder) // required
+                    .setSmallIcon(R.drawable.k9_notification) // required
                     .setContentText(context.getString(R.string.app_name))  // required
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true)

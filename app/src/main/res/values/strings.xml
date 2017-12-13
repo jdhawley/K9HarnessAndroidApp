@@ -66,6 +66,7 @@
     <string name="data_point_button_text">Data Point</string>
 
 
+
     <!--Strings in nav bar -->
     <string name="Log_Out">Log Out</string>
     <string name="title_activity_main2">Main2Activity</string>
@@ -78,4 +79,5 @@
     <string name="Dog_RespiratoryRate">Respiratory Rate</string>
     <string name="Dog_CoreTemperature">Core Temperature</string>
     <string name="Dog_AbdominalTemperature">Abdominal Temperature</string>
+    <string name="Harness_Connection">Harness Connection</string>
 </resources>
