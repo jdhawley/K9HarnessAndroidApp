@@ -173,7 +173,7 @@ public class DogMeasurement extends AppCompatActivity implements NavigationView.
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.account_settings);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_measurement);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {

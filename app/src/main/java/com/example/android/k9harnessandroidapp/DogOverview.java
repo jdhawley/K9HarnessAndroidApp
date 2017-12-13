@@ -1,5 +1,6 @@
 package com.example.android.k9harnessandroidapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -443,6 +444,28 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void goToMeasurementIntent(String measurementType) {
+        Intent goToMeasurementActivityIntent = new Intent(this, DogMeasurement.class);
+        goToMeasurementActivityIntent.putExtra("PAGE_TYPE", measurementType);
+        startActivity(goToMeasurementActivityIntent);
+    }
+
+    public void goToHeartRateActivity(View view) {
+        goToMeasurementIntent("HeartRate");
+    }
+
+    public void goToRespiratoryRateActivity(View view) {
+        goToMeasurementIntent("RespiratoryRate");
+    }
+
+    public void goToCoreTemperatureActivity(View view) {
+        goToMeasurementIntent("CoreTemperature");
+    }
+
+    public void goToAbdominalTemperatureActivity(View view) {
+        goToMeasurementIntent("AbdominalTemperature");
     }
 
 
