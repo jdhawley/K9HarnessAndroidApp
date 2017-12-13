@@ -33,10 +33,15 @@
             android:label="@string/title_activity_login"
             android:exported="true"
             ></activity>
-        <activity android:name=".DogList" />
         <activity android:name=".SettingsNotifications" />
         <activity android:name=".DogOverview" />
 
+        <service android:name=".InputIntentService" />
+
+        <activity
+            android:name=".AccountRegister"
+            android:label="@string/title_activity_account_register"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
     </application>
 
 </manifest>

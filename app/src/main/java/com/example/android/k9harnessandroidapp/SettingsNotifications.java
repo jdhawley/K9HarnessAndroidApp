@@ -12,8 +12,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SettingsNotifications extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -48,6 +50,14 @@ public class SettingsNotifications extends AppCompatActivity implements Navigati
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View header=navigationView.getHeaderView(0);
+/*View view=navigationView.inflateHeaderView(R.layout.nav_header_main);*/
+        TextView user_name = (TextView)header.findViewById(R.id.text_userName);
+        SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
+        String name = prefs.getString("currentUsername", "example@gmail.com");
+        user_name.setText(name);
+
 
         CompoundButton.OnCheckedChangeListener multiListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -213,8 +223,9 @@ public class SettingsNotifications extends AppCompatActivity implements Navigati
             finish();
         }
         else if (id == R.id.nav_logOut) {
-            //TODO: logout function!
-
+            LogOut x = new LogOut();
+            x.end(this);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.notification_settings);

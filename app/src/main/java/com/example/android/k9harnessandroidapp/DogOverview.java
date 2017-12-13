@@ -1,5 +1,6 @@
 package com.example.android.k9harnessandroidapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -16,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -35,7 +37,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
     private LineGraphSeries<DataPoint> ctSeries = new LineGraphSeries<>();
     private LineGraphSeries<DataPoint> abtSeries = new LineGraphSeries<>();
 
-    private int MAX_DATA_POINTS = 30;
+    private int MAX_DATA_POINTS = 6;
     private GraphView hrGraph;
     private GraphView rrGraph;
     private GraphView ctGraph;
@@ -79,6 +81,15 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View header=navigationView.getHeaderView(0);
+/*View view=navigationView.inflateHeaderView(R.layout.nav_header_main);*/
+        TextView user_name = (TextView)header.findViewById(R.id.text_userName);
+        SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
+        String name = prefs.getString("currentUsername", "example@gmail.com");
+        user_name.setText(name);
+
+        //TODO: GET DOG NAME
+
         initializeHighLowVals();
         initializeGraphs();
 
@@ -115,41 +126,47 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         ctGraph = findViewById(R.id.ctGraph);
         abtGraph = findViewById(R.id.abtGraph);
 
-        hrGraph.getViewport().setXAxisBoundsManual(true);
-        rrGraph.getViewport().setXAxisBoundsManual(true);
-        ctGraph.getViewport().setXAxisBoundsManual(true);
-        abtGraph.getViewport().setXAxisBoundsManual(true);
-
         hrGraph.getViewport().setYAxisBoundsManual(true);
         rrGraph.getViewport().setYAxisBoundsManual(true);
         ctGraph.getViewport().setYAxisBoundsManual(true);
         abtGraph.getViewport().setYAxisBoundsManual(true);
+
+        //TODO: Adjust the axes so these values look acceptable
+        hrGraph.getViewport().setMaxY(110);
+        rrGraph.getViewport().setMaxY(35);
+        ctGraph.getViewport().setMaxY(170);
+        abtGraph.getViewport().setMaxY(185);
+
+        hrGraph.getViewport().setMinY(60);
+        rrGraph.getViewport().setMinY(10);
+        ctGraph.getViewport().setMinY(140);
+        abtGraph.getViewport().setMinY(182);
+
+        hrGraph.getViewport().setXAxisBoundsManual(true);
+        rrGraph.getViewport().setXAxisBoundsManual(true);
+        ctGraph.getViewport().setXAxisBoundsManual(true);
+        abtGraph.getViewport().setXAxisBoundsManual(true);
 
         hrGraph.addSeries(hrSeries);
         rrGraph.addSeries(rrSeries);
         ctGraph.addSeries(ctSeries);
         abtGraph.addSeries(abtSeries);
 
-        hrGraph.getViewport().setScrollable(true);
-        rrGraph.getViewport().setScrollable(true);
-        ctGraph.getViewport().setScrollable(true);
-        abtGraph.getViewport().setScrollable(true);
-
         updateGraphAxes();
     }
 
     private void updateGraphAxes(){
         if (currentTick < 6) {
-            hrGraph.getViewport().setMaxX(6);
-            rrGraph.getViewport().setMaxX(6);
-            ctGraph.getViewport().setMaxX(6);
-            abtGraph.getViewport().setMaxX(6);
+            hrGraph.getViewport().setMaxX(5);
+            rrGraph.getViewport().setMaxX(5);
+            ctGraph.getViewport().setMaxX(5);
+            abtGraph.getViewport().setMaxX(5);
         }
         else {
-            hrGraph.getViewport().setMaxX(currentTick);
-            rrGraph.getViewport().setMaxX(currentTick);
-            ctGraph.getViewport().setMaxX(currentTick);
-            abtGraph.getViewport().setMaxX(currentTick);
+            hrGraph.getViewport().setMaxX(currentTick - 1);
+            rrGraph.getViewport().setMaxX(currentTick - 1);
+            ctGraph.getViewport().setMaxX(currentTick - 1);
+            abtGraph.getViewport().setMaxX(currentTick - 1);
         }
 
         if (currentTick - MAX_DATA_POINTS >= 0) {
@@ -165,14 +182,14 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
             abtGraph.getViewport().setMinX(0);
         }
 
-        hrGraph.getViewport().setMinY(hrSessionLow);
-        hrGraph.getViewport().setMaxY(hrSessionHigh);
-        rrGraph.getViewport().setMinY(rrSessionLow);
-        rrGraph.getViewport().setMaxY(rrSessionHigh);
-        ctGraph.getViewport().setMinY(ctSessionLow);
-        ctGraph.getViewport().setMaxY(ctSessionHigh);
-        abtGraph.getViewport().setMinY(abtSessionLow);
-        abtGraph.getViewport().setMaxY(abtSessionHigh);
+//        hrGraph.getViewport().setMinY(hrSessionLow);
+//        hrGraph.getViewport().setMaxY(hrSessionHigh);
+//        rrGraph.getViewport().setMinY(rrSessionLow);
+//        rrGraph.getViewport().setMaxY(rrSessionHigh);
+//        ctGraph.getViewport().setMinY(ctSessionLow);
+//        ctGraph.getViewport().setMaxY(ctSessionHigh);
+//        abtGraph.getViewport().setMinY(abtSessionLow);
+//        abtGraph.getViewport().setMaxY(abtSessionHigh);
     }
 
     private void updateGraphColors(int hr, int rr, int ct, int abt) {
@@ -435,13 +452,36 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
             nav.goToAbdominalTemperatureActivity(this);
         }
         else if (id == R.id.nav_logOut) {
-            //TODO: logout function!
-
+            LogOut x = new LogOut();
+            x.end(this);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void goToMeasurementIntent(String measurementType) {
+        Intent goToMeasurementActivityIntent = new Intent(this, DogMeasurement.class);
+        goToMeasurementActivityIntent.putExtra("PAGE_TYPE", measurementType);
+        startActivity(goToMeasurementActivityIntent);
+    }
+
+    public void goToHeartRateActivity(View view) {
+        goToMeasurementIntent("HeartRate");
+    }
+
+    public void goToRespiratoryRateActivity(View view) {
+        goToMeasurementIntent("RespiratoryRate");
+    }
+
+    public void goToCoreTemperatureActivity(View view) {
+        goToMeasurementIntent("CoreTemperature");
+    }
+
+    public void goToAbdominalTemperatureActivity(View view) {
+        goToMeasurementIntent("AbdominalTemperature");
     }
 
 

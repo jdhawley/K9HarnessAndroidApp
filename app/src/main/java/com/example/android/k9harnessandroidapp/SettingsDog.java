@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class SettingsDog extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -44,7 +45,7 @@ public class SettingsDog extends AppCompatActivity implements NavigationView.OnN
     Add real time checking to integer value input to make sure input is valid.
 
     Implement using text Watcher action.
-    
+
      */
 
 
@@ -65,6 +66,13 @@ public class SettingsDog extends AppCompatActivity implements NavigationView.OnN
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View header=navigationView.getHeaderView(0);
+        TextView user_name = (TextView)header.findViewById(R.id.text_userName);
+        SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
+        String name = prefs.getString("currentUsername", "example@gmail.com");
+        user_name.setText(name);
+
 
         initializeDogSettings(this);
         Button submitButton = (Button) findViewById(R.id.button_submit);
@@ -242,8 +250,9 @@ public class SettingsDog extends AppCompatActivity implements NavigationView.OnN
             finish();
         }
         else if (id == R.id.nav_logOut) {
-            //TODO: logout function!
-
+            LogOut x = new LogOut();
+            x.end(this);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_settings);
