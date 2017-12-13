@@ -85,16 +85,6 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         addDog("TestDog", result.getInt(result.getColumnIndex("HandlerID")));
         result.close();
-
-        beginSession(1);
-        addDataTick(87, 18,103, 103, 103);
-        endSession();
-        beginSession(1);
-        addDataTick(86, 27,103, 103,  101);
-        endSession();
-        beginSession(1);
-        addDataTick(74, 10,101, 102,  101);
-        endSession();
     }
 
     private int getHandlerIDByDogID(int dogID){

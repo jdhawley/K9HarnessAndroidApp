@@ -1,6 +1,7 @@
 package com.example.android.k9harnessandroidapp;
 
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -46,8 +47,7 @@ public class DogMeasurement extends AppCompatActivity {
         db = new SQLiteHelper(this);
         historicalGraph = findViewById(R.id.historicalGraph);
 
-        setTitle();
-//        setActivityDefaults();
+//        setTitle();
 
         new Thread(new Runnable() {
             @Override
@@ -58,6 +58,11 @@ public class DogMeasurement extends AppCompatActivity {
     }
 
     private void setUpGraph(Cursor results, String valColName) {
+        if (results.getCount() == 0) {
+            Log.d("MeasurementActivity", "No data was loaded.");
+            return;  //No data has been saved to the database yet.
+        }
+
         int sessionIDCol = results.getColumnIndex("SessionID");
         int valCol = results.getColumnIndex(valColName);
 
@@ -72,7 +77,7 @@ public class DogMeasurement extends AppCompatActivity {
         while (results.moveToNext()) {
             if (results.getInt(sessionIDCol) > sessionID) {
                 historicalHighSeries.appendData(new DataPoint(sessionID, high), false, MAX_DATA_POINTS);
-                historicalAverageSeries.appendData(new DataPoint(sessionID, sum / count), false, MAX_DATA_POINTS);
+                historicalAverageSeries.appendData(new DataPoint(sessionID, (double) sum / count), false, MAX_DATA_POINTS);
                 historicalLowSeries.appendData(new DataPoint(sessionID, low), false, MAX_DATA_POINTS);
 
                 sessionID = results.getInt(sessionIDCol);
@@ -95,32 +100,39 @@ public class DogMeasurement extends AppCompatActivity {
             count++;
         }
 
+        historicalHighSeries.setColor(Color.RED);
+        historicalAverageSeries.setColor(Color.rgb(102, 255, 0));
+        historicalLowSeries.setColor(Color.rgb(255, 165, 0));
+
         historicalGraph.addSeries(historicalHighSeries);
         historicalGraph.addSeries(historicalAverageSeries);
         historicalGraph.addSeries(historicalLowSeries);
     }
 
     private void setUpHeartRate() {
+        Log.d("MeasurementActivity", "Attempting to load HeartRate data.");
         Cursor results = db.getHistoricalHeartRateData(1);
         setUpGraph(results, "HeartRate");
     }
 
     private void setUpRespiratoryRate() {
+        Log.d("MeasurementActivity", "Attempting to load RespiratoryRate data.");
         Cursor results = db.getHistoricalRespiratoryRateData(1);
         setUpGraph(results, "RespiratoryRate");
     }
 
     private void setUpCoreTemperature() {
+        Log.d("MeasurementActivity", "Attempting to load CoreTemperature data.");
         Cursor results = db.getHistoricalCoreTemperatureData(1);
         setUpGraph(results, "CoreTemperature");
     }
 
     private void setUpAbdominalTemperature() {
+        Log.d("MeasurementActivity", "Attempting to load AbdominalTemperature data.");
         Cursor results = db.getHistoricalAbdominalTemperatureData(1);
         setUpGraph(results, "AbdominalTemperature");
     }
 
-    //TODO: Thread this function
     private void setActivityDefaults() {
         if (pageType == PageType.HeartRate) {
             setUpHeartRate();
