@@ -224,7 +224,9 @@ public class SettingsAccount extends AppCompatActivity implements NavigationView
             finish();
         }
         else if (id == R.id.nav_logOut) {
-            //TODO: logout function!
+            LogOut x = new LogOut();
+            x.end(this);
+            finish();
 
         }
 

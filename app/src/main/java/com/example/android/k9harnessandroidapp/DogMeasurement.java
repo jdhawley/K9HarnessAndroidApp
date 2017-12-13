@@ -253,8 +253,9 @@ public class DogMeasurement extends AppCompatActivity implements NavigationView.
             finish();
         }
         else if (id == R.id.nav_logOut) {
-            //TODO: logout function!
-
+            LogOut x = new LogOut();
+            x.end(this);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_measurement);

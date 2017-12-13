@@ -213,8 +213,9 @@ public class SettingsNotifications extends AppCompatActivity implements Navigati
             finish();
         }
         else if (id == R.id.nav_logOut) {
-            //TODO: logout function!
-
+            LogOut x = new LogOut();
+            x.end(this);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.notification_settings);

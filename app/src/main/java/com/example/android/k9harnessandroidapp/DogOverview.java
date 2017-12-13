@@ -435,8 +435,9 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
             nav.goToAbdominalTemperatureActivity(this);
         }
         else if (id == R.id.nav_logOut) {
-            //TODO: logout function!
-
+            LogOut x = new LogOut();
+            x.end(this);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_layout);

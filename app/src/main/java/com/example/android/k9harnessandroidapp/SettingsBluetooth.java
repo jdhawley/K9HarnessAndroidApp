@@ -153,8 +153,9 @@ public class SettingsBluetooth extends AppCompatActivity implements NavigationVi
             finish();
         }
         else if (id == R.id.nav_logOut) {
-            //TODO: logout function!
-
+            LogOut x = new LogOut();
+            x.end(this);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.blue_settings);

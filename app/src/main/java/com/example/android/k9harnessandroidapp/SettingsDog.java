@@ -242,8 +242,9 @@ public class SettingsDog extends AppCompatActivity implements NavigationView.OnN
             finish();
         }
         else if (id == R.id.nav_logOut) {
-            //TODO: logout function!
-
+            LogOut x = new LogOut();
+            x.end(this);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.dog_settings);

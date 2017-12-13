@@ -52,6 +52,12 @@ public class DataProcessingRunnable implements Runnable {
         myDB = a;
         handler = b;
     }
+    /* Data Proccessing thread runnable run() function.
+     * Takes in data from our datamock up, and parses it
+     * according to old ECE groups methods, then sends it to our
+     * interal SQL database, the notification method, and repeats
+     */
+
 
     @Override
     public void run() {
@@ -124,7 +130,7 @@ public class DataProcessingRunnable implements Runnable {
             myDB.addDataTick(hr,rr,ct,(int)ambientTemp,at);
             notify.createAllNotifications(hr,rr,ct,at);
             handler.sendEmptyMessage(0);
-            Log.d(TAG, "STILL RUNNING!");
+           // Log.d(TAG, "STILL RUNNING!");
         }
     }
 }
