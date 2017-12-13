@@ -463,24 +463,26 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         startActivity(goToSettingsNotificationIntent);
     }
 
+    private void goToMeasurementIntent(String measurementType) {
+        Intent goToMeasurementActivityIntent = new Intent(this, DogMeasurement.class);
+        goToMeasurementActivityIntent.putExtra("PAGE_TYPE", measurementType);
+        startActivity(goToMeasurementActivityIntent);
+    }
+
     public void goToHeartRateActivity(View view) {
-        Intent goToHeartRateIntent = new Intent(this, DogHeartRate.class);
-        startActivity(goToHeartRateIntent);
+        goToMeasurementIntent("HeartRate");
     }
 
     public void goToRespiratoryRateActivity(View view) {
-        Intent goToRespiratoryRateIntent = new Intent(this, DogRespiratoryRate.class);
-        startActivity(goToRespiratoryRateIntent);
+        goToMeasurementIntent("RespiratoryRate");
     }
 
     public void goToCoreTemperatureActivity(View view) {
-        Intent goToCoreTemperatureIntent = new Intent(this, DogCoreTemperature.class);
-        startActivity(goToCoreTemperatureIntent);
+        goToMeasurementIntent("CoreTemperature");
     }
 
     public void goToAbdominalTemperatureActivity(View view) {
-        Intent goToAbdominalTemperatureIntent = new Intent(this, DogAbdominalTemperature.class);
-        startActivity(goToAbdominalTemperatureIntent);
+        goToMeasurementIntent("AbdominalTemperature");
     }
 
     //TODO: Add numbers by the symbols
