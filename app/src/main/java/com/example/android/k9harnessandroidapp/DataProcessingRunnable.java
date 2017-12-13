@@ -52,10 +52,17 @@ public class DataProcessingRunnable implements Runnable {
         myDB = a;
         handler = b;
     }
+    /* Data Proccessing thread runnable run() function.
+     * Takes in data from our datamock up, and parses it
+     * according to old ECE groups methods, then sends it to our
+     * interal SQL database, the notification method, and repeats
+     */
+
 
     @Override
     public void run() {
         isRunning = true;
+
 
         int hr;
         int rr;
@@ -70,13 +77,25 @@ public class DataProcessingRunnable implements Runnable {
 
 
         DataMockup testData = new DataMockup();
-        while (true) {
-            //wait 10 seconds
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        SharedPreferences prefs = context.getSharedPreferences("runnable_thread", context.MODE_PRIVATE);
+        boolean keepRunning = prefs.getBoolean("connected", true);
+        int counter = 0;
+        boolean cont = true;
+        while (keepRunning) {
+            while(keepRunning && counter < 10) {
+                //wait 10 seconds
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                keepRunning = prefs.getBoolean("connected", true);
+                ++counter;
             }
+            if (!keepRunning) {
+                break;
+            }
+            counter = 0;
             //New data input
             String[] parsedMessage = testData.getDataPoint().split(":");
             parsedMessage[0] = parsedMessage[0].trim();
@@ -124,8 +143,9 @@ public class DataProcessingRunnable implements Runnable {
             myDB.addDataTick(hr,rr,ct,(int)ambientTemp,at);
             notify.createAllNotifications(hr,rr,ct,at);
             handler.sendEmptyMessage(0);
-            //Log.d(TAG, "STILL RUNNING!");
+           // Log.d(TAG, "STILL RUNNING!");
         }
+        isRunning = false;
     }
 }
 

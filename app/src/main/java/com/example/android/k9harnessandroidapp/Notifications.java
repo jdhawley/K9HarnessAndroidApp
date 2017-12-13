@@ -10,13 +10,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 /**
  * Created by rickflaget on 12/7/17.
  *
- *
+ * Class utalized to create notifications from input data.
  * Code largley sourced from this: TODO modify to fit our needs more accuratly
  * https://stackoverflow.com/questions/46990995/on-android-8-oreo-api-26-and-later-notification-does-not-display
  */
@@ -65,13 +66,31 @@ public class Notifications {
         context = ctx;
     }
 
-    //TODO: SET PROGRAM UP TO UPDATE ON ANY NOTIFICATION/DOG CHANGES
+    /* updates notification settings and dog high/low values for utilization in
+     * notification methods.
+     *
+     * @params: none
+     */
     public void setNotificationsSettings (){
         updateDogVals();
         updateNotifVals();
     }
-    //TODO: tidy this up
+
+    /*
+     * Main processing method for creating notifications. Takes in full input
+     * data provided by hardware after data processing and determines if the value is
+     * in a notification range and if those notifications are enabled in settings.
+     *
+     * @params:
+     * hr: heart rate
+     * rr: respiratory rate
+     * ct: core temperature
+     * at: abdominal temperature
+     *
+     * all parameters are supplied after dataProcessingRunnable
+     */
     public void createAllNotifications(int hr, int rr, int ct, int at) {
+        setNotificationsSettings();
         String notificationMessage = "";
         if (!SettingsNotifications.hasChanged) {
 
@@ -93,7 +112,7 @@ public class Notifications {
         if (rr > respRateHighVal && notifyRRHigh){
             notificationMessage = notificationMessage + "RR HIGH: "+rr+"\n";
         }
-        else if (rr < respRateLowVal && notifyHRLow) {
+        else if (rr < respRateLowVal && notifyRRLow) {
             notificationMessage = notificationMessage + "RR LOW: "+rr+"\n";
         }
 
@@ -118,6 +137,12 @@ public class Notifications {
         }
     }
 
+    /*
+     * Helper function to retrieve a dogs settings for high and low values for each measurement type
+     * Sets these values to class variables already defined.
+     * @params: none
+     */
+
     public void updateDogVals() {
         SharedPreferences prefs = context.getSharedPreferences("DogSettings", context.MODE_PRIVATE);
 
@@ -130,7 +155,22 @@ public class Notifications {
         abTempHighVal    = prefs.getInt(SettingsDog.AB_TEMP_HIGH_KEY, 0);
         abTempLowVal    = prefs.getInt(SettingsDog.AB_TEMP_LOW_KEY, 0);
 
+        /*Log.e("Notifications", "HeartRateHighVal"+ heartRateHighVal+" ");
+        Log.e("Notifications", "HeartRateLowVal"+ heartRateLowVal+" ");
+        Log.e("Notifications", "respRateHighVal"+ respRateHighVal+" ");
+        Log.e("Notifications", "respRateLowVal"+ heartRateLowVal+" ");
+        Log.e("Notifications", "coreTempHighVal"+ coreTempHighVal+" ");
+        Log.e("Notifications", "coreTempLowVal"+ coreTempLowVal+" ");
+        Log.e("Notifications", "abTempHighVal"+ abTempHighVal+" ");
+        Log.e("Notifications", "abTempLowVal"+ abTempLowVal+" ");*/
+
+
     }
+
+    /* Helper function to retreive a users notification settings for when they should be notified.
+     * Sets these variables to class variables already defined.
+     * @params: none
+     */
 
     public void updateNotifVals() {
         SharedPreferences prefs = context.getSharedPreferences(SettingsNotifications.NOTIFICATION_SETTINGS, SettingsNotifications.MODE_PRIVATE);
@@ -146,11 +186,30 @@ public class Notifications {
         notifyATHigh = prefs.getBoolean(SettingsNotifications.SWITCH_AB_TEMP_HIGH_KEY, true);
         notifyATLow = prefs.getBoolean(SettingsNotifications.SWITCH_AB_TEMP_LOW_KEY, true);
 
+        /*Log.e("Notifications", "notifyHRHigh: "+ notifyHRHigh);
+        Log.e("Notifications", "notifyHRLow: "+ notifyHRLow);
+
+        Log.e("Notifications", "notifyRRHigh: "+ notifyRRHigh);
+        Log.e("Notifications", "notifyRRLow: "+ notifyRRLow);
+
+        Log.e("Notifications", "notifyCTHigh: "+ notifyCTHigh);
+        Log.e("Notifications", "notifyCTLow: "+ notifyCTLow);
+
+        Log.e("Notifications", "notifyATHigh: "+ notifyATHigh);
+        Log.e("Notifications", "notifyATLow: "+ notifyATLow);
+        Log.e("Notifications", "!!!!!!!!!!!!!!!!!!!!!!!!");*/
     }
+
+    /* Method that actually creates and sends notification through the notification channel
+
+
+       @params:
+       aMessage: The message that is to be sent via the notification. A combination of measurement
+       names, measurement values, and the High or Low classifier, depending on the user's settings.
+     */
 
     public void createNotification(String aMessage) {
         final int NOTIFY_ID = 1002;
-
 
         Intent intent;
         PendingIntent pendingIntent;
@@ -177,7 +236,7 @@ public class Notifications {
             pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
             builder.setContentTitle(aMessage)  // required
-                    .setSmallIcon(android.R.drawable.ic_popup_reminder) // required
+                    .setSmallIcon(R.drawable.k9_notification) // required
                     .setContentText(context.getString(R.string.app_name))  // required
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true)
@@ -193,7 +252,7 @@ public class Notifications {
             pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
             builder.setContentTitle(aMessage)                           // required
-                    .setSmallIcon(android.R.drawable.ic_popup_reminder) // required
+                    .setSmallIcon(R.drawable.k9_notification) // required
                     .setContentText(context.getString(R.string.app_name))  // required
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true)

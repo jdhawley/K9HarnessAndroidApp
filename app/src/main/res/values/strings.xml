@@ -30,6 +30,9 @@
 
     <!-- Strings related to Notification Settings -->
     <string name="title_notification_settings">Notification Settings</string>
+    <string name="notify_one">Notify on</string>
+    <string name="high">High</string>
+    <string name="low">Low</string>
     <string name="description_notification_settings">Notify me when:</string>
     <string name="heart_rate_high_switch">Heart Rate high</string>
     <string name="heart_rate_low_switch">Heart Rate low</string>
@@ -47,6 +50,7 @@
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
+    <string name="error_wrong_password">Incorrect Password, please try again</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
@@ -62,6 +66,7 @@
     <string name="data_point_button_text">Data Point</string>
 
 
+
     <!--Strings in nav bar -->
     <string name="Log_Out">Log Out</string>
     <string name="title_activity_main2">Main2Activity</string>
@@ -74,5 +79,9 @@
     <string name="Dog_RespiratoryRate">Respiratory Rate</string>
     <string name="Dog_CoreTemperature">Core Temperature</string>
     <string name="Dog_AbdominalTemperature">Abdominal Temperature</string>
+    <string name="Harness_Connection">Harness Connection</string>
+
+    <string name="Connect">Connect</string>
+    <string name="Disconnect">Disconnect</string>
     <string name="title_activity_account_register">AccountRegister</string>
 </resources>

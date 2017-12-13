@@ -83,7 +83,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         Cursor result = db.rawQuery("SELECT HandlerID FROM Handler ORDER BY HandlerID ASC", null);
         result.moveToFirst();
 
-        addDog("TestDog", result.getInt(result.getColumnIndex("HandlerID")));
+        addDog("TestDog", result.getLong(result.getColumnIndex("HandlerID")));
         result.close();
     }
 
@@ -145,7 +145,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return mostRecentSessionID;
     }
 
-    public void addDog(String name, int handlerID) {
+    public void addDog(String name, Long handlerID) {
         ContentValues content = new ContentValues();
 
         content.put("Name", name);
