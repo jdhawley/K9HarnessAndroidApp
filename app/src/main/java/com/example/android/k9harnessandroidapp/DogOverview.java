@@ -88,6 +88,12 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         String name = prefs.getString("currentUsername", "example@gmail.com");
         user_name.setText(name);
 
+        SharedPreferences prefz = getSharedPreferences("AccountSettings", MODE_PRIVATE);
+        String Dogname = prefs.getString("dogName", "Fido");
+
+
+        TextView dogName = (TextView) findViewById(R.id.tvDogName);
+        dogName.setText(Dogname);
         //TODO: GET DOG NAME
 
         initializeHighLowVals();
