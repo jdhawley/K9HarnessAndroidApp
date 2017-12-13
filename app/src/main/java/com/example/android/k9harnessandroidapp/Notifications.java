@@ -17,7 +17,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 /**
  * Created by rickflaget on 12/7/17.
  *
- *
+ * Class utalized to create notifications from input data.
  * Code largley sourced from this: TODO modify to fit our needs more accuratly
  * https://stackoverflow.com/questions/46990995/on-android-8-oreo-api-26-and-later-notification-does-not-display
  */
@@ -66,12 +66,29 @@ public class Notifications {
         context = ctx;
     }
 
-    //TODO: SET PROGRAM UP TO UPDATE ON ANY NOTIFICATION/DOG CHANGES
+    /* updates notification settings and dog high/low values for utilization in
+     * notification methods.
+     *
+     * @params: none
+     */
     public void setNotificationsSettings (){
         updateDogVals();
         updateNotifVals();
     }
-    //TODO: tidy this up
+
+    /*
+     * Main processing method for creating notifications. Takes in full input
+     * data provided by hardware after data processing and determines if the value is
+     * in a notification range and if those notifications are enabled in settings.
+     *
+     * @params:
+     * hr: heart rate
+     * rr: respiratory rate
+     * ct: core temperature
+     * at: abdominal temperature
+     *
+     * all parameters are supplied after dataProcessingRunnable
+     */
     public void createAllNotifications(int hr, int rr, int ct, int at) {
         setNotificationsSettings();
         String notificationMessage = "";
@@ -120,6 +137,12 @@ public class Notifications {
         }
     }
 
+    /*
+     * Helper function to retrieve a dogs settings for high and low values for each measurement type
+     * Sets these values to class variables already defined.
+     * @params: none
+     */
+
     public void updateDogVals() {
         SharedPreferences prefs = context.getSharedPreferences("DogSettings", context.MODE_PRIVATE);
 
@@ -144,6 +167,11 @@ public class Notifications {
 
     }
 
+    /* Helper function to retreive a users notification settings for when they should be notified.
+     * Sets these variables to class variables already defined.
+     * @params: none
+     */
+
     public void updateNotifVals() {
         SharedPreferences prefs = context.getSharedPreferences(SettingsNotifications.NOTIFICATION_SETTINGS, SettingsNotifications.MODE_PRIVATE);
         notifyHRHigh = prefs.getBoolean(SettingsNotifications.SWITCH_HEART_RATE_HIGH_KEY, true);
@@ -158,7 +186,7 @@ public class Notifications {
         notifyATHigh = prefs.getBoolean(SettingsNotifications.SWITCH_AB_TEMP_HIGH_KEY, true);
         notifyATLow = prefs.getBoolean(SettingsNotifications.SWITCH_AB_TEMP_LOW_KEY, true);
 
-        Log.e("Notifications", "notifyHRHigh: "+ notifyHRHigh);
+        /*Log.e("Notifications", "notifyHRHigh: "+ notifyHRHigh);
         Log.e("Notifications", "notifyHRLow: "+ notifyHRLow);
 
         Log.e("Notifications", "notifyRRHigh: "+ notifyRRHigh);
@@ -169,7 +197,7 @@ public class Notifications {
 
         Log.e("Notifications", "notifyATHigh: "+ notifyATHigh);
         Log.e("Notifications", "notifyATLow: "+ notifyATLow);
-        Log.e("Notifications", "!!!!!!!!!!!!!!!!!!!!!!!!");
+        Log.e("Notifications", "!!!!!!!!!!!!!!!!!!!!!!!!");*/
     }
 
     public void createNotification(String aMessage) {

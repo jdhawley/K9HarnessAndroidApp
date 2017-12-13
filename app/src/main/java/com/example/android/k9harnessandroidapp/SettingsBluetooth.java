@@ -45,7 +45,7 @@ public class SettingsBluetooth extends AppCompatActivity implements NavigationVi
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        initalizeBluetoothSettings(this);
+        initializeBluetoothSettings(this);
         Button submitButton = (Button) findViewById(R.id.button_save_changes);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +55,7 @@ public class SettingsBluetooth extends AppCompatActivity implements NavigationVi
             }
         });
     }
-    public void initalizeBluetoothSettings(Context context) {
+    public void initializeBluetoothSettings(Context context) {
         String ID = getBluetoothSettings(context);
         EditText bluetoothID = (EditText) findViewById(R.id.bluetooth_ID_field);
         bluetoothID.setText(ID);
