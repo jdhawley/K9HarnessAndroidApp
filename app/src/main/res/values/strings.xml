@@ -73,4 +73,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+    <string name="Dog_HeartRate">Heart Rate</string>
+    <string name="Dog_RespiratoryRate">Respiratory Rate</string>
+    <string name="Dog_CoreTemperature">Core Temperature</string>
+    <string name="Dog_AbdominalTemperature">Abdominal Temperature</string>
 </resources>

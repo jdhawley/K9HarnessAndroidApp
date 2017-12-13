@@ -37,6 +37,7 @@
                 android:contentDescription="@string/heart_image_description"
                 android:padding="0dp"
                 android:scaleType="fitCenter"
+                android:onClick="goToHeartRateActivity"
                 app:layout_constraintBottom_toBottomOf="@+id/hrGraph"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -54,6 +55,7 @@
                 android:contentDescription="@string/lungs_image_description"
                 android:padding="0dp"
                 android:scaleType="fitCenter"
+                android:onClick="goToRespiratoryRateActivity"
                 app:layout_constraintBottom_toBottomOf="@+id/rrGraph"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -71,6 +73,7 @@
                 android:contentDescription="@string/thermometer_image_description"
                 android:padding="0dp"
                 android:scaleType="fitCenter"
+                android:onClick="goToAbdominalTemperatureActivity"
                 app:layout_constraintBottom_toBottomOf="@+id/abtGraph"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -88,6 +91,7 @@
                 android:contentDescription="@string/thermometer_image_description"
                 android:padding="0dp"
                 android:scaleType="fitCenter"
+                android:onClick="goToCoreTemperatureActivity"
                 app:layout_constraintBottom_toBottomOf="@+id/ctGraph"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -149,28 +153,18 @@
                 app:layout_constraintTop_toTopOf="@+id/include" />
 
             <Button
-                android:id="@+id/beginSessionButton"
-                android:layout_width="193dp"
-                android:layout_height="wrap_content"
+                android:id="@+id/sessionChangeButton"
+                android:layout_width="369dp"
+                android:layout_height="46dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:onClick="changeSessionStatus"
                 android:text="BEGIN SESSION"
-                android:onClick="beginSession"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/abtGraph"
-                android:layout_marginLeft="8dp" />
-
-            <Button
-                android:id="@+id/endSessionButton"
-                android:layout_width="194dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
-                android:text="END SESSION"
-                android:onClick="endSession"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/abtGraph"
-                android:layout_marginRight="8dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/abtGraph" />
+
         </android.support.constraint.ConstraintLayout>
 
     </FrameLayout>

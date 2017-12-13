@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -28,8 +29,6 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
     private boolean isThreadEnding;
 
     private int currentTick = -1;
-    //TODO: Implement the secondsIncrementer somewhere
-    private int secondsIncrementer = 1;
 
     private LineGraphSeries<DataPoint> hrSeries = new LineGraphSeries<>();
     private LineGraphSeries<DataPoint> rrSeries = new LineGraphSeries<>();
@@ -84,6 +83,10 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         initializeGraphs();
 
         db = new SQLiteHelper(this);
+
+        if (db.duringSession()) {
+            beginSession();
+        }
     }
 
     //TODO: NOT SURE IF THIS DOES ANYTHING YET, BUT WILL BE NEEDED IN FUTURE WHEN LAYOUT IS DIFFERENT
@@ -215,7 +218,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
             return;
         }
 
-        Log.d("DogOverview", "Attempting to load session data");
+        Log.d("DogOverview", "Attempting to load session data.");
 
         Cursor data = db.getAllSessionData();
         addDataToGraphs(data);
@@ -258,8 +261,10 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
     }
 
     private void addDataToGraphs(Cursor data) {
-        //TODO: Remove the skipped and added variables
-        int skipped = 0, added = 0;
+        if (data.getCount() == 0) {
+            return;     // Prevents the graphs from disappearing when there is no session data
+        }
+
         int hr, rr, ct, abt;
 
         hrGraph.removeAllSeries();
@@ -269,7 +274,6 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
 
         while (data.moveToNext()) {
             if (data.getInt(data.getColumnIndex("SessionTick")) < currentTick) {
-                skipped++;
                 continue; //Data point has already been added.
             }
 
@@ -286,7 +290,6 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
             currentTick++;
             updateGraphColors(hr, rr, ct, abt);
             updateSessionHighsAndLows(hr, rr, ct, abt);
-            added++;
         }
 
         // DO NOT REMOVE THIS SLEEP
@@ -302,11 +305,20 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         abtGraph.addSeries(abtSeries);
 
         updateGraphAxes();
-
-        Log.d("DogOverview", Integer.toString(skipped) + " skipped and " + Integer.toString(added) + " added.");
     }
 
-    public void beginSession(View view) {
+    public void changeSessionStatus(View view) {
+        Button btn = findViewById(R.id.sessionChangeButton);
+        if (db.duringSession()) {
+            endSession();
+            btn.setText("BEGIN SESSION");
+        } else {
+            beginSession();
+            btn.setText("END SESSION");
+        }
+    }
+
+    public void beginSession() {
         db.beginSession(dogID);
         currentTick = 0;
 
@@ -338,7 +350,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         }
     }
 
-    public void endSession(View view) {
+    public void endSession() {
         db.endSession();
         currentTick = -1;
 
@@ -451,5 +463,30 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         startActivity(goToSettingsNotificationIntent);
     }
 
+    private void goToMeasurementIntent(String measurementType) {
+        Intent goToMeasurementActivityIntent = new Intent(this, DogMeasurement.class);
+        goToMeasurementActivityIntent.putExtra("PAGE_TYPE", measurementType);
+        startActivity(goToMeasurementActivityIntent);
+    }
 
+    public void goToHeartRateActivity(View view) {
+        goToMeasurementIntent("HeartRate");
+    }
+
+    public void goToRespiratoryRateActivity(View view) {
+        goToMeasurementIntent("RespiratoryRate");
+    }
+
+    public void goToCoreTemperatureActivity(View view) {
+        goToMeasurementIntent("CoreTemperature");
+    }
+
+    public void goToAbdominalTemperatureActivity(View view) {
+        goToMeasurementIntent("AbdominalTemperature");
+    }
+
+    //TODO: Add numbers by the symbols
+    //TODO: Fix labels on the bottom of the graphs
+    //TODO: Specific measurement pages
+    //TODO: Give George a list of the data sync stuff I need
 }
