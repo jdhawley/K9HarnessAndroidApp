@@ -9,6 +9,10 @@ import android.content.Intent;
 
 public class Navigation {
 
+    public void goToMain(Context ctx) {
+        Intent goToMainIntent = new Intent(ctx, MainActivity.class);
+        ctx.startActivity(goToMainIntent);
+    }
 
     /* Navigation methods used throughout the application.
      * Method names explain the location that the function sends the user to

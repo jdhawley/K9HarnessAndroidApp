@@ -1,0 +1,11 @@
+version: '2'
+services:
+    k9backend-postgresql:
+        image: postgres:9.6.5
+        # volumes:
+        #     - ~/volumes/jhipster/k9backend/postgresql/:/var/lib/postgresql/data/
+        environment:
+            - POSTGRES_USER=k9backend
+            - POSTGRES_PASSWORD=
+        ports:
+            - 5432:5432
