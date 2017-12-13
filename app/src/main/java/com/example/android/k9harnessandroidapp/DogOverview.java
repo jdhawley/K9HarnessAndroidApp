@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -28,8 +29,6 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
     private boolean isThreadEnding;
 
     private int currentTick = -1;
-    //TODO: Implement the secondsIncrementer somewhere
-    private int secondsIncrementer = 1;
 
     private LineGraphSeries<DataPoint> hrSeries = new LineGraphSeries<>();
     private LineGraphSeries<DataPoint> rrSeries = new LineGraphSeries<>();
@@ -84,6 +83,10 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         initializeGraphs();
 
         db = new SQLiteHelper(this);
+
+        if (db.duringSession()) {
+            beginSession();
+        }
     }
 
     //TODO: NOT SURE IF THIS DOES ANYTHING YET, BUT WILL BE NEEDED IN FUTURE WHEN LAYOUT IS DIFFERENT
@@ -215,7 +218,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
             return;
         }
 
-        Log.d("DogOverview", "Attempting to load session data");
+        Log.d("DogOverview", "Attempting to load session data.");
 
         Cursor data = db.getAllSessionData();
         addDataToGraphs(data);
@@ -258,8 +261,10 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
     }
 
     private void addDataToGraphs(Cursor data) {
-        //TODO: Remove the skipped and added variables
-        int skipped = 0, added = 0;
+        if (data.getCount() == 0) {
+            return;     // Prevents the graphs from disappearing when there is no session data
+        }
+
         int hr, rr, ct, abt;
 
         hrGraph.removeAllSeries();
@@ -269,7 +274,6 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
 
         while (data.moveToNext()) {
             if (data.getInt(data.getColumnIndex("SessionTick")) < currentTick) {
-                skipped++;
                 continue; //Data point has already been added.
             }
 
@@ -286,7 +290,6 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
             currentTick++;
             updateGraphColors(hr, rr, ct, abt);
             updateSessionHighsAndLows(hr, rr, ct, abt);
-            added++;
         }
 
         // DO NOT REMOVE THIS SLEEP
@@ -302,11 +305,20 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         abtGraph.addSeries(abtSeries);
 
         updateGraphAxes();
-
-        Log.d("DogOverview", Integer.toString(skipped) + " skipped and " + Integer.toString(added) + " added.");
     }
 
-    public void beginSession(View view) {
+    public void changeSessionStatus(View view) {
+        Button btn = findViewById(R.id.sessionChangeButton);
+        if (db.duringSession()) {
+            endSession();
+            btn.setText("BEGIN SESSION");
+        } else {
+            beginSession();
+            btn.setText("END SESSION");
+        }
+    }
+
+    public void beginSession() {
         db.beginSession(dogID);
         currentTick = 0;
 
@@ -338,7 +350,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         }
     }
 
-    public void endSession(View view) {
+    public void endSession() {
         db.endSession();
         currentTick = -1;
 
@@ -372,25 +384,25 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        Log.e(TAG,"madeittoslectedpg");
+        Navigation nav = new Navigation();
+        //Log.e(TAG,"madeittoslectedpg");
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.nav_dog) {
-            Log.e(TAG,"madeITtoDOG");
-            goToSettingsDog();
+            //Log.e(TAG,"madeITtoDOG");
+            nav.goToSettingsDog(this);
             return true;
-            // Handle the camera action
         } else if (id == R.id.nav_account) {
-            goToSettingsAccount();
+            nav.goToSettingsAccount(this);
             return true;
 
         } else if (id == R.id.nav_bluetooth) {
-            goToSettingsBluetooth();
+            nav.goToSettingsBluetooth(this);
             return true;
 
         } else if (id == R.id.nav_notification) {
-            goToSettingsNotification();
+            nav.goToSettingsNotification(this);
             return true;
         }
 
@@ -401,6 +413,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        Navigation nav = new Navigation();
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -410,16 +423,16 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
             //TODO: CONSIDER SEPERATING XML FILES FOR EACH ACTIVITY
         }
         else if (id == R.id.nav_heart_rate){
-            //TODO: nav to heart rate specific page
+            nav.goToHeartRateActivity(this);
         }
         else if (id == R.id.nav_resp_rate){
-            //TODO: nav to resp rate specific page
+            nav.goToRespiratoryRateActivity(this);
         }
         else if (id == R.id.nav_core_temp){
-            //TODO: nav to core temp specific page
+            nav.goToCoreTemperatureActivity(this);
         }
         else if (id == R.id.nav_ab_temp){
-            //TODO: nav to ab temp specific page
+            nav.goToAbdominalTemperatureActivity(this);
         }
         else if (id == R.id.nav_logOut) {
             //TODO: logout function!
@@ -431,25 +444,9 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         return true;
     }
 
-    public void goToSettingsDog() {
-        Intent goToSettingsDogIntent = new Intent(this, SettingsDog.class);
-        startActivity(goToSettingsDogIntent);
-    }
 
-    public void goToSettingsAccount() {
-        Intent goToSettingsAccountIntent = new Intent(this, SettingsAccount.class);
-        startActivity(goToSettingsAccountIntent);
-    }
-
-    public void goToSettingsBluetooth() {
-        Intent goToSettingsBluetoothIntent = new Intent(this, SettingsBluetooth.class);
-        startActivity(goToSettingsBluetoothIntent);
-    }
-
-    public void goToSettingsNotification() {
-        Intent goToSettingsNotificationIntent = new Intent(this, SettingsNotifications.class);
-        startActivity(goToSettingsNotificationIntent);
-    }
-
-
+    //TODO: Add numbers by the symbols
+    //TODO: Fix labels on the bottom of the graphs
+    //TODO: Specific measurement pages
+    //TODO: Give George a list of the data sync stuff I need
 }

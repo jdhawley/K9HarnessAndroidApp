@@ -45,7 +45,7 @@ public class SettingsBluetooth extends AppCompatActivity implements NavigationVi
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        initalizeBluetoothSettings(this);
+        initializeBluetoothSettings(this);
         Button submitButton = (Button) findViewById(R.id.button_save_changes);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +55,7 @@ public class SettingsBluetooth extends AppCompatActivity implements NavigationVi
             }
         });
     }
-    public void initalizeBluetoothSettings(Context context) {
+    public void initializeBluetoothSettings(Context context) {
         String ID = getBluetoothSettings(context);
         EditText bluetoothID = (EditText) findViewById(R.id.bluetooth_ID_field);
         bluetoothID.setText(ID);
@@ -95,16 +95,16 @@ public class SettingsBluetooth extends AppCompatActivity implements NavigationVi
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-
+        Navigation nav = new Navigation();
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.nav_dog) {
-            goToSettingsDog();
+            nav.goToSettingsDog(this);
             finish();
             return true;
         } else if (id == R.id.nav_account) {
-            goToSettingsAccount();
+            nav.goToSettingsAccount(this);
             finish();
             return true;
 
@@ -116,7 +116,7 @@ public class SettingsBluetooth extends AppCompatActivity implements NavigationVi
 
         } else if (id == R.id.nav_notification) {
 
-            goToSettingsNotification();
+            nav.goToSettingsNotification(this);
             finish();
             return true;
         }
@@ -129,31 +129,30 @@ public class SettingsBluetooth extends AppCompatActivity implements NavigationVi
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        Navigation nav = new Navigation();
         int id = item.getItemId();
 
         if (id == R.id.nav_dog_overview){
-            //goToDogOverview();
+            nav.goToDogOverview(this);
             finish();
-            //TODO: CONSIDER SEPERATING XML FILES FOR EACH ACTIVITY
         }
         else if (id == R.id.nav_heart_rate){
+            nav.goToHeartRateActivity(this);
             finish();
-            //TODO: nav to heart rate specific page
         }
         else if (id == R.id.nav_resp_rate){
-            //TODO: nav to resp rate specific page
+            nav.goToRespiratoryRateActivity(this);
             finish();
         }
         else if (id == R.id.nav_core_temp){
-            //TODO: nav to core temp specific page
+            nav.goToCoreTemperatureActivity(this);
             finish();
         }
         else if (id == R.id.nav_ab_temp){
+            nav.goToAbdominalTemperatureActivity(this);
             finish();
-            //TODO: nav to ab temp specific page
         }
         else if (id == R.id.nav_logOut) {
-            finish();
             //TODO: logout function!
 
         }
@@ -163,27 +162,4 @@ public class SettingsBluetooth extends AppCompatActivity implements NavigationVi
         return true;
     }
 
-    public void goToSettingsDog() {
-        Intent goToSettingsDogIntent = new Intent(this, SettingsDog.class);
-        startActivity(goToSettingsDogIntent);
-    }
-
-    public void goToSettingsAccount() {
-        Intent goToSettingsAccountIntent = new Intent(this, SettingsAccount.class);
-        startActivity(goToSettingsAccountIntent);
-    }
-
-    public void goToSettingsBluetooth() {
-        Intent goToSettingsBluetoothIntent = new Intent(this, SettingsBluetooth.class);
-        startActivity(goToSettingsBluetoothIntent);
-    }
-
-    public void goToSettingsNotification() {
-        Intent goToSettingsNotificationIntent = new Intent(this, SettingsNotifications.class);
-        startActivity(goToSettingsNotificationIntent);
-    }
-    public void goToDogOverview() {
-        Intent DogIntent = new Intent(this, DogOverview.class);
-        startActivity(DogIntent);
-    }
 }

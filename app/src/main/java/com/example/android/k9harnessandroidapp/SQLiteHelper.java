@@ -248,4 +248,28 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public boolean duringSession() {
         return isAcceptingData;
     }
+
+    public Cursor getHistoricalHeartRateData(int dogID) {
+        String query = "SELECT S.SessionID, ST.HeartRate FROM Session S INNER JOIN SessionTick " +
+                "ST ON S.SessionID=ST.SessionID WHERE DogID=? ORDER BY S.SessionID ASC";
+        return db.rawQuery(query, new String[]{Integer.toString(dogID)});
+    }
+
+    public Cursor getHistoricalRespiratoryRateData(int dogID) {
+        String query = "SELECT S.SessionID, ST.RespiratoryRate FROM Session S INNER JOIN " +
+                "SessionTick ST ON S.SessionID=ST.SessionID WHERE DogID=? ORDER BY S.SessionID ASC";
+        return db.rawQuery(query, new String[]{Integer.toString(dogID)});
+    }
+
+    public Cursor getHistoricalCoreTemperatureData(int dogID) {
+        String query = "SELECT S.SessionID, ST.CoreTemperature FROM Session S INNER JOIN " +
+                "SessionTick ST ON S.SessionID=ST.SessionID WHERE DogID=? ORDER BY S.SessionID ASC";
+        return db.rawQuery(query, new String[]{Integer.toString(dogID)});
+    }
+
+    public Cursor getHistoricalAbdominalTemperatureData(int dogID) {
+        String query = "SELECT S.SessionID, ST.AbdominalTemperature FROM Session S INNER JOIN " +
+                "SessionTick ST ON S.SessionID=ST.SessionID WHERE DogID=? ORDER BY S.SessionID ASC";
+        return db.rawQuery(query, new String[]{Integer.toString(dogID)});
+    }
 }
