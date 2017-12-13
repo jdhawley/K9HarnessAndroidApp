@@ -12,14 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            tools:layout_editor_absoluteX="291dp" />
-
         <include
             layout="@layout/app_bar_main"
             android:layout_width="match_parent"
@@ -35,26 +27,26 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <Button
-                android:id="@+id/but_disconnect"
-                android:layout_width="wrap_content"
+                android:id="@+id/but_connect"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="disconnectFromBluetooth"
-                android:text="Disconnect"
-                app:layout_constraintBottom_toTopOf="@+id/but_connect"
+                android:onClick="connectToBluetooth"
+                android:text="@string/Connect"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/but_connect"
-                android:layout_width="wrap_content"
-                android:layout_height="46dp"
+                android:id="@+id/but_disconnect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="connectToBluetooth"
-                android:text="Connect "
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:onClick="disconnectFromBluetooth"
+                android:text="@string/Disconnect"
+                app:layout_constraintBottom_toTopOf="@+id/but_connect"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"

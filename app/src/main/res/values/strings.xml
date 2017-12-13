@@ -80,4 +80,7 @@
     <string name="Dog_CoreTemperature">Core Temperature</string>
     <string name="Dog_AbdominalTemperature">Abdominal Temperature</string>
     <string name="Harness_Connection">Harness Connection</string>
+
+    <string name="Connect">Connect</string>
+    <string name="Disconnect">Disconnect</string>
 </resources>
