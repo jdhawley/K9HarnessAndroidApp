@@ -40,7 +40,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/include">
+            app:layout_constraintTop_toTopOf="@+id/include"
+            >
 
             <TableRow
                 android:layout_width="match_parent"

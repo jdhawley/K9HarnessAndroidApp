@@ -3,6 +3,7 @@ package com.example.android.k9harnessandroidapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +31,19 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.example.android.k9harnessandroidapp.Service.DogService;
+import com.example.android.k9harnessandroidapp.domain.Dog;
+import com.example.android.k9harnessandroidapp.domain.LoginVM;
+import com.example.android.k9harnessandroidapp.domain.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +81,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
+
+        //Check to see if we're logged in and go to main page if so
+//        if(!prefs.getString("id_token", "null").equals("null")){
+//            onSuccess();
+//        }
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -172,11 +193,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
         }
+//          else if (!isEmailValid(email)) {
+//            mEmailView.setError(getString(R.string.error_invalid_email));
+//            focusView = mEmailView;
+//            cancel = true;
+//        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -186,7 +208,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(email, password, this);
             mAuthTask.execute((Void) null);
         }
     }
@@ -295,50 +317,87 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Void, String> {
 
         private final String mEmail;
         private final String mPassword;
+        private Context mContext;
+        private int dogFlag = 0;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String email, String password, Context c) {
             mEmail = email;
             mPassword = password;
+            mContext = c;
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected String doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-
+            final String dogUrl = "https://k9backend.herokuapp.com/api/dogs/user=" + mEmail;
+            final String accountUrl = "https://k9backend.herokuapp.com/api/account";
+            final String url = "https://k9backend.herokuapp.com/api/authenticate";
+            int loginFlag = 0;
+            JWTToken token = null;
+            User currentUser;
+            SQLiteHelper helper = new SQLiteHelper(mContext);
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+                RestTemplate restTemplate = new RestTemplate();
+                LoginVM account = new LoginVM();
+                account.setUsername(mEmail);
+                account.setPassword(mPassword);
+                account.setRememberMe(true);
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                token = restTemplate.postForObject(url, account, JWTToken.class);
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Authorization", "Bearer " + token.getIdToken());
+                HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+
+                restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                ResponseEntity<User> user = restTemplate.exchange(accountUrl, HttpMethod.GET, entity, User.class);
+                if(user.getStatusCode().value() == 200) {
+                    loginFlag++;
+                    currentUser = user.getBody();
+                    restTemplate = new RestTemplate();
+                    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
+                    ResponseEntity<Dog> dog = restTemplate.exchange(dogUrl, HttpMethod.GET, entity, Dog.class);
+                    if(dog.getStatusCode().value() == 200) {
+                        helper.addDog(dog.getBody().getName(), currentUser.getId());
+                    }
+                }
+            } catch (Exception e) {
+                if(loginFlag > 0) {
+                    dogFlag++;
+                    return token.getIdToken();
+                } else {
+                    mPasswordView.setError(getString(R.string.error_wrong_password));
+                    Log.e("EXCEPTION", e.getLocalizedMessage());
+
+                    return null;
                 }
             }
-
-            // TODO: register the new account here.
-            return true;
+            return token.getIdToken();
         }
 
         @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+        public void onPostExecute(String token) {
+            SharedPreferences sharedPreferences = getSharedPreferences("AccountSettings", MODE_PRIVATE);
+            if(token == null) {
+                mAuthTask = null;
+                showProgress(false);
+                mPasswordView.setError(getString(R.string.error_wrong_password));
+                return;
+            } else if(dogFlag > 0){
+                //TODO GO TO DOG THINGS HERE, NEED A PAGE FOR DOGGY BUILDING
             }
+            setAccountJWT(token);
+            saveAccountName(mEmail);
+            showProgress(false);
+            onSuccess();
         }
 
         @Override
@@ -348,10 +407,48 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    void onSuccess() {
+        Navigation nav = new Navigation();
+        nav.goToMain(this);
+        finish();
+    }
+
+
+
     void saveAccountName(String username){
         SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("currentUsername", username);
+        editor.apply();
+    }
+
+    void setAccountJWT(String token){
+        SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("id_token", token);
+        editor.apply();
+    }
+
+
+    static class JWTToken {
+        private String idToken;
+
+        JWTToken(String idToken) {
+            this.idToken = idToken;
+        }
+
+        @JsonProperty("id_token")
+        String getIdToken() {
+            return idToken;
+        }
+
+        void setIdToken(String idToken) {
+            this.idToken = idToken;
+        }
+
+        public JWTToken() {
+
+        }
     }
 }
 

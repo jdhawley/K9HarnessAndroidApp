@@ -2,7 +2,9 @@ package com.example.android.k9harnessandroidapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -11,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,18 +42,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message message) {
-            TextView txt = (TextView) findViewById(R.id.title_text);
-            txt.setText(""+val);
             ++val;
         }
     };
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        setTitle(R.string.Harness_Connection);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -63,17 +66,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View header=navigationView.getHeaderView(0);
+/*View view=navigationView.inflateHeaderView(R.layout.nav_header_main);*/
+        TextView user_name = (TextView)header.findViewById(R.id.text_userName);
+        SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
+        String name = prefs.getString("currentUsername", "example@gmail.com");
+        user_name.setText(name);
+
+        Navigation nav = new Navigation();
         myDB = new SQLiteHelper(this);
-        if(!DataProcessingRunnable.isRunning){
-            startReceivingData();
-        }
+        buttonFuncs();
+       //if(!DataProcessingRunnable.isRunning){
+       //    startReceivingData();
+       //}
         //Notifications notify = new Notifications(this);
         //notify.createNotification("??");
         //goToSettingsMenu();
-        goToDogOverViewNoButton();
-        finish();
+       //nav.goToDogOverview(this);
+       // finish();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        buttonFuncs();
+    }
+
+    public void buttonFuncs() {
+        SharedPreferences prefs = this.getSharedPreferences("runnable_thread", MODE_PRIVATE);
+        boolean isRun = prefs.getBoolean("connected",true);
+        if (DataProcessingRunnable.isRunning) {
+            Button btn = (Button) findViewById(R.id.but_connect);
+            btn.setEnabled(false);
+            Button btn1 = (Button) findViewById(R.id.but_disconnect);
+            btn1.setEnabled(true);
+        }
+        else {
+            Button btn = (Button) findViewById(R.id.but_connect);
+            btn.setEnabled(true);
+            Button btn1 = (Button) findViewById(R.id.but_disconnect);
+            btn1.setEnabled(false);
+        }
+    }
+
+    public void disconnectButton() {
+        Button btn = (Button) findViewById(R.id.but_connect);
+        btn.setEnabled(true);
+        Button btn1 = (Button) findViewById(R.id.but_disconnect);
+        btn1.setEnabled(false);
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_layout);
@@ -82,6 +123,35 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+    }
+
+    public void connectToBluetooth(View view) {
+        if(!DataProcessingRunnable.isRunning) {
+            SharedPreferences prefs = this.getSharedPreferences("runnable_thread", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("connected", true);
+            editor.apply();
+            startReceivingData();
+            Navigation nav = new Navigation();
+            nav.goToDogOverview(this);
+            //finish();
+            buttonFuncs();
+        }
+        else {
+            Toast.makeText(this, "Shutting down previous connection... try again in a moment", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void disconnectFromBluetooth(View view) {
+        SharedPreferences prefs = this.getSharedPreferences("runnable_thread", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("connected", false);
+        editor.apply();
+        //DataProcessingRunnable.isRunning = false;
+        //buttonFuncs();
+        disconnectButton();
+        //display connect button or something
+        //must make sure to properly end thread
     }
 
     @Override
@@ -96,102 +166,66 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        Log.e(TAG,"madeittoslectedpg");
+        Navigation nav = new Navigation();
+        //Log.e(TAG,"madeittoslectedpg");
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.nav_dog) {
-            Log.e(TAG,"madeITtoDOG");
-            goToSettingsDog();
+            //Log.e(TAG,"madeITtoDOG");
+            nav.goToSettingsDog(this);
             return true;
-            // Handle the camera action
         } else if (id == R.id.nav_account) {
-            goToSettingsAccount();
+            nav.goToSettingsAccount(this);
             return true;
 
         } else if (id == R.id.nav_bluetooth) {
-            goToSettingsBluetooth();
+            nav.goToSettingsBluetooth(this);
             return true;
 
         } else if (id == R.id.nav_notification) {
-            goToSettingsNotification();
+            nav.goToSettingsNotification(this);
             return true;
         }
 
 
-            return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        Navigation nav = new Navigation();
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_dog_overview){
-        //goToDogOverview();
+        if (id == R.id.nav_dog_overview) {
+            nav.goToDogOverview(this);
+            //TODO: CONSIDER SEPERATING XML FILES FOR EACH ACTIVITY
+        } else if (id == R.id.nav_heart_rate) {
+            nav.goToHeartRateActivity(this);
+        } else if (id == R.id.nav_resp_rate) {
+            nav.goToRespiratoryRateActivity(this);
+        } else if (id == R.id.nav_core_temp) {
+            nav.goToCoreTemperatureActivity(this);
+        } else if (id == R.id.nav_ab_temp) {
+            nav.goToAbdominalTemperatureActivity(this);
+        } else if (id == R.id.nav_logOut) {
+            LogOut x = new LogOut();
+            x.end(this);
+            finish();
         }
-        else if (id == R.id.nav_heart_rate){
-        //TODO: nav to heart rate specific page
-        }
-        else if (id == R.id.nav_resp_rate){
-         //TODO: nav to resp rate specific page
-        }
-        else if (id == R.id.nav_core_temp){
-         //TODO: nav to core temp specific page
-        }
-        else if (id == R.id.nav_ab_temp){
-         //TODO: nav to ab temp specific page
-        }
-        else if (id == R.id.nav_logOut) {
-            //TODO: logout function!
-
-        }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public void goToSettingsDog() {
-        Intent goToSettingsDogIntent = new Intent(this, SettingsDog.class);
-        startActivity(goToSettingsDogIntent);
-    }
-
-    public void goToSettingsAccount() {
-        Intent goToSettingsAccountIntent = new Intent(this, SettingsAccount.class);
-        startActivity(goToSettingsAccountIntent);
-    }
-
-    public void goToSettingsBluetooth() {
-        Intent goToSettingsBluetoothIntent = new Intent(this, SettingsBluetooth.class);
-        startActivity(goToSettingsBluetoothIntent);
-    }
-
-    public void goToSettingsNotification() {
-        Intent goToSettingsNotificationIntent = new Intent(this, SettingsNotifications.class);
-        startActivity(goToSettingsNotificationIntent);
-    }
-
-    public void goToDogOverview() {
-        Intent DogIntent = new Intent(this, DogOverview.class);
-        startActivity(DogIntent);
-    }
-
-
-
-    public void goToDogOverViewNoButton() {
-        Intent goToDogOverViewNoButtonIntent = new Intent(this, DogOverview.class);
-        startActivity(goToDogOverViewNoButtonIntent);
-    }
-
-    public void goToLoginPage() {
-        Intent goToLoginPageIntent = new Intent(this,LoginActivity.class);
-        startActivity(goToLoginPageIntent);
-    }
-
 
     public void startReceivingData() {
+        //THIS IS WHERE BLUETOOTH CONNECTION WOULD GO
+        //NOT IN PAGE BECAUSE HARDWARE SUPPORT NOT AVAIL
+        //CODE FOR THIS CAN BE PULLED NEAR EXACTLY FROM PREVIOUS ECE GROUP CODE.
+        //ENSURE DISABLING OF AUTO-GENERATE FUNCTION
         DataProcessingRunnable r = new DataProcessingRunnable(this);
         r.initRunnable(myDB,handler);
         Thread inputDataThread = new Thread(r);

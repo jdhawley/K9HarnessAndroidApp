@@ -12,8 +12,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class SettingsNotifications extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -48,6 +50,14 @@ public class SettingsNotifications extends AppCompatActivity implements Navigati
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View header=navigationView.getHeaderView(0);
+/*View view=navigationView.inflateHeaderView(R.layout.nav_header_main);*/
+        TextView user_name = (TextView)header.findViewById(R.id.text_userName);
+        SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
+        String name = prefs.getString("currentUsername", "example@gmail.com");
+        user_name.setText(name);
+
 
         CompoundButton.OnCheckedChangeListener multiListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -156,21 +166,21 @@ public class SettingsNotifications extends AppCompatActivity implements Navigati
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-
+        Navigation nav = new Navigation();
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.nav_dog) {
-            goToSettingsDog();
+            nav.goToSettingsDog(this);
             finish();
             return true;
         } else if (id == R.id.nav_account) {
-            goToSettingsAccount();
+            nav.goToSettingsAccount(this);
             finish();
             return true;
 
         } else if (id == R.id.nav_bluetooth) {
-            goToSettingsBluetooth();
+            nav.goToSettingsBluetooth(this);
             finish();
             return true;
 
@@ -189,61 +199,37 @@ public class SettingsNotifications extends AppCompatActivity implements Navigati
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        Navigation nav = new Navigation();
         int id = item.getItemId();
 
         if (id == R.id.nav_dog_overview){
-            //goToDogOverview();
+            nav.goToDogOverview(this);
             finish();
-            //TODO: CONSIDER SEPERATING XML FILES FOR EACH ACTIVITY
         }
         else if (id == R.id.nav_heart_rate){
+            nav.goToHeartRateActivity(this);
             finish();
-            //TODO: nav to heart rate specific page
         }
         else if (id == R.id.nav_resp_rate){
-            //TODO: nav to resp rate specific page
+            nav.goToRespiratoryRateActivity(this);
             finish();
         }
         else if (id == R.id.nav_core_temp){
-            //TODO: nav to core temp specific page
+            nav.goToCoreTemperatureActivity(this);
             finish();
         }
         else if (id == R.id.nav_ab_temp){
+            nav.goToAbdominalTemperatureActivity(this);
             finish();
-            //TODO: nav to ab temp specific page
         }
         else if (id == R.id.nav_logOut) {
+            LogOut x = new LogOut();
+            x.end(this);
             finish();
-            //TODO: logout function!
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.notification_settings);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public void goToSettingsDog() {
-        Intent goToSettingsDogIntent = new Intent(this, SettingsDog.class);
-        startActivity(goToSettingsDogIntent);
-    }
-
-    public void goToSettingsAccount() {
-        Intent goToSettingsAccountIntent = new Intent(this, SettingsAccount.class);
-        startActivity(goToSettingsAccountIntent);
-    }
-
-    public void goToSettingsBluetooth() {
-        Intent goToSettingsBluetoothIntent = new Intent(this, SettingsBluetooth.class);
-        startActivity(goToSettingsBluetoothIntent);
-    }
-
-    public void goToSettingsNotification() {
-        Intent goToSettingsNotificationIntent = new Intent(this, SettingsNotifications.class);
-        startActivity(goToSettingsNotificationIntent);
-    }
-    public void goToDogOverview() {
-        Intent DogIntent = new Intent(this, DogOverview.class);
-        startActivity(DogIntent);
     }
 }
