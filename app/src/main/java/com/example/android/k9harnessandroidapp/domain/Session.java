@@ -12,12 +12,12 @@ import static java.lang.Double.parseDouble;
  */
 
 public class Session {
-    private UUID dogId;
+    private int dogId;
     private int sessionId;
     private Date sessionDate;
     private List<String> sessionTicks;
 
-    public Session(UUID dogId, int sessionId, String parseString) {
+    public Session(int dogId, int sessionId, String parseString) {
         this.dogId = dogId;
         this.sessionId = sessionId;
         this.sessionDate = new Date();
@@ -38,11 +38,11 @@ public class Session {
         this.sessionTicks.add(sessionTick);
     }
 
-    public UUID getDogId() {
+    public int getDogId() {
         return dogId;
     }
 
-    public void setDogId(UUID dogId) {
+    public void setDogId(int dogId) {
         this.dogId = dogId;
     }
 

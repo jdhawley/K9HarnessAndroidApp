@@ -7,6 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.android.k9harnessandroidapp.domain.Session;
+
+import java.util.ArrayList;
+
 /**
  * Created by Jon on 11/20/17 for the K9 Dog Collar Project.
  */
@@ -261,5 +265,59 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         String query = "SELECT S.SessionID, ST.AbdominalTemperature FROM Session S INNER JOIN " +
                 "SessionTick ST ON S.SessionID=ST.SessionID WHERE DogID=? ORDER BY S.SessionID ASC";
         return db.rawQuery(query, new String[]{Integer.toString(dogID)});
+    }
+
+    public ArrayList<Session> getSessions(int dogID) {
+        String query = "SELECT S.SessionID, ST.SessionTick, ST.HeartRate, ST.RespiratoryRate, " +
+            "ST.CoreTemperature, ST.AmbientTemperature, ST.AbdominalTemperature " +
+            "FROM Dog D INNER JOIN Session S ON D.DogID=S.DogID " +
+            "INNER JOIN SessionTick ST ON S.SessionID=ST.SessionID " +
+            "WHERE D.DogID=? ORDER BY S.SessionID ASC, ST.SessionTick ASC";
+        Cursor results = db.rawQuery(query, new String[]{Integer.toString(dogID)});
+
+        int sessionIDCol = results.getColumnIndex("SessionID");
+        int sessionTickCol = results.getColumnIndex("SessionTick");
+        int heartRateCol = results.getColumnIndex("HeartRate");
+        int respiratoryRateCol = results.getColumnIndex("RespiratoryRate");
+        int coreTemperatureCol = results.getColumnIndex("CoreTemperature");
+        int ambientTemperatureCol = results.getColumnIndex("AmbientTemperature");
+        int abdominalTemperatureCol = results.getColumnIndex("AbdominalTemperature");
+
+        results.moveToFirst();
+        int sessionID = results.getInt(sessionIDCol);
+        int hr = results.getInt(heartRateCol);
+        int rr = results.getInt(respiratoryRateCol);
+        int ct = results.getInt(coreTemperatureCol);
+        int amt = results.getInt(ambientTemperatureCol);
+        int abt = results.getInt(abdominalTemperatureCol);
+        Session s = new Session(dogID, sessionID, null);
+        s.addSessionTick(convertDataToString(hr, rr, ct, amt, abt));
+        ArrayList<Session> sessions = new ArrayList<>();
+
+        while (results.moveToNext()) {
+            if (sessionID < results.getInt(sessionIDCol)) {
+                sessions.add(s);
+                sessionID = results.getInt(sessionIDCol);
+                s = new Session(dogID, sessionID, null);
+            }
+            hr = results.getInt(heartRateCol);
+            rr = results.getInt(respiratoryRateCol);
+            ct = results.getInt(coreTemperatureCol);
+            amt = results.getInt(ambientTemperatureCol);
+            abt = results.getInt(abdominalTemperatureCol);
+            s.addSessionTick(convertDataToString(hr, rr, ct, amt, abt));
+        }
+        sessions.add(s);
+
+        return sessions;
+    }
+
+    private String convertDataToString(int hr, int rr, int ct, int amt, int abt) {
+        String hrString = Integer.toString(hr);
+        String rrString = Integer.toString(rr);
+        String ctString = Integer.toString(ct);
+        String amtString = Integer.toString(amt);
+        String abtString = Integer.toString(abt);
+        return hrString + ":" + rrString + ":" + ctString + ":" + amtString + ":" + abtString + "#";
     }
 }
