@@ -67,7 +67,6 @@ public class DogService implements Runnable {
                 HttpEntity<String> entity = new HttpEntity<String>(headers);
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                 ResponseEntity<Dog> dogSubmission  = restTemplate.exchange(url, HttpMethod.POST, entity, Dog.class, dogs);
 
                 //If the dog exists we need to create a new dog
