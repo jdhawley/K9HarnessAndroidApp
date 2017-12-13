@@ -1,9 +1,9 @@
 package com.example.android.k9harnessandroidapp;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -27,8 +28,11 @@ public class DogMeasurement extends AppCompatActivity implements NavigationView.
     private LineGraphSeries<DataPoint> historicalAverageSeries = new LineGraphSeries<>();
     private LineGraphSeries<DataPoint> historicalLowSeries = new LineGraphSeries<>();
 
-    private PageType pageType = null;
+    private Button lowNumber;
+    private Button avgNumber;
+    private Button highNumber;
 
+    private PageType pageType = null;
 
     private enum PageType {
         HeartRate,
@@ -41,6 +45,7 @@ public class DogMeasurement extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dog_measurement);
+        SharedPreferences prefs = this.getSharedPreferences("DogSettings", MODE_PRIVATE);
 
         String type = getIntent().getStringExtra("PAGE_TYPE");
         if (type.equals("HeartRate")) {
@@ -55,7 +60,17 @@ public class DogMeasurement extends AppCompatActivity implements NavigationView.
 
         db = new SQLiteHelper(this);
         historicalGraph = findViewById(R.id.historicalGraph);
+        lowNumber = findViewById(R.id.lowValueNum);
+        avgNumber = findViewById(R.id.avgValueNum);
+        highNumber = findViewById(R.id.highValueNum);
 
+        lowNumber.setTextSize(24);
+        avgNumber.setTextSize(24);
+        highNumber.setTextSize(24);
+
+        lowNumber.setTextColor(Color.rgb(255, 165, 0));
+        avgNumber.setTextColor(Color.rgb(102, 255, 0));
+        highNumber.setTextColor(Color.RED);
 
         setTitle();
 
@@ -123,6 +138,10 @@ public class DogMeasurement extends AppCompatActivity implements NavigationView.
             sum += val;
             count++;
         }
+
+        lowNumber.setText(Integer.toString(low));
+        avgNumber.setText(Integer.toString(sum / count));
+        highNumber.setText(Integer.toString(high));
 
         historicalHighSeries.setColor(Color.RED);
         historicalAverageSeries.setColor(Color.rgb(102, 255, 0));

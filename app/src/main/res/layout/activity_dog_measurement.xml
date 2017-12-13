@@ -27,10 +27,46 @@
             android:layout_height="170dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="84dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.488"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/lowValueNum"
+            android:layout_width="113dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:ems="10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/historicalGraph"
+            android:layout_marginLeft="32dp" />
+
+        <Button
+            android:id="@+id/avgValueNum"
+            android:layout_width="113dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
+            android:ems="10"
+            app:layout_constraintEnd_toStartOf="@+id/highValueNum"
+            app:layout_constraintStart_toEndOf="@+id/lowValueNum"
+            app:layout_constraintTop_toBottomOf="@+id/historicalGraph" />
+
+        <Button
+            android:id="@+id/highValueNum"
+            android:layout_width="113dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginTop="32dp"
+            android:ems="10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/historicalGraph"
+            android:layout_marginRight="32dp" />
+
     </android.support.constraint.ConstraintLayout>
 
 
