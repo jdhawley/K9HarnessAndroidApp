@@ -1,6 +1,7 @@
 package com.example.android.k9harnessandroidapp;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -44,11 +45,18 @@ public class AccountRegister extends AppCompatActivity {
                 EditText firstName = (EditText) findViewById(R.id.first_name);
                 EditText lastName = (EditText) findViewById(R.id.last_name);
                 EditText password = (EditText) findViewById(R.id.password_field);
+                EditText dogName = (EditText) findViewById(R.id.dog_name);
 
-                email.getText().toString();
-                firstName.getText().toString();
-                lastName.getText().toString();
-                password.getText().toString();
+                String em = email.getText().toString();
+                String fn = firstName.getText().toString();
+                String ln = lastName.getText().toString();
+                String pw = password.getText().toString();
+                String doge = dogName.getText().toString();
+
+                SharedPreferences prefs = getSharedPreferences("AccountSettings", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("dogName", doge);
+                editor.apply();
 
 
 
