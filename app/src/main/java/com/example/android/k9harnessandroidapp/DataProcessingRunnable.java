@@ -63,6 +63,7 @@ public class DataProcessingRunnable implements Runnable {
     public void run() {
         isRunning = true;
 
+
         int hr;
         int rr;
         int at;
@@ -76,13 +77,18 @@ public class DataProcessingRunnable implements Runnable {
 
 
         DataMockup testData = new DataMockup();
-        while (true) {
+        SharedPreferences prefs = context.getSharedPreferences("runnable_thread", context.MODE_PRIVATE);
+        boolean keepRunning = prefs.getBoolean("", true);
+
+        while (keepRunning) {
+
             //wait 10 seconds
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            keepRunning = prefs.getBoolean("", true);
             //New data input
             String[] parsedMessage = testData.getDataPoint().split(":");
             parsedMessage[0] = parsedMessage[0].trim();

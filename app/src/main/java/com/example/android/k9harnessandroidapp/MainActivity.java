@@ -2,7 +2,9 @@ package com.example.android.k9harnessandroidapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -11,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,11 +42,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message message) {
-            TextView txt = (TextView) findViewById(R.id.title_text);
-            txt.setText(""+val);
             ++val;
         }
     };
+
 
 
     @Override
@@ -64,14 +66,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         Navigation nav = new Navigation();
         myDB = new SQLiteHelper(this);
-        if(!DataProcessingRunnable.isRunning){
-            startReceivingData();
-        }
+        buttonFuncs();
+       if(!DataProcessingRunnable.isRunning){
+           startReceivingData();
+       }
         //Notifications notify = new Notifications(this);
         //notify.createNotification("??");
         //goToSettingsMenu();
-        nav.goToDogOverview(this);
+       nav.goToDogOverview(this);
         finish();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        buttonFuncs();
+    }
+
+    public void buttonFuncs() {
+        SharedPreferences prefs = this.getSharedPreferences("runnable_thread", MODE_PRIVATE);
+        boolean isRun = prefs.getBoolean("connected",true);
+        if (isRun) {
+            Button btn = (Button) findViewById(R.id.but_connect);
+            btn.setEnabled(false);
+            Button btn1 = (Button) findViewById(R.id.but_disconnect);
+            btn1.setEnabled(true);
+        }
+        else {
+            Button btn = (Button) findViewById(R.id.but_connect);
+            btn.setEnabled(true);
+            Button btn1 = (Button) findViewById(R.id.but_disconnect);
+            btn1.setEnabled(false);
+        }
     }
 
     @Override
@@ -82,6 +108,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+    }
+
+    public void connectToBluetooth(View view) {
+        if(!DataProcessingRunnable.isRunning) {
+            SharedPreferences prefs = this.getSharedPreferences("runnable_thread", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("connected", true);
+            editor.apply();
+            startReceivingData();
+            Navigation nav = new Navigation();
+            nav.goToDogOverview(this);
+            //finish();
+            buttonFuncs();
+        }
+    }
+
+    public void disconnectFromBluetooth(View view) {
+        SharedPreferences prefs = this.getSharedPreferences("runnable_thread", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("connected", false);
+        editor.apply();
+        buttonFuncs();
+        //display connect button or something
+        //must make sure to properly end thread
     }
 
     @Override
