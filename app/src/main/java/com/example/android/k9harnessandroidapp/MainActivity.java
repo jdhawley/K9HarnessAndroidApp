@@ -202,6 +202,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void startReceivingData() {
+        //THIS IS WHERE BLUETOOTH CONNECTION WOULD GO
+        //NOT IN PAGE BECAUSE HARDWARE SUPPORT NOT AVAIL
+        //CODE FOR THIS CAN BE PULLED NEAR EXACTLY FROM PREVIOUS ECE GROUP CODE.
+        //ENSURE DISABLING OF AUTO-GENERATE FUNCTION
         DataProcessingRunnable r = new DataProcessingRunnable(this);
         r.initRunnable(myDB,handler);
         Thread inputDataThread = new Thread(r);
