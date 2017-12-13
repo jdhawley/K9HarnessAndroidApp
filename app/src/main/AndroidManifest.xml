@@ -27,7 +27,7 @@
         <activity android:name=".SettingsBluetooth" />
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login"></activity>
+            android:label="@string/title_activity_login" />
         <activity android:name=".DogList" />
         <activity android:name=".MeasurementInDepth" />
         <activity android:name=".SettingsNotifications" />
@@ -35,6 +35,10 @@
 
         <service android:name=".InputIntentService" />
 
+        <activity android:name=".DogHeartRate" />
+        <activity android:name=".DogRespiratoryRate" />
+        <activity android:name=".DogCoreTemperature" />
+        <activity android:name=".DogAbdominalTemperature"></activity>
     </application>
 
 </manifest>

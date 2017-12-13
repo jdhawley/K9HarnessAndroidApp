@@ -248,4 +248,10 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public boolean duringSession() {
         return isAcceptingData;
     }
+
+    public Cursor getHistoricalHeartRateData(int dogID) {
+        String query = "SELECT SessionID, HeartRate FROM Session S INNER JOIN SessionTick ST" +
+                "ON S.SessionID=ST.SessionID WHERE S.DogID=?";
+        return db.rawQuery(query, new String[]{Integer.toString(dogID)});
+    }
 }

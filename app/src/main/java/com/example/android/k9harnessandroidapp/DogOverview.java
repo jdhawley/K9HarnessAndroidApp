@@ -463,9 +463,28 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         startActivity(goToSettingsNotificationIntent);
     }
 
-    //TODO: Load session at the beginning when reopening the activity.
-    //TODO: Fix labels on the bottom of the graphs
+    public void goToHeartRateActivity(View view) {
+        Intent goToHeartRateIntent = new Intent(this, DogHeartRate.class);
+        startActivity(goToHeartRateIntent);
+    }
+
+    public void goToRespiratoryRateActivity(View view) {
+        Intent goToRespiratoryRateIntent = new Intent(this, DogRespiratoryRate.class);
+        startActivity(goToRespiratoryRateIntent);
+    }
+
+    public void goToCoreTemperatureActivity(View view) {
+        Intent goToCoreTemperatureIntent = new Intent(this, DogCoreTemperature.class);
+        startActivity(goToCoreTemperatureIntent);
+    }
+
+    public void goToAbdominalTemperatureActivity(View view) {
+        Intent goToAbdominalTemperatureIntent = new Intent(this, DogAbdominalTemperature.class);
+        startActivity(goToAbdominalTemperatureIntent);
+    }
+
     //TODO: Add numbers by the symbols
+    //TODO: Fix labels on the bottom of the graphs
     //TODO: Specific measurement pages
     //TODO: Give George a list of the data sync stuff I need
 }
