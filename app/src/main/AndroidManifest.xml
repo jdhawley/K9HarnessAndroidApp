@@ -35,7 +35,11 @@
 
         <service android:name=".InputIntentService" />
 
-        <activity android:name=".DogMeasurement"></activity>
+        <activity android:name=".DogMeasurement" />
+        <activity
+            android:name=".AccountRegister"
+            android:label="@string/title_activity_account_register"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
     </application>
 
 </manifest>
