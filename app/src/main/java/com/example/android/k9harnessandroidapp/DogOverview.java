@@ -384,25 +384,25 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        Log.e(TAG,"madeittoslectedpg");
+        Navigation nav = new Navigation();
+        //Log.e(TAG,"madeittoslectedpg");
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.nav_dog) {
-            Log.e(TAG,"madeITtoDOG");
-            goToSettingsDog();
+            //Log.e(TAG,"madeITtoDOG");
+            nav.goToSettingsDog(this);
             return true;
-            // Handle the camera action
         } else if (id == R.id.nav_account) {
-            goToSettingsAccount();
+            nav.goToSettingsAccount(this);
             return true;
 
         } else if (id == R.id.nav_bluetooth) {
-            goToSettingsBluetooth();
+            nav.goToSettingsBluetooth(this);
             return true;
 
         } else if (id == R.id.nav_notification) {
-            goToSettingsNotification();
+            nav.goToSettingsNotification(this);
             return true;
         }
 
@@ -413,6 +413,7 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        Navigation nav = new Navigation();
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -422,16 +423,16 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
             //TODO: CONSIDER SEPERATING XML FILES FOR EACH ACTIVITY
         }
         else if (id == R.id.nav_heart_rate){
-            //TODO: nav to heart rate specific page
+            nav.goToHeartRateActivity(this);
         }
         else if (id == R.id.nav_resp_rate){
-            //TODO: nav to resp rate specific page
+            nav.goToRespiratoryRateActivity(this);
         }
         else if (id == R.id.nav_core_temp){
-            //TODO: nav to core temp specific page
+            nav.goToCoreTemperatureActivity(this);
         }
         else if (id == R.id.nav_ab_temp){
-            //TODO: nav to ab temp specific page
+            nav.goToAbdominalTemperatureActivity(this);
         }
         else if (id == R.id.nav_logOut) {
             //TODO: logout function!
@@ -443,47 +444,6 @@ public class DogOverview extends AppCompatActivity implements NavigationView.OnN
         return true;
     }
 
-    public void goToSettingsDog() {
-        Intent goToSettingsDogIntent = new Intent(this, SettingsDog.class);
-        startActivity(goToSettingsDogIntent);
-    }
-
-    public void goToSettingsAccount() {
-        Intent goToSettingsAccountIntent = new Intent(this, SettingsAccount.class);
-        startActivity(goToSettingsAccountIntent);
-    }
-
-    public void goToSettingsBluetooth() {
-        Intent goToSettingsBluetoothIntent = new Intent(this, SettingsBluetooth.class);
-        startActivity(goToSettingsBluetoothIntent);
-    }
-
-    public void goToSettingsNotification() {
-        Intent goToSettingsNotificationIntent = new Intent(this, SettingsNotifications.class);
-        startActivity(goToSettingsNotificationIntent);
-    }
-
-    private void goToMeasurementIntent(String measurementType) {
-        Intent goToMeasurementActivityIntent = new Intent(this, DogMeasurement.class);
-        goToMeasurementActivityIntent.putExtra("PAGE_TYPE", measurementType);
-        startActivity(goToMeasurementActivityIntent);
-    }
-
-    public void goToHeartRateActivity(View view) {
-        goToMeasurementIntent("HeartRate");
-    }
-
-    public void goToRespiratoryRateActivity(View view) {
-        goToMeasurementIntent("RespiratoryRate");
-    }
-
-    public void goToCoreTemperatureActivity(View view) {
-        goToMeasurementIntent("CoreTemperature");
-    }
-
-    public void goToAbdominalTemperatureActivity(View view) {
-        goToMeasurementIntent("AbdominalTemperature");
-    }
 
     //TODO: Add numbers by the symbols
     //TODO: Fix labels on the bottom of the graphs
