@@ -7,6 +7,8 @@ import android.util.Log;
 
 import com.example.android.k9harnessandroidapp.domain.Dog;
 import com.example.android.k9harnessandroidapp.domain.User;
+import com.example.android.k9harnessandroidapp.dto.DogDTO;
+import com.example.android.k9harnessandroidapp.mapper.DogMapper;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -45,6 +47,7 @@ public class DogService implements Runnable {
         private String id_token;
         private Context mContext;
         private int dogFlag = 0;
+        DogDTO dogDTO;
         SharedPreferences sharedPreferences;
 
         DogSyncTask(Context c) {
@@ -60,7 +63,7 @@ public class DogService implements Runnable {
 
         @Override
         protected Boolean doInBackground(Dog... dogs) {
-            final String url = "https://k9backend.herokuapp.com/api/dogs";
+            final String url = "http://192.168.1.5:9000/api/dogs";
             try {
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", "Bearer " + id_token);
