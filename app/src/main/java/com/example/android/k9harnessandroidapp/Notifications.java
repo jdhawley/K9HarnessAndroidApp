@@ -150,8 +150,8 @@ public class Notifications {
 
     public void createNotification(String aMessage) {
         final int NOTIFY_ID = 1002;
-
-
+        setNotificationsSettings();
+        
         Intent intent;
         PendingIntent pendingIntent;
         NotificationCompat.Builder builder;
