@@ -47,6 +47,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -332,7 +333,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected String doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
             final String dogUrl = "https://k9backend.herokuapp.com/api/dogs/user=" + mEmail;
             final String accountUrl = "https://k9backend.herokuapp.com/api/account";
             final String url = "https://k9backend.herokuapp.com/api/authenticate";
@@ -392,7 +392,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 mPasswordView.setError(getString(R.string.error_wrong_password));
                 return;
             } else if(dogFlag > 0){
-                //TODO GO TO DOG THINGS HERE, NEED A PAGE FOR DOGGY BUILDING
+                Dog dog = new Dog(new AtomicInteger().incrementAndGet(), "Joe",
+                100, 100, 100, 100,
+                100, 100, 100, 100);
+                DogService d = new DogService(mContext, dog);
+                d.run();
             }
             setAccountJWT(token);
             saveAccountName(mEmail);

@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.android.k9harnessandroidapp.domain.Dog;
+import com.example.android.k9harnessandroidapp.domain.ManagedUserVM;
 import com.example.android.k9harnessandroidapp.domain.User;
 
 import org.springframework.http.HttpEntity;
@@ -15,72 +16,52 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URL;
-
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * Created by George on 12/13/2017.
+ * Created by grc on 12/13/17.
  */
 
-public class DogService implements Runnable {
-    private Context mContext;
-    private Dog mDog;
+public class AccountService {
+    private String username;
+    private String password;
+    private String email;
+    private SharedPreferences sharedPreferences;
+    private User u;
 
-    public DogService(Context c, Dog d){
-        this.mContext = c;
-        this.mDog = d;
+    public AccountService(Context c, String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        sharedPreferences = c.getSharedPreferences("AccountSettings", MODE_PRIVATE);
+
+        u = new ManagedUserVM();
+        u.setEmail(this.email);
     }
 
-    @Override
-    public void run() {
-        new DogSyncTask(this.mContext).execute(this.mDog);
-    }
 
-
-
-    private class DogSyncTask extends AsyncTask<Dog, Dog, Boolean> {
-
-        private String mEmail;
-        private String id_token;
-        private Context mContext;
-        private int dogFlag = 0;
-        SharedPreferences sharedPreferences;
-
-        DogSyncTask(Context c) {
-            mContext = c;
-        }
-
+    private class AccountTask extends AsyncTask<User, Void, Boolean> {
         @Override
-        protected void onPreExecute(){
-            sharedPreferences = mContext.getSharedPreferences("AccountSettings", MODE_PRIVATE);
-            mEmail = sharedPreferences.getString("currentUsername", null);
-            id_token = sharedPreferences.getString("id_token", null);
-        }
-
-        @Override
-        protected Boolean doInBackground(Dog... dogs) {
-            final String url = "https://k9backend.herokuapp.com/api/dogs";
+        protected Boolean doInBackground(User... users) {
+            final String url = "https://k9backend.herokuapp.com/api/register";
             try {
                 HttpHeaders headers = new HttpHeaders();
-                headers.set("Authorization", "Bearer " + id_token);
                 HttpEntity<String> entity = new HttpEntity<String>(headers);
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                ResponseEntity<Dog> dogSubmission  = restTemplate.exchange(url, HttpMethod.POST, entity, Dog.class, dogs);
+                ResponseEntity<ManagedUserVM> dogSubmission  = restTemplate.exchange(url, HttpMethod.POST, entity, ManagedUserVM.class, users);
 
                 //If the dog exists we need to create a new dog
                 if(dogSubmission.getStatusCode().value() == 400) {
-                    dogSubmission  = restTemplate.exchange(url, HttpMethod.PUT, entity, Dog.class, dogs);
+//                    dogSubmission  = restTemplate.exchange(url, HttpMethod.PUT, entity, Dog.class, users);
                     if(dogSubmission.getStatusCode().value() == 400) {
                         return false;
                     }
                     return true;
                 }
-
             } catch(Exception e) {
-                Log.e("DOGSERVICE: ", e.getMessage());
+                Log.e("ACCOUNTSERVICE: ", e.getMessage());
                 return false;
             }
             return false;
