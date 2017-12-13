@@ -1,5 +1,6 @@
 package com.example.android.k9harnessandroidapp.Service;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -7,14 +8,15 @@ import android.util.Log;
 
 import com.example.android.k9harnessandroidapp.domain.Dog;
 import com.example.android.k9harnessandroidapp.domain.User;
-import com.example.android.k9harnessandroidapp.dto.DogDTO;
-import com.example.android.k9harnessandroidapp.mapper.DogMapper;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URL;
@@ -36,22 +38,23 @@ public class DogService implements Runnable {
 
     @Override
     public void run() {
-        new DogSyncTask(this.mContext).execute(this.mDog);
+        new DogSyncTask(this.mContext, this.mDog).execute();
     }
 
 
 
-    private class DogSyncTask extends AsyncTask<Dog, Dog, Boolean> {
+    private class DogSyncTask extends AsyncTask<Void, Void, Boolean> {
 
         private String mEmail;
         private String id_token;
         private Context mContext;
+        private Dog dog;
         private int dogFlag = 0;
-        DogDTO dogDTO;
         SharedPreferences sharedPreferences;
 
-        DogSyncTask(Context c) {
-            mContext = c;
+        DogSyncTask(Context c, Dog d) {
+            this.mContext = c;
+            this.dog = d;
         }
 
         @Override
@@ -62,19 +65,20 @@ public class DogService implements Runnable {
         }
 
         @Override
-        protected Boolean doInBackground(Dog... dogs) {
-            final String url = "http://192.168.1.5:9000/api/dogs";
+        protected Boolean doInBackground(Void... dogs) {
+            final String url = "https://k9backend.herokuapp.com/api/dogs";
             try {
                 HttpHeaders headers = new HttpHeaders();
                 headers.set("Authorization", "Bearer " + id_token);
+
                 HttpEntity<String> entity = new HttpEntity<String>(headers);
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                ResponseEntity<Dog> dogSubmission  = restTemplate.exchange(url, HttpMethod.POST, entity, Dog.class, dogs);
-
+                ResponseEntity<Dog> dogSubmission  = restTemplate.exchange(url, HttpMethod.POST, entity, Dog.class, dog);
+//                id=null, name='null', dogId='null', sessionID=null, lowCT=null, lowAT=null, lowHR=null, lowRR=null, highCT=null, highAT=null, highHR=null, highRR=null
                 //If the dog exists we need to create a new dog
                 if(dogSubmission.getStatusCode().value() == 400) {
-                    dogSubmission  = restTemplate.exchange(url, HttpMethod.PUT, entity, Dog.class, dogs);
+                    dogSubmission  = restTemplate.exchange(url, HttpMethod.PUT, entity, Dog.class, dog);
                     if(dogSubmission.getStatusCode().value() == 400) {
                         return false;
                     }

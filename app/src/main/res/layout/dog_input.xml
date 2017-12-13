@@ -180,6 +180,6 @@
         android:text="Add a Dog"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         tools:layout_editor_absoluteX="36dp"
-        tools:layout_editor_absoluteY="29dp" />
+        tools:layout_editor_absoluteY="44dp" />
 
 </android.support.constraint.ConstraintLayout>

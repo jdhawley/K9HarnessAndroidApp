@@ -37,7 +37,7 @@ public class Dog {
         this.name = name;
         this.dogId = dogId;
         this.notification = new Integer[]{1, 1, 1, 1};
-        this.sessionID = 0;
+        this.sessionID = 1;
         this.lowCT = lowCT;
         this.lowAT = lowAT;
         this.lowHR = lowHR;

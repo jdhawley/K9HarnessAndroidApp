@@ -36,12 +36,13 @@
         <activity android:name=".SettingsNotifications" />
         <activity android:name=".DogOverview" />
 
-        <service android:name=".InputIntentService" />
+        <!--<service android:name=".InputIntentService" />-->
 
         <activity
             android:name=".AccountRegister"
             android:label="@string/title_activity_account_register"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:exported="true"></activity>
     </application>
 
 </manifest>

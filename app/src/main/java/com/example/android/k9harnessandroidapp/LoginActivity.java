@@ -333,9 +333,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected String doInBackground(Void... params) {
-            final String dogUrl = "http://192.168.1.5:9000/api/dogs/user=" + mEmail;
-            final String accountUrl = "http://192.168.1.5:9000/api/account";
-            final String url = "http://192.168.1.5:9000/api/authenticate";
+            final String dogUrl = "https://k9backend.herokuapp.com/api/dogs/user=" + mEmail;
+            final String accountUrl = "https://k9backend.herokuapp.com/api/account";
+            final String url = "https://k9backend.herokuapp.com/api/authenticate";
             int loginFlag = 0;
             JWTToken token = null;
             User currentUser;
@@ -392,7 +392,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 mPasswordView.setError(getString(R.string.error_wrong_password));
                 return;
             } else if(dogFlag > 0){
-
+                Dog dog = new Dog((int) (Math.random() * 1230234242), "Joe",
+                    100, 100, 100, 100,
+                    100, 100, 100, 100);
+                DogService d = new DogService(mContext, dog);
+                d.run();
             }
             setAccountJWT(token);
             saveAccountName(mEmail);
@@ -408,6 +412,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     void onDogNeeded() {
+
         Navigation nav = new Navigation();
         nav.goToMain(this);
         finish();

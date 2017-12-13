@@ -89,6 +89,11 @@ public class User {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+
     public Long getId() {
         return id;
     }

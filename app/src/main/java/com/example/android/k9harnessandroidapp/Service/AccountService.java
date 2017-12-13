@@ -22,14 +22,14 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by grc on 12/13/17.
  */
 
-public class AccountService {
+public class AccountService implements Runnable {
     private String username;
     private String password;
     private String email;
     private SharedPreferences sharedPreferences;
     private User u;
 
-    public AccountService(Context c, String username, String password, String email) {
+    public AccountService(Context c, String username, String password, String email){
         this.username = username;
         this.password = password;
         this.email = email;
@@ -39,32 +39,10 @@ public class AccountService {
         u.setEmail(this.email);
     }
 
-
-    private class AccountTask extends AsyncTask<User, Void, Boolean> {
-        @Override
-        protected Boolean doInBackground(User... users) {
-            final String url = "https://k9backend.herokuapp.com/api/register";
-            try {
-                HttpHeaders headers = new HttpHeaders();
-                HttpEntity<String> entity = new HttpEntity<String>(headers);
-                RestTemplate restTemplate = new RestTemplate();
-                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                ResponseEntity<ManagedUserVM> dogSubmission  = restTemplate.exchange(url, HttpMethod.POST, entity, ManagedUserVM.class, users);
-
-                //If the dog exists we need to create a new dog
-                if(dogSubmission.getStatusCode().value() == 400) {
-//                    dogSubmission  = restTemplate.exchange(url, HttpMethod.PUT, entity, Dog.class, users);
-                    if(dogSubmission.getStatusCode().value() == 400) {
-                        return false;
-                    }
-                    return true;
-                }
-            } catch(Exception e) {
-                Log.e("ACCOUNTSERVICE: ", e.getMessage());
-                return false;
-            }
-            return false;
-        }
+    @Override
+    public void run() {
     }
+
+
+
 }
