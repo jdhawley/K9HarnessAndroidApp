@@ -322,6 +322,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         private final String mEmail;
         private final String mPassword;
         private Context mContext;
+        private int dogFlag = 0;
 
         UserLoginTask(String email, String password, Context c) {
             mEmail = email;
@@ -332,11 +333,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         @Override
         protected String doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-            final String dogUrl = "http://192.168.1.5:9000/api/dogs/user=" + mEmail;
-            final String accountUrl = "http://192.168.1.5:9000/api/account";
-            final String url = "http://192.168.1.5:9000/api/authenticate";
-
-            JWTToken token;
+            final String dogUrl = "https://k9backend.herokuapp.com/api/dogs/user=" + mEmail;
+            final String accountUrl = "https://k9backend.herokuapp.com/api/account";
+            final String url = "https://k9backend.herokuapp.com/api/authenticate";
+            int loginFlag = 0;
+            JWTToken token = null;
             User currentUser;
             SQLiteHelper helper = new SQLiteHelper(mContext);
             try {
@@ -358,6 +359,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                 ResponseEntity<User> user = restTemplate.exchange(accountUrl, HttpMethod.GET, entity, User.class);
                 if(user.getStatusCode().value() == 200) {
+                    loginFlag++;
                     currentUser = user.getBody();
                     restTemplate = new RestTemplate();
                     restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
@@ -368,9 +370,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     }
                 }
             } catch (Exception e) {
-                mPasswordView.setError(getString(R.string.error_wrong_password));
-                Log.e("EXCEPTION", e.getLocalizedMessage());
-                return null;
+                if(loginFlag > 0) {
+                    dogFlag++;
+                    return token.getIdToken();
+                } else {
+                    mPasswordView.setError(getString(R.string.error_wrong_password));
+                    Log.e("EXCEPTION", e.getLocalizedMessage());
+
+                    return null;
+                }
             }
             return token.getIdToken();
         }
@@ -383,6 +391,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 showProgress(false);
                 mPasswordView.setError(getString(R.string.error_wrong_password));
                 return;
+            } else if(dogFlag > 0){
+                //TODO GO TO DOG THINGS HERE, NEED A PAGE FOR DOGGY BUILDING
             }
             setAccountJWT(token);
             saveAccountName(mEmail);

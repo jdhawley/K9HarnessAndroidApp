@@ -5,6 +5,8 @@ package com.example.android.k9harnessandroidapp.domain;
  */
 
 public class Authority {
+    public Authority() {}
+
     private String name;
 
     public String getName() {
@@ -40,4 +42,6 @@ public class Authority {
             "name='" + name + '\'' +
             "}";
     }
+
+
 }

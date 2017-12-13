@@ -7,7 +7,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -51,7 +53,7 @@ public class User {
 
     private String lastModifiedDate;
 
-    private Set<Authority> authorities;
+    private List<Authority> authorities;
 
     public String getCreatedBy() {
         return createdBy;
@@ -181,14 +183,21 @@ public class User {
         this.langKey = langKey;
     }
 
-    public Set<Authority> getAuthorities() {
+    public List<Authority> getAuthorities() {
 
         return authorities;
     }
 
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
+    public void setAuthorities(List<String> authorities) {
+        ArrayList<Authority> list = new ArrayList<Authority>();
+        for (String c: authorities ) {
+            Authority a = new Authority();
+            a.setName("c");
+            list.add(a);
+        }
+        this.authorities = list;
     }
+
 
 
     @SuppressLint("NewApi")
