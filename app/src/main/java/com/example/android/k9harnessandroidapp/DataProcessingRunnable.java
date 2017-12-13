@@ -79,15 +79,23 @@ public class DataProcessingRunnable implements Runnable {
         DataMockup testData = new DataMockup();
         SharedPreferences prefs = context.getSharedPreferences("runnable_thread", context.MODE_PRIVATE);
         boolean keepRunning = prefs.getBoolean("connected", true);
+        int counter = 0;
+        boolean cont = true;
         while (keepRunning) {
-
-            //wait 10 seconds
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            while(keepRunning && counter < 10) {
+                //wait 10 seconds
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                keepRunning = prefs.getBoolean("connected", true);
+                ++counter;
             }
-            keepRunning = prefs.getBoolean("connected", true);
+            if (!keepRunning) {
+                break;
+            }
+            counter = 0;
             //New data input
             String[] parsedMessage = testData.getDataPoint().split(":");
             parsedMessage[0] = parsedMessage[0].trim();

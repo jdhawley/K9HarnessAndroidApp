@@ -15,6 +15,11 @@ public class LogOut {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("id_token", "null");
         editor.apply();
+
+        SharedPreferences prefz = ctx.getSharedPreferences("runnable_thread", ctx.MODE_PRIVATE);
+        SharedPreferences.Editor editorz = prefz.edit();
+        editorz.putBoolean("connected", false);
+        editorz.apply();
         //SYNC
         //ENSURE THAT THREAD THAT CONNECTS TO BT IS CLOSED.
         Intent i = new Intent(ctx, LoginActivity.class);

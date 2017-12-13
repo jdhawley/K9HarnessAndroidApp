@@ -211,8 +211,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_ab_temp) {
             nav.goToAbdominalTemperatureActivity(this);
         } else if (id == R.id.nav_logOut) {
-            //TODO: logout function!
-
+            LogOut x = new LogOut();
+            x.end(this);
+            finish();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.main_layout);
         drawer.closeDrawer(GravityCompat.START);
