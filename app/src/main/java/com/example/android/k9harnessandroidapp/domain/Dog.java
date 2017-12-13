@@ -1,7 +1,6 @@
 package com.example.android.k9harnessandroidapp.domain;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,8 +9,9 @@ import java.util.UUID;
  */
 
 public class Dog {
+    private int id;
     private String name;
-    private UUID dogId;
+    private int dogId ;
     private Integer[] notification;
     private Integer sessionID;
     private double lowCT;
@@ -22,13 +22,20 @@ public class Dog {
     private double highAT;
     private double highHR;
     private double highRR;
+    private Long ownedById;
+    private String ownedByLogin;
+
     private List<Session> sessionList;
 
-    public Dog(String name,
+    public Dog() {
+
+    }
+
+    public Dog(int dogId, String name,
                double lowCT, double lowAT, double lowHR, double lowRR,
                double highCT, double highAT, double highHR, double highRR) {
         this.name = name;
-        this.dogId = UUID.randomUUID();
+        this.dogId = dogId;
         this.notification = new Integer[]{1, 1, 1, 1};
         this.sessionID = 0;
         this.lowCT = lowCT;
@@ -40,6 +47,30 @@ public class Dog {
         this.highHR = highHR;
         this.highRR = highRR;
         this.sessionList = new ArrayList<Session>();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Long getOwnedById() {
+        return ownedById;
+    }
+
+    public void setOwnedById(Long ownedById) {
+        this.ownedById = ownedById;
+    }
+
+    public String getOwnedByLogin() {
+        return ownedByLogin;
+    }
+
+    public void setOwnedByLogin(String ownedByLogin) {
+        this.ownedByLogin = ownedByLogin;
     }
 
     public void addSession(Session s) {
@@ -58,12 +89,12 @@ public class Dog {
         this.name = name;
     }
 
-    public UUID getDogId() {
+    public int getDogId() {
         return dogId;
     }
 
-    public void setDogId(UUID dogId) {
-        this.dogId = dogId;
+    public void setDogId(int id) {
+        this.dogId = id;
     }
 
     public Integer[] getNotification() {
@@ -155,13 +186,6 @@ public class Dog {
 
         if (getName() != null ? !getName().equals(dog.getName()) : dog.getName() != null)
             return false;
-        return getDogId() != null ? getDogId().equals(dog.getDogId()) : dog.getDogId() == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = getName() != null ? getName().hashCode() : 0;
-        result = 31 * result + (getDogId() != null ? getDogId().hashCode() : 0);
-        return result;
+        return getDogId() == dog.getDogId();
     }
 }

@@ -3,6 +3,7 @@ package com.example.android.k9harnessandroidapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -32,9 +33,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.android.k9harnessandroidapp.Service.DogService;
+import com.example.android.k9harnessandroidapp.domain.Dog;
 import com.example.android.k9harnessandroidapp.domain.LoginVM;
+import com.example.android.k9harnessandroidapp.domain.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -74,6 +81,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
+
+        //Check to see if we're logged in and go to main page if so
+//        if(!prefs.getString("id_token", "null").equals("null")){
+//            onSuccess();
+//        }
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -195,7 +208,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(email, password, this);
             mAuthTask.execute((Void) null);
         }
     }
@@ -308,46 +321,73 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         private final String mEmail;
         private final String mPassword;
+        private Context mContext;
 
-        UserLoginTask(String email, String password) {
+        UserLoginTask(String email, String password, Context c) {
             mEmail = email;
             mPassword = password;
+            mContext = c;
         }
 
         @Override
         protected String doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-            JWTToken token;
+            final String dogUrl = "http://192.168.1.5:9000/api/dogs/user=" + mEmail;
+            final String accountUrl = "http://192.168.1.5:9000/api/account";
+            final String url = "http://192.168.1.5:9000/api/authenticate";
 
+            JWTToken token;
+            User currentUser;
+            SQLiteHelper helper = new SQLiteHelper(mContext);
             try {
-                final String url = "http://192.168.1.5:9000/api/authenticate";
                 RestTemplate restTemplate = new RestTemplate();
                 LoginVM account = new LoginVM();
                 account.setUsername(mEmail);
                 account.setPassword(mPassword);
+                account.setRememberMe(true);
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-
                 token = restTemplate.postForObject(url, account, JWTToken.class);
+
+
+                HttpHeaders headers = new HttpHeaders();
+                headers.set("Authorization", "Bearer " + token.getIdToken());
+                HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+
+                restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                ResponseEntity<User> user = restTemplate.exchange(accountUrl, HttpMethod.GET, entity, User.class);
+                if(user.getStatusCode().value() == 200) {
+                    currentUser = user.getBody();
+                    restTemplate = new RestTemplate();
+                    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
+                    ResponseEntity<Dog> dog = restTemplate.exchange(dogUrl, HttpMethod.GET, entity, Dog.class);
+                    if(dog.getStatusCode().value() == 200) {
+                        helper.addDog(dog.getBody().getName(), currentUser.getId());
+                    }
+                }
             } catch (Exception e) {
                 mPasswordView.setError(getString(R.string.error_wrong_password));
                 Log.e("EXCEPTION", e.getLocalizedMessage());
                 return null;
             }
-
             return token.getIdToken();
         }
 
         @Override
         public void onPostExecute(String token) {
+            SharedPreferences sharedPreferences = getSharedPreferences("AccountSettings", MODE_PRIVATE);
             if(token == null) {
                 mAuthTask = null;
                 showProgress(false);
-                mPasswordView.setError(getString(R.string.error_invalid_password));
+                mPasswordView.setError(getString(R.string.error_wrong_password));
                 return;
             }
             setAccountJWT(token);
+            saveAccountName(mEmail);
             showProgress(false);
-            setContentView(R.layout.activity_main);
+            onSuccess();
         }
 
         @Override
@@ -355,20 +395,28 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
-
-
     }
+
+    void onSuccess() {
+        Navigation nav = new Navigation();
+        nav.goToMain(this);
+        finish();
+    }
+
+
 
     void saveAccountName(String username){
         SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("currentUsername", username);
+        editor.apply();
     }
 
     void setAccountJWT(String token){
         SharedPreferences prefs = this.getSharedPreferences("AccountSettings", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("id_token", token);
+        editor.apply();
     }
 
 

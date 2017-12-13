@@ -9,6 +9,10 @@ import android.content.Intent;
 
 public class Navigation {
 
+    public void goToMain(Context ctx) {
+        Intent goToMainIntent = new Intent(ctx, MainActivity.class);
+        ctx.startActivity(goToMainIntent);
+    }
 
     public void goToSettingsDog(Context ctx) {
         Intent goToSettingsDogIntent = new Intent(ctx, SettingsDog.class);

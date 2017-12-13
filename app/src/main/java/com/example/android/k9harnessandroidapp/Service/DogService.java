@@ -28,33 +28,9 @@ public class DogService implements Runnable {
     @Override
     public void run() {
 
-<<<<<<< HEAD
     }
-=======
-    private class DogSyncTask extends AsyncTask<URL, Void, Boolean> {
 
-        @Override
-        protected Boolean doInBackground(URL... urls) {
-            try {
-                final String url = "https://10.122.162.72:9000/api/dogs";
-                RestTemplate restTemplate = new RestTemplate();
-                
-                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                Dog d = new Dog("George", 100, 100, 100, 100, 100, 100,
-                    100, 100);
-                Dog returned = restTemplate.postForObject(url, d, Dog.class);
 
-                Log.e("DogServ", returned.toString());
-                if(returned != null){
-                    return true;
-                }
-                return false;
-            } catch (Exception e) {
-                Log.e("MainActivity", e.getMessage(), e);
-                return false;
-            }
-        }
->>>>>>> 70919705e6d4ec21cf1ad92f9aa57e9eb6dd5039
 
 //    private class DogSyncTask extends AsyncTask<URL, Void, Boolean> {
 //
